@@ -1,4 +1,4 @@
-package com.gago.weatherapp
+package com.gago.weatherapp.ui
 
 import android.os.Bundle
 import androidx.activity.ComponentActivity
