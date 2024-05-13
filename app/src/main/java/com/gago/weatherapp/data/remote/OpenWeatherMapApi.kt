@@ -6,7 +6,7 @@ import retrofit2.http.Query
 
 interface OpenWeatherMapApi {
 
-    @GET("/weather")
+    @GET("data/2.5/weather")
     suspend fun getWeather(
         @Query("lat") latitude: Double,
         @Query("lon") longitude: Double,
