@@ -28,7 +28,7 @@ class WeatherRepositoryImpl @Inject constructor(
             when (e.code()) {
                 401 -> Result.Error(DataError.Network.UNAUTHORIZED)
                 404 -> Result.Error(DataError.Network.NOT_FOUND)
-                413 -> Result.Error(DataError.Network.TOO_MANY_REQUESTS)
+                429 -> Result.Error(DataError.Network.TOO_MANY_REQUESTS)
                 else -> Result.Error(DataError.Network.UNKNOWN)
             }
         }

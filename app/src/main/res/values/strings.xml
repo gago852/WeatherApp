@@ -1,3 +1,18 @@
 <resources>
     <string name="app_name">Weather App</string>
+
+    <!--Errors-->
+    <string name="error_request_timeout">Your request has timed out. Please try again later. Thank you for your patience.</string>
+    <string name="error_too_many_requests">You have made too many requests in a short period. Please wait a moment and try again. Thank you for your patience.</string>
+    <string name="error_no_internet">It looks like you\'re not connected to the internet. Please check your connection and try again.</string>
+    <string name="error_generic">An unexpected error has occurred. Please try again later. If the problem persists, contact support.</string>
+    <string name="error_payload_too_large">error payload too large</string>
+    <string name="error_server_error">A server error has occurred. Please try again later. If the problem persists, contact support.</string>
+    <string name="error_unauthorized">error api key not authorized</string>
+    <string name="error_forbidden">error forbidden</string>
+    <string name="error_not_found">error not found</string>
+    <string name="error_bad_request">error bad request"</string>
+
+    <string name="error_location">"Couldn't retrieve location. Make sure to grant permission and enable GPS."</string>
+
 </resources>
