@@ -14,5 +14,11 @@
     <string name="error_bad_request">error bad request"</string>
 
     <string name="error_location">"Couldn't retrieve location. Make sure to grant permission and enable GPS."</string>
+    <string name="metric_unit">Metric</string>
+    <string name="imperial_unit">Imperial</string>
+    <string name="unit_of_measurement">Unit of measurement</string>
+    <string name="dialog_ok">OK</string>
+    <string name="dialog_title_about">About</string>
+    <string name="info_about_app">"INFO Lorenmasd asda sd asd asda dasdasdd asda asd   asda "</string>
 
 </resources>
