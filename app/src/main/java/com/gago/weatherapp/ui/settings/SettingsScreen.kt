@@ -1,5 +1,6 @@
 package com.gago.weatherapp.ui.settings
 
+import android.util.Log
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -67,6 +68,7 @@ fun SettingsScreen(
 ) {
 
     val settingValue = settingsViewModel.settings.collectAsState(initial = Settings()).value
+//    Log.d("SettingsOnSettingScreen", settingValue.toString())
     ScaffoldSetting(settings = settingValue, navController = navController) {
         settingsViewModel.saveChangeSettings(it)
     }
@@ -112,7 +114,8 @@ private fun ScaffoldSetting(
             val selectedTextFromResources =
                 stringResource(id = settings.unitOfMeasurement.stringRes)
 
-            var selectedText by remember { mutableStateOf(selectedTextFromResources) }
+            var selectedText by remember { mutableStateOf("") }
+            selectedText = selectedTextFromResources
 
             ExposedDropdownMenuBox(expanded = isExpanded, onExpandedChange = { isChanged ->
                 isExpanded = isChanged

@@ -16,7 +16,7 @@ data class Weather(
     val weatherConditions: WeatherCondition,
     val weatherData: WeatherData,
     val wind: Wind,
+    val visibility: Int,
     val rain: Rain?,
-    val snow: Snow?,
-    val visibility: Int
+    val snow: Snow?
 )
