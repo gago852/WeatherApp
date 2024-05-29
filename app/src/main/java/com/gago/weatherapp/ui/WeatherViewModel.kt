@@ -8,6 +8,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
 import androidx.datastore.dataStore
+import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.gago.weatherapp.BuildConfig
@@ -23,8 +24,12 @@ import com.gago.weatherapp.ui.utils.getCurrentLanguage
 import com.gago.weatherapp.ui.utils.getErrorText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.persistentListOf
+import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
+import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -33,6 +38,7 @@ class WeatherViewModel @Inject constructor(
     private val repository: WeatherRepository,
     private val locationTracker: LocationTracker,
     private val dataStore: DataStore<Settings>,
+    private val savedStateHandle: SavedStateHandle,
     private val context: Application
 ) : ViewModel() {
 
@@ -44,9 +50,40 @@ class WeatherViewModel @Inject constructor(
 //        Log.e("StateOnMainScreenSettings", it.message.toString())
     }
 
+
     val visiblePermissionDialogQueue = mutableStateListOf<String>()
 
-    private var unitOfMetrics = MeasureUnit.METRIC
+    fun setPermissionAccepted(isAccepted: Boolean) {
+        viewModelScope.launch {
+            dataStore.updateData {
+                it.copy(permissionAccepted = isAccepted)
+            }
+        }
+
+    }
+
+    val a = savedStateHandle.getStateFlow("statup", true)
+
+    suspend fun getInitialSetUp(): Settings? = dataStore.data.firstOrNull()
+    suspend fun initialStartUp() {
+        savedStateHandle["statup"] = false
+    }
+
+    fun refreshWeather() {
+
+        viewModelScope.launch {
+            state = state.copy(
+                isLoading = true,
+                error = null
+            )
+            val weather = settings.first().listWeather.first { it.isActive }
+            if (weather.isGps) {
+                loadWeatherFromGpsAsync()
+            } else {
+                getWeatherFromApi(weather.lat, weather.lon, settings.first())
+            }
+        }
+    }
 
 
     fun loadLocationWeather() {
@@ -56,50 +93,52 @@ class WeatherViewModel @Inject constructor(
                 error = null
             )
 
+            loadWeatherFromGpsAsync()
+        }
+    }
 
+    private suspend fun loadWeatherFromGpsAsync() {
+        locationTracker.getCurrentLocation()?.let { location ->
+            val setting = settings.first()
+            val name = getWeatherFromApi(location.latitude, location.longitude, setting)
 
-            locationTracker.getCurrentLocation()?.let { location ->
-                val setting = settings.first()
-                val name = getWeatherFromApi(location.latitude, location.longitude, setting)
+            name?.let { namea ->
 
-                name?.let { namea ->
+                var weatherFromGps = setting.listWeather.find { it.isGps }
 
-                    var weatherFromGps = setting.listWeather.find { it.isGps }
+                var tempList = persistentListOf<WeatherLocal>()
+                var tempWeather: WeatherLocal
 
-                    var tempList = persistentListOf<WeatherLocal>()
-                    var tempWeather: WeatherLocal
-
-                    weatherFromGps?.let { localWeather ->
-                        val indexActual = setting.listWeather.indexOf(localWeather)
-                        tempWeather = localWeather.copy(
-                            isActive = true,
-                            isGps = true,
-                            lat = location.latitude,
-                            lon = location.longitude
-                        )
-                        tempList = setting.listWeather.set(indexActual, tempWeather)
-                    } ?: {
-                        tempWeather = WeatherLocal(
-                            lat = location.latitude,
-                            lon = location.longitude,
-                            isActive = true,
-                            isGps = true,
-                            name = namea
-                        )
-                        tempList = setting.listWeather.add(tempWeather)
-                    }
-
-                    dataStore.updateData {
-                        it.copy(listWeather = tempList)
-                    }
+                weatherFromGps?.let { localWeather ->
+                    val indexActual = setting.listWeather.indexOf(localWeather)
+                    tempWeather = localWeather.copy(
+                        isActive = true,
+                        isGps = true,
+                        lat = location.latitude,
+                        lon = location.longitude
+                    )
+                    tempList = setting.listWeather.set(indexActual, tempWeather)
+                } ?: {
+                    tempWeather = WeatherLocal(
+                        lat = location.latitude,
+                        lon = location.longitude,
+                        isActive = true,
+                        isGps = true,
+                        name = namea
+                    )
+                    tempList = setting.listWeather.add(tempWeather)
                 }
 
-            } ?: kotlin.run {
-                state = state.copy(
-                    isLoading = false,
-                    error = R.string.error_location
-                )
+                dataStore.updateData {
+                    it.copy(listWeather = tempList)
+                }
             }
+
+        } ?: kotlin.run {
+            state = state.copy(
+                isLoading = false,
+                error = R.string.error_location
+            )
         }
     }
 
