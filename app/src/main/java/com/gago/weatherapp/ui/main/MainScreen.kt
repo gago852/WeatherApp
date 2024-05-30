@@ -93,7 +93,9 @@ fun MainScreen(
 
     val state = weatherViewModel.state
 
-    var reasonForRefresh = ReasonsForRefresh.STARTUP
+    var reasonForRefresh by remember {
+        mutableStateOf(ReasonsForRefresh.STARTUP)
+    }
 
     val pullState = rememberPullToRefreshState()
 

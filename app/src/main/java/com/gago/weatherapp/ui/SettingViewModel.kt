@@ -11,7 +11,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class SettingViewModel @Inject constructor(
-    val dataStore: DataStore<Settings>
+    private val dataStore: DataStore<Settings>
 ) : ViewModel() {
 
     val settings = dataStore.data.catch {
