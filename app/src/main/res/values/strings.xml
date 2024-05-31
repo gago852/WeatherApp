@@ -22,5 +22,6 @@
     <string name="info_about_app">"INFO Lorenmasd asda sd asd asda dasdasdd asda asd   asda "</string>
     <string name="welcome_title">Welcome to Weather App</string>
     <string name="welcome_message">We\'re thrilled to have you here. Stay ahead of the weather with our accurate forecasts and real-time updates. Simply click the button below to get the latest weather information for your location.</string>
+    <string name="refresh_error">Not Weather retrieve from cache</string>
 
 </resources>

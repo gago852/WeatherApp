@@ -7,7 +7,6 @@ import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.datastore.core.DataStore
-import androidx.datastore.dataStore
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -19,17 +18,14 @@ import com.gago.weatherapp.domain.location.LocationTracker
 import com.gago.weatherapp.domain.repository.WeatherRepository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
-import com.gago.weatherapp.ui.utils.MeasureUnit
+import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import com.gago.weatherapp.ui.utils.getCurrentLanguage
 import com.gago.weatherapp.ui.utils.getErrorText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.persistentListOf
-import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
-import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -50,6 +46,11 @@ class WeatherViewModel @Inject constructor(
 //        Log.e("StateOnMainScreenSettings", it.message.toString())
     }
 
+    var reasonForRefresh = ReasonsForRefresh.STARTUP
+        private set
+
+    var settingChanged: Settings? = null
+        private set
 
     val visiblePermissionDialogQueue = mutableStateListOf<String>()
 
@@ -62,11 +63,20 @@ class WeatherViewModel @Inject constructor(
 
     }
 
-    val a = savedStateHandle.getStateFlow("statup", true)
+    val isStartup = savedStateHandle.getStateFlow("statup", true)
+
+    fun setReasonForRefresh(reason: ReasonsForRefresh) {
+        reasonForRefresh = reason
+    }
+
+    fun setSettingChanged(setting: Settings?) {
+        settingChanged = setting
+    }
 
     suspend fun getInitialSetUp(): Settings? = dataStore.data.firstOrNull()
     suspend fun initialStartUp() {
         savedStateHandle["statup"] = false
+        reasonForRefresh = ReasonsForRefresh.PULL
     }
 
     fun refreshWeather() {
@@ -76,12 +86,20 @@ class WeatherViewModel @Inject constructor(
                 isLoading = true,
                 error = null
             )
-            val weather = settings.first().listWeather.first { it.isActive }
-            if (weather.isGps) {
-                loadWeatherFromGpsAsync()
-            } else {
-                getWeatherFromApi(weather.lat, weather.lon, settings.first())
+            val weather = settings.first().listWeather.firstOrNull { it.isActive }
+            weather?.let {
+                if (it.isGps) {
+                    loadWeatherFromGpsAsync()
+                } else {
+                    getWeatherFromApi(it.lat, it.lon, settings.first())
+                }
+            } ?: kotlin.run {
+                state = state.copy(
+                    isLoading = false,
+                    error = R.string.refresh_error
+                )
             }
+
         }
     }
 

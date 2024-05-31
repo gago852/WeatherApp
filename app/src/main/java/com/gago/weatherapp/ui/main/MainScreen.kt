@@ -6,6 +6,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.net.Uri
+import android.util.Log
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -88,14 +89,11 @@ fun MainScreen(
     weatherViewModel: WeatherViewModel = hiltViewModel()
 ) {
 
-    val isSetup = weatherViewModel.a.collectAsState().value
+    val isSetup = weatherViewModel.isStartup.collectAsState().value
 
 
     val state = weatherViewModel.state
 
-    var reasonForRefresh by remember {
-        mutableStateOf(ReasonsForRefresh.STARTUP)
-    }
 
     val pullState = rememberPullToRefreshState()
 
@@ -120,7 +118,7 @@ fun MainScreen(
                 )
                 weatherViewModel.setPermissionAccepted(isGranted)
                 if (isGranted) {
-                    reasonForRefresh = ReasonsForRefresh.PULL
+                    weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
                     pullState.startRefresh()
                 }
             }
@@ -171,23 +169,26 @@ fun MainScreen(
             )
         }
 
-    var settingChanged by remember {
-        mutableStateOf(Settings())
-    }
-
-
-
-
     if (pullState.isRefreshing) {
-        when (reasonForRefresh) {
+        when (weatherViewModel.reasonForRefresh) {
 
-            ReasonsForRefresh.WEATHER_CHANGED -> weatherViewModel.loadAnotherWeather(settingChanged)
+            ReasonsForRefresh.WEATHER_CHANGED -> run {
+                val settingChanged = weatherViewModel.settingChanged?.copy()
+                settingChanged?.let {
+
+                    weatherViewModel.loadAnotherWeather(it)
+                    weatherViewModel.setSettingChanged(null)
+                } ?: run {
+                    pullState.endRefresh()
+                }
+                weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
+            }
 
             ReasonsForRefresh.STARTUP -> run {
 
                 LaunchedEffect(Unit) {
                     val setting = weatherViewModel.getInitialSetUp()
-
+                    Log.d("startup", "lanzo")
                     setting?.let {
                         val listWeatherStoredActive = it.listWeather.filter { lit -> lit.isActive }
 
@@ -213,7 +214,6 @@ fun MainScreen(
 
             else -> weatherViewModel.refreshWeather()
         }
-        reasonForRefresh = ReasonsForRefresh.PULL
     }
 
     NavDrawerMainScreen(
@@ -225,8 +225,8 @@ fun MainScreen(
         },
         pullState = pullState,
     ) {
-        settingChanged = it
-        reasonForRefresh = ReasonsForRefresh.WEATHER_CHANGED
+        weatherViewModel.setSettingChanged(it)
+        weatherViewModel.setReasonForRefresh(ReasonsForRefresh.WEATHER_CHANGED)
         pullState.startRefresh()
     }
 
@@ -314,7 +314,12 @@ fun NavDrawerMainScreen(
 
 
         }) {
-        Scaffold(modifier = Modifier.nestedScroll(pullState.nestedScrollConnection),
+
+        Scaffold(modifier =
+        if (state.error != null || state.weatherCurrent != null)
+            Modifier.nestedScroll(pullState.nestedScrollConnection)
+        else
+            Modifier,
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
             },
@@ -374,7 +379,7 @@ fun NavDrawerMainScreen(
                             Text(text = it.toString())
                         }
 
-                        if (!pullState.isRefreshing && state.error == null && state.weatherCurrent == null) {
+                        if (!state.isLoading && state.error == null && state.weatherCurrent == null) {
                             noWeather = true
                             if (!settings.permissionAccepted) {
                                 NoWeatherScreen() {
@@ -385,10 +390,12 @@ fun NavDrawerMainScreen(
                             }
                         }
                     }
+
                     PullToRefreshContainer(
                         state = pullState,
                         modifier = Modifier.align(Alignment.TopCenter)
                     )
+
                 }
 
             })
