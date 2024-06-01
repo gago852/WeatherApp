@@ -94,6 +94,7 @@ fun MainScreen(
 
     val state = weatherViewModel.state
 
+    val mainScope = rememberCoroutineScope()
 
     val pullState = rememberPullToRefreshState()
 
@@ -116,11 +117,14 @@ fun MainScreen(
                     permission = Manifest.permission.ACCESS_COARSE_LOCATION,
                     isGranted = isGranted
                 )
-                weatherViewModel.setPermissionAccepted(isGranted)
-                if (isGranted) {
-                    weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
-                    pullState.startRefresh()
+                mainScope.launch {
+                    weatherViewModel.setPermissionAccepted(isGranted)
+                    if (isGranted) {
+                        weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
+                        pullState.startRefresh()
+                    }
                 }
+
             }
 
         }
@@ -316,7 +320,7 @@ fun NavDrawerMainScreen(
         }) {
 
         Scaffold(modifier =
-        if (state.error != null || state.weatherCurrent != null)
+        if (state.error != null || state.weatherCurrent != null || settings.permissionAccepted)
             Modifier.nestedScroll(pullState.nestedScrollConnection)
         else
             Modifier,

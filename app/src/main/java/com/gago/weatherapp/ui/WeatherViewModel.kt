@@ -54,12 +54,16 @@ class WeatherViewModel @Inject constructor(
 
     val visiblePermissionDialogQueue = mutableStateListOf<String>()
 
-    fun setPermissionAccepted(isAccepted: Boolean) {
-        viewModelScope.launch {
+    suspend fun setPermissionAccepted(isAccepted: Boolean) {
+
+        try {
             dataStore.updateData {
                 it.copy(permissionAccepted = isAccepted)
             }
+        } catch (e: Exception) {
+            Log.e("WeatherViewModel", e.message.toString())
         }
+
 
     }
 
@@ -74,7 +78,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     suspend fun getInitialSetUp(): Settings? = dataStore.data.firstOrNull()
-    suspend fun initialStartUp() {
+    fun initialStartUp() {
         savedStateHandle["statup"] = false
         reasonForRefresh = ReasonsForRefresh.PULL
     }
@@ -86,18 +90,33 @@ class WeatherViewModel @Inject constructor(
                 isLoading = true,
                 error = null
             )
-            val weather = settings.first().listWeather.firstOrNull { it.isActive }
+            val setting = settings.firstOrNull()
+            val weather = setting?.listWeather?.firstOrNull { it.isActive }
             weather?.let {
                 if (it.isGps) {
                     loadWeatherFromGpsAsync()
                 } else {
                     getWeatherFromApi(it.lat, it.lon, settings.first())
                 }
-            } ?: kotlin.run {
-                state = state.copy(
-                    isLoading = false,
-                    error = R.string.refresh_error
-                )
+            } ?: run {
+
+                setting?.let {
+                    if (it.permissionAccepted) {
+                        loadWeatherFromGpsAsync()
+                    } else {
+                        state = state.copy(
+                            isLoading = false,
+                            error = R.string.refresh_error
+                        )
+                    }
+                } ?: {
+                    state = state.copy(
+                        isLoading = false,
+                        error = R.string.refresh_error
+                    )
+                }
+
+
             }
 
         }
@@ -120,9 +139,9 @@ class WeatherViewModel @Inject constructor(
             val setting = settings.first()
             val name = getWeatherFromApi(location.latitude, location.longitude, setting)
 
-            name?.let { namea ->
+            name?.let {
 
-                var weatherFromGps = setting.listWeather.find { it.isGps }
+                val weatherFromGps = setting.listWeather.find { weatherLocal -> weatherLocal.isGps }
 
                 var tempList = persistentListOf<WeatherLocal>()
                 var tempWeather: WeatherLocal
@@ -136,23 +155,23 @@ class WeatherViewModel @Inject constructor(
                         lon = location.longitude
                     )
                     tempList = setting.listWeather.set(indexActual, tempWeather)
-                } ?: {
+                } ?: run {
                     tempWeather = WeatherLocal(
                         lat = location.latitude,
                         lon = location.longitude,
                         isActive = true,
                         isGps = true,
-                        name = namea
+                        name = it
                     )
                     tempList = setting.listWeather.add(tempWeather)
                 }
 
-                dataStore.updateData {
-                    it.copy(listWeather = tempList)
+                dataStore.updateData { setting ->
+                    setting.copy(listWeather = tempList)
                 }
             }
 
-        } ?: kotlin.run {
+        } ?: run {
             state = state.copy(
                 isLoading = false,
                 error = R.string.error_location
