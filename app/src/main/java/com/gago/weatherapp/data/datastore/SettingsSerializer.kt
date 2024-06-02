@@ -1,8 +1,17 @@
 package com.gago.weatherapp.data.datastore
 
 import androidx.datastore.core.Serializer
+import kotlinx.collections.immutable.PersistentList
+import kotlinx.collections.immutable.toPersistentList
+import kotlinx.serialization.ExperimentalSerializationApi
+import kotlinx.serialization.KSerializer
 import kotlinx.serialization.SerializationException
+import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
+import kotlinx.serialization.descriptors.SerialDescriptor
+import kotlinx.serialization.descriptors.serialDescriptor
+import kotlinx.serialization.encoding.Decoder
+import kotlinx.serialization.encoding.Encoder
 import kotlinx.serialization.json.Json
 import java.io.InputStream
 import java.io.OutputStream
@@ -31,6 +40,27 @@ object SettingsSerializer : Serializer<Settings> {
                 value = t
             ).encodeToByteArray()
         )
+    }
+
+}
+
+class MyPersistentListSerializer(
+    private val elementSerializer: KSerializer<WeatherLocal>
+) : KSerializer<PersistentList<WeatherLocal>> {
+
+    private class PersistentListDescriptor :
+        SerialDescriptor by serialDescriptor<List<WeatherLocal>>() {
+        @ExperimentalSerializationApi
+        override val serialName: String = "kotlinx.serialization.immutable.persistentList"
+    }
+
+    override val descriptor: SerialDescriptor = PersistentListDescriptor()
+    override fun deserialize(decoder: Decoder): PersistentList<WeatherLocal> {
+        return ListSerializer(elementSerializer).deserialize(decoder).toPersistentList()
+    }
+
+    override fun serialize(encoder: Encoder, value: PersistentList<WeatherLocal>) {
+        return ListSerializer(elementSerializer).serialize(encoder, value)
     }
 
 }

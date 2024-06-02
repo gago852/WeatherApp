@@ -22,6 +22,7 @@ import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import com.gago.weatherapp.ui.utils.getCurrentLanguage
 import com.gago.weatherapp.ui.utils.getErrorText
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -143,7 +144,6 @@ class WeatherViewModel @Inject constructor(
 
                 val weatherFromGps = setting.listWeather.find { weatherLocal -> weatherLocal.isGps }
 
-                var tempList = persistentListOf<WeatherLocal>()
                 var tempWeather: WeatherLocal
 
                 weatherFromGps?.let { localWeather ->
@@ -154,7 +154,11 @@ class WeatherViewModel @Inject constructor(
                         lat = location.latitude,
                         lon = location.longitude
                     )
-                    tempList = setting.listWeather.set(indexActual, tempWeather)
+                    dataStore.updateData {
+                        it.copy(listWeather = it.listWeather.mutate { list ->
+                            list[indexActual] = tempWeather
+                        })
+                    }
                 } ?: run {
                     tempWeather = WeatherLocal(
                         lat = location.latitude,
@@ -163,12 +167,14 @@ class WeatherViewModel @Inject constructor(
                         isGps = true,
                         name = it
                     )
-                    tempList = setting.listWeather.add(tempWeather)
+                    dataStore.updateData { setting ->
+                        setting.copy(listWeather = setting.listWeather.mutate {
+                            it.add(tempWeather)
+                        })
+                    }
                 }
 
-                dataStore.updateData { setting ->
-                    setting.copy(listWeather = tempList)
-                }
+
             }
 
         } ?: run {

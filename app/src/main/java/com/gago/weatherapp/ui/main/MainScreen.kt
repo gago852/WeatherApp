@@ -274,13 +274,17 @@ fun NavDrawerMainScreen(
                 settings.listWeather.forEach { weather ->
                     NavigationDrawerItem(modifier = Modifier.padding(start = 12.dp, end = 12.dp),
                         label = {
+                            Text(text = weather.name)
+                        },
+                        icon = {
                             if (weather.isGps) {
                                 Icon(
                                     imageVector = Icons.Filled.LocationOn,
                                     contentDescription = "From GPS"
                                 )
                             }
-                        }, selected = weather.isActive, onClick = {
+                        },
+                        selected = weather.isActive, onClick = {
                             if (!weather.isActive) {
                                 val tempActivated = settings.listWeather.find {
                                     it.isActive
@@ -328,9 +332,13 @@ fun NavDrawerMainScreen(
                 SnackbarHost(hostState = snackbarHostState)
             },
             topBar = {
+                val activeWeather = settings.listWeather.find { it.isActive }?.let {
+                    "- ${it.name}"
+                } ?: ""
+
                 TopAppBar(
 
-                    title = { Text(text = "Weather App") },
+                    title = { Text(text = "Weather App $activeWeather") },
                     colors = TopAppBarDefaults.topAppBarColors(
                         containerColor = MaterialTheme.colorScheme.primaryContainer,
                         titleContentColor = MaterialTheme.colorScheme.primary

@@ -9,5 +9,7 @@ import kotlinx.serialization.Serializable
 data class Settings(
     val unitOfMeasurement: MeasureUnit = MeasureUnit.METRIC,
     val permissionAccepted: Boolean = false,
+
+    @Serializable(with = MyPersistentListSerializer::class)
     val listWeather: PersistentList<WeatherLocal> = persistentListOf()
 )
