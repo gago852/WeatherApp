@@ -56,6 +56,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -63,6 +64,8 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gago.weatherapp.R
@@ -97,6 +100,7 @@ fun MainScreen(
     val mainScope = rememberCoroutineScope()
 
     val pullState = rememberPullToRefreshState()
+
 
     val settingValue =
         if (isSetup) Settings() else weatherViewModel.settings.collectAsState(initial = Settings()).value
@@ -173,6 +177,19 @@ fun MainScreen(
             )
         }
 
+    LifecycleResumeEffect {
+        Log.d("LifecycleResumeEffect", "resume ${weatherViewModel.wentToSettings}")
+        if (weatherViewModel.wentToSettings) {
+            weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
+            pullState.startRefresh()
+            weatherViewModel.setWentToSettings(false)
+        }
+        onPauseOrDispose {
+            Log.d("LifecycleResumeEffect", "pause $weatherViewModel.wentToSettings")
+        }
+    }
+
+
     if (pullState.isRefreshing) {
         when (weatherViewModel.reasonForRefresh) {
 
@@ -227,6 +244,9 @@ fun MainScreen(
         onPermissionRequest = {
             locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
         },
+        onSettingsButtonPress = {
+            weatherViewModel.setWentToSettings(true)
+        },
         pullState = pullState,
     ) {
         weatherViewModel.setSettingChanged(it)
@@ -244,6 +264,7 @@ fun NavDrawerMainScreen(
     navController: NavController,
     pullState: PullToRefreshState,
     onPermissionRequest: () -> Unit,
+    onSettingsButtonPress: () -> Unit,
     onActiveWeatherChanged: (Settings) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -263,6 +284,7 @@ fun NavDrawerMainScreen(
                 ) {
                     IconButton(modifier = Modifier.padding(top = 18.dp),
                         onClick = {
+                            onSettingsButtonPress()
                             navController.navigate(AppScreens.SettingScreen.route)
                             scope.launch {
                                 drawerState.close()
@@ -380,10 +402,14 @@ fun NavDrawerMainScreen(
                         state.error?.let {
                             noWeather = true
                             val error = stringResource(id = it)
-                            scope.launch {
-                                snackbarHostState.showSnackbar(error)
+                            if (state.weatherCurrent != null) {
+                                scope.launch {
+                                    snackbarHostState.showSnackbar(error)
+                                }
+                            } else {
+                                Text(text = error)
                             }
-                            Text(text = "texto de ejemplo")
+
                         }
 
                         state.weatherCurrent?.let {
@@ -472,7 +498,8 @@ private fun MainScreenPreview() {
                 rememberPullToRefreshState(),
                 onPermissionRequest = {
 
-                }
+                },
+                onSettingsButtonPress = {}
             ) {}
         }
     }

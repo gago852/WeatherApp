@@ -18,6 +18,7 @@ import com.gago.weatherapp.domain.location.LocationTracker
 import com.gago.weatherapp.domain.repository.WeatherRepository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
+import com.gago.weatherapp.ui.utils.ONE_MINUTE_IN_MILLIS
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import com.gago.weatherapp.ui.utils.getCurrentLanguage
 import com.gago.weatherapp.ui.utils.getErrorText
@@ -53,6 +54,9 @@ class WeatherViewModel @Inject constructor(
     var settingChanged: Settings? = null
         private set
 
+    var wentToSettings = false
+        private set
+
     val visiblePermissionDialogQueue = mutableStateListOf<String>()
 
     suspend fun setPermissionAccepted(isAccepted: Boolean) {
@@ -78,6 +82,10 @@ class WeatherViewModel @Inject constructor(
         settingChanged = setting
     }
 
+    fun setWentToSettings(wentToSettings: Boolean) {
+        this.wentToSettings = wentToSettings
+    }
+
     suspend fun getInitialSetUp(): Settings? = dataStore.data.firstOrNull()
     fun initialStartUp() {
         savedStateHandle["statup"] = false
@@ -92,33 +100,44 @@ class WeatherViewModel @Inject constructor(
                 error = null
             )
             val setting = settings.firstOrNull()
-            val weather = setting?.listWeather?.firstOrNull { it.isActive }
-            weather?.let {
-                if (it.isGps) {
-                    loadWeatherFromGpsAsync()
-                } else {
-                    getWeatherFromApi(it.lat, it.lon, settings.first())
-                }
-            } ?: run {
 
-                setting?.let {
-                    if (it.permissionAccepted) {
-                        loadWeatherFromGpsAsync()
-                    } else {
-                        state = state.copy(
-                            isLoading = false,
-                            error = R.string.refresh_error
-                        )
+            val currentDate = System.currentTimeMillis()
+
+            setting?.let { settingNotNull ->
+
+                if ((currentDate - settingNotNull.lastUpdate) > ONE_MINUTE_IN_MILLIS) {
+                    Log.d("WeatherViewModel", "need to refresh")
+                    val weather = settingNotNull.listWeather.firstOrNull { it.isActive }
+                    weather?.let {
+                        if (it.isGps) {
+                            loadWeatherFromGpsAsync()
+                        } else {
+                            getWeatherFromApi(it.lat, it.lon, settings.first())
+                        }
+                    } ?: run {
+                        if (settingNotNull.permissionAccepted) {
+                            loadWeatherFromGpsAsync()
+                        } else {
+                            state = state.copy(
+                                isLoading = false,
+                                error = R.string.refresh_error
+                            )
+                        }
                     }
-                } ?: {
+                } else {
+                    Log.d("WeatherViewModel", "No need to refresh")
                     state = state.copy(
                         isLoading = false,
-                        error = R.string.refresh_error
+                        error = null
                     )
                 }
-
-
+            } ?: run {
+                state = state.copy(
+                    isLoading = false,
+                    error = R.string.refresh_error
+                )
             }
+
 
         }
     }
@@ -248,6 +267,9 @@ class WeatherViewModel @Inject constructor(
                         error = null,
                         isLoading = false
                     )
+                    dataStore.updateData {
+                        it.copy(lastUpdate = System.currentTimeMillis())
+                    }
                     return result.data.name
                 }
 
@@ -260,6 +282,9 @@ class WeatherViewModel @Inject constructor(
                         error = error,
                         isLoading = false
                     )
+                    dataStore.updateData {
+                        it.copy(lastUpdate = 0L)
+                    }
                     return null
                 }
             }
@@ -271,6 +296,9 @@ class WeatherViewModel @Inject constructor(
                 isLoading = false
             )
             Log.e("WeatherViewModel", e.message.toString())
+            dataStore.updateData {
+                it.copy(lastUpdate = 0L)
+            }
             return null
         }
     }

@@ -4,6 +4,7 @@ import android.content.Context
 import com.gago.weatherapp.R
 import com.gago.weatherapp.domain.utils.DataError
 
+val ONE_MINUTE_IN_MILLIS = 60000
 fun getCurrentLanguage(context: Context): String {
 
     val language = context.resources.configuration.locales.get(0).language
