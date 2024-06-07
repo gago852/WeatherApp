@@ -9,6 +9,9 @@ import android.location.LocationManager
 import androidx.core.content.ContextCompat
 import com.gago.weatherapp.domain.location.LocationTracker
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.Priority
+import com.google.android.gms.tasks.CancellationToken
+import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.suspendCancellableCoroutine
 import javax.inject.Inject
 import kotlin.coroutines.resume
@@ -33,7 +36,30 @@ class DefaultLocationTracker @Inject constructor(
         }
 
         return suspendCancellableCoroutine { cont ->
-            locationClient.lastLocation.apply {
+
+            locationClient.getCurrentLocation(
+                Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                CancellationTokenSource().token
+            ).apply {
+                if (isComplete) {
+                    if (isSuccessful) {
+                        cont.resume(result)
+                    } else {
+                        cont.resume(null)
+                    }
+                    return@suspendCancellableCoroutine
+                }
+                addOnSuccessListener {
+                    cont.resume(it)
+                }
+                addOnFailureListener {
+                    cont.resume(null)
+                }
+                addOnCanceledListener {
+                    cont.cancel()
+                }
+            }
+            /*locationClient.lastLocation.apply {
                 if (isComplete) {
                     if (isSuccessful) {
                         cont.resume(result)
@@ -52,7 +78,7 @@ class DefaultLocationTracker @Inject constructor(
                 addOnCanceledListener {
                     cont.cancel()
                 }
-            }
+            }*/
         }
     }
 }

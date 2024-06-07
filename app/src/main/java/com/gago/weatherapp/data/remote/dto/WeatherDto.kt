@@ -33,7 +33,8 @@ fun WeatherDto.toWeather(): Weather {
         wind = wind,
         rain = rain,
         snow = snow,
-        visibility = visibility
+        visibility = visibility,
+        clouds = clouds.all
 
     )
 

@@ -1,5 +1,6 @@
 package com.gago.weatherapp.domain.model
 
+import com.gago.weatherapp.data.remote.dto.Clouds
 import com.gago.weatherapp.data.remote.dto.Rain
 import com.gago.weatherapp.data.remote.dto.Snow
 import com.gago.weatherapp.data.remote.dto.Sys
@@ -17,6 +18,7 @@ data class Weather(
     val weatherData: WeatherData,
     val wind: Wind,
     val visibility: Int,
+    val clouds: Int,
     val rain: Rain?,
     val snow: Snow?
 )

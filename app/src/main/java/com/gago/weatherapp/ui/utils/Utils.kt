@@ -3,6 +3,9 @@ package com.gago.weatherapp.ui.utils
 import android.content.Context
 import com.gago.weatherapp.R
 import com.gago.weatherapp.domain.utils.DataError
+import java.text.SimpleDateFormat
+import java.util.Date
+import java.util.Locale
 
 val ONE_MINUTE_IN_MILLIS = 60000
 fun getCurrentLanguage(context: Context): String {
@@ -30,4 +33,18 @@ fun getErrorText(error: DataError): Int {
         DataError.Network.UNKNOWN -> R.string.error_generic
         else -> R.string.error_generic
     }
+}
+
+fun String.capitalizeWords(delimiter: String = " ") =
+    split(delimiter).joinToString(delimiter) { word ->
+
+        val smallCaseWord = word.lowercase()
+        smallCaseWord.replaceFirstChar(Char::titlecaseChar)
+
+    }
+
+fun getHourFromDate(unixTime: Long): String {
+    val date = Date(unixTime * 1000)
+    val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
+    return dateFormat.format(date)
 }

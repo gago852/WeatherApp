@@ -71,10 +71,12 @@ import androidx.navigation.compose.rememberNavController
 import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
+import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.ui.WeatherState
 import com.gago.weatherapp.ui.WeatherViewModel
 import com.gago.weatherapp.ui.main.components.AccessCoarseLocationPermissionTextProvider
 import com.gago.weatherapp.ui.main.components.PermissionDialog
+import com.gago.weatherapp.ui.main.components.WeatherPresentation
 import com.gago.weatherapp.ui.navigation.AppScreens
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
@@ -414,7 +416,10 @@ fun NavDrawerMainScreen(
 
                         state.weatherCurrent?.let {
                             noWeather = false
-                            Text(text = it.toString())
+                            WeatherPresentation(
+                                weather = it,
+                                measureUnit = settings.unitOfMeasurement
+                            )
                         }
 
                         if (!state.isLoading && state.error == null && state.weatherCurrent == null) {
@@ -475,6 +480,7 @@ fun NoWeatherScreen(onPermissionRequest: () -> Unit) {
 
     }
 }
+
 
 fun openAppSettings(context: Context) {
     val intent = Intent(

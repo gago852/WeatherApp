@@ -168,6 +168,7 @@ class WeatherViewModel @Inject constructor(
                 weatherFromGps?.let { localWeather ->
                     val indexActual = setting.listWeather.indexOf(localWeather)
                     tempWeather = localWeather.copy(
+                        name = it,
                         isActive = true,
                         isGps = true,
                         lat = location.latitude,
