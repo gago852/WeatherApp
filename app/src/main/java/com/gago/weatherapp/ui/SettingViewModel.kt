@@ -23,7 +23,8 @@ class SettingViewModel @Inject constructor(
             dataStore.updateData {
                 it.copy(
                     unitOfMeasurement = settings.unitOfMeasurement,
-                    listWeather = settings.listWeather
+                    listWeather = settings.listWeather,
+                    lastUpdate = 0L
                 )
             }
         }

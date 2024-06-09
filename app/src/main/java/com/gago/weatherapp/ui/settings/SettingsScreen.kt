@@ -85,10 +85,6 @@ private fun ScaffoldSetting(
         topBar = {
             TopAppBar(
                 title = { Text(text = "Settings") },
-                colors = TopAppBarDefaults.topAppBarColors(
-                    containerColor = MaterialTheme.colorScheme.primaryContainer,
-                    titleContentColor = MaterialTheme.colorScheme.primary
-                ),
                 navigationIcon = {
                     IconButton(onClick = {
                         navController.popBackStack()

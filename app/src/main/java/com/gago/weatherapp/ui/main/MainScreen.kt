@@ -5,8 +5,10 @@ import android.annotation.SuppressLint
 import android.app.Activity
 import android.content.Context
 import android.content.Intent
+import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
+import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -274,6 +276,10 @@ fun NavDrawerMainScreen(
 
     val scope = rememberCoroutineScope()
 
+    BackHandler(enabled = drawerState.isOpen) {
+        scope.launch { drawerState.close() }
+    }
+
     ModalNavigationDrawer(drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
@@ -363,10 +369,6 @@ fun NavDrawerMainScreen(
                 TopAppBar(
 
                     title = { Text(text = "Weather App $activeWeather") },
-                    colors = TopAppBarDefaults.topAppBarColors(
-                        containerColor = MaterialTheme.colorScheme.primaryContainer,
-                        titleContentColor = MaterialTheme.colorScheme.primary
-                    ),
                     navigationIcon = {
                         IconButton(onClick = {
                             scope.launch {
@@ -409,7 +411,7 @@ fun NavDrawerMainScreen(
                                     snackbarHostState.showSnackbar(error)
                                 }
                             } else {
-                                Text(text = error)
+                                Text(text = error, modifier = Modifier.padding(16.dp))
                             }
 
                         }
@@ -495,6 +497,30 @@ fun openAppSettings(context: Context) {
 @Preview(showBackground = true, showSystemUi = true)
 @Composable
 private fun MainScreenPreview() {
+    WeatherAppTheme {
+        Surface(modifier = Modifier.fillMaxWidth()) {
+            NavDrawerMainScreen(
+                state = WeatherState(),
+                settings = Settings(),
+                navController = rememberNavController(),
+                rememberPullToRefreshState(),
+                onPermissionRequest = {
+
+                },
+                onSettingsButtonPress = {}
+            ) {}
+        }
+    }
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@SuppressLint("UnrememberedMutableState")
+@Preview(
+    showBackground = true, showSystemUi = true,
+    uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
+)
+@Composable
+private fun MainScreenDarkPreview() {
     WeatherAppTheme {
         Surface(modifier = Modifier.fillMaxWidth()) {
             NavDrawerMainScreen(

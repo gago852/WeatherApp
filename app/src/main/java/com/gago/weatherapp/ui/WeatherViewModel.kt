@@ -155,7 +155,7 @@ class WeatherViewModel @Inject constructor(
     }
 
     private suspend fun loadWeatherFromGpsAsync() {
-        locationTracker.getCurrentLocation()?.let { location ->
+        locationTracker.getCurrentLocation()?.also { location ->
             val setting = settings.first()
             val name = getWeatherFromApi(location.latitude, location.longitude, setting)
 
@@ -296,6 +296,7 @@ class WeatherViewModel @Inject constructor(
                 error = error,
                 isLoading = false
             )
+            e.printStackTrace()
             Log.e("WeatherViewModel", e.message.toString())
             dataStore.updateData {
                 it.copy(lastUpdate = 0L)
