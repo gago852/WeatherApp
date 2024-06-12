@@ -1,6 +1,6 @@
 package com.gago.weatherapp.domain.repository
 
-import com.gago.weatherapp.data.remote.dto.WeatherDto
+import com.gago.weatherapp.domain.model.Forecast
 import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
@@ -13,6 +13,13 @@ interface WeatherRepository {
         apiKey: String,
         lang: String,
         units: String
-    ): Result<Weather,DataError.Network>
+    ): Result<Weather, DataError.Network>
 
+    suspend fun getForecastFiveDays(
+        latitude: Double,
+        longitude: Double,
+        apiKey: String,
+        lang: String,
+        units: String
+    ): Result<Forecast, DataError.Network>
 }

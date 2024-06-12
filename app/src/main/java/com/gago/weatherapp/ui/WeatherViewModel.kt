@@ -15,6 +15,7 @@ import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
 import com.gago.weatherapp.domain.location.LocationTracker
+import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.domain.repository.WeatherRepository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
@@ -24,7 +25,6 @@ import com.gago.weatherapp.ui.utils.getCurrentLanguage
 import com.gago.weatherapp.ui.utils.getErrorText
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.mutate
-import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -253,7 +253,8 @@ class WeatherViewModel @Inject constructor(
         settings: Settings
     ): String? {
         try {
-            val result =
+            var weather: Weather? = null
+            val resultCurrentWeather =
                 repository.getWeather(
                     latitude,
                     longitude,
@@ -261,25 +262,54 @@ class WeatherViewModel @Inject constructor(
                     getCurrentLanguage(context),
                     settings.unitOfMeasurement.unit
                 )
-            when (result) {
+            when (resultCurrentWeather) {
+                is Result.Success -> {
+                    weather = resultCurrentWeather.data
+                }
+
+                is Result.Error -> {
+
+                    val error: Int = getErrorText(resultCurrentWeather.error)
+
+                    state = state.copy(
+                        weatherCurrent = null,
+                        error = error,
+                        isLoading = false
+                    )
+                    dataStore.updateData {
+                        it.copy(lastUpdate = 0L)
+                    }
+                    return null
+                }
+            }
+
+            val forecastFiveDays = repository.getForecastFiveDays(
+                latitude,
+                longitude,
+                BuildConfig.API_KEY,
+                getCurrentLanguage(context),
+                settings.unitOfMeasurement.unit
+            )
+
+            when (forecastFiveDays) {
                 is Result.Success -> {
                     state = state.copy(
-                        weatherCurrent = result.data,
+                        weatherCurrent = weather,
+                        forecastFiveDays = forecastFiveDays.data,
                         error = null,
                         isLoading = false
                     )
                     dataStore.updateData {
                         it.copy(lastUpdate = System.currentTimeMillis())
                     }
-                    return result.data.name
+                    return weather.name
                 }
 
                 is Result.Error -> {
-
-                    val error: Int = getErrorText(result.error)
-
+                    val error: Int = getErrorText(forecastFiveDays.error)
                     state = state.copy(
                         weatherCurrent = null,
+                        forecastFiveDays = null,
                         error = error,
                         isLoading = false
                     )

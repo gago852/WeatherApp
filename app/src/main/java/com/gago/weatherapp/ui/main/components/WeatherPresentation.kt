@@ -10,17 +10,9 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.requiredHeight
-import androidx.compose.foundation.layout.requiredWidth
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DividerDefaults
-import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
@@ -30,26 +22,22 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.graphics.ColorFilter
-import androidx.compose.ui.graphics.ColorMatrix
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import com.gago.weatherapp.data.remote.dto.Rain
-import com.gago.weatherapp.data.remote.dto.Snow
-import com.gago.weatherapp.data.remote.dto.Sys
-import com.gago.weatherapp.data.remote.dto.WeatherData
-import com.gago.weatherapp.data.remote.dto.Wind
+import com.gago.weatherapp.data.remote.dto.common.Rain
+import com.gago.weatherapp.data.remote.dto.common.Snow
+import com.gago.weatherapp.data.remote.dto.common.WeatherData
+import com.gago.weatherapp.data.remote.dto.common.Wind
+import com.gago.weatherapp.domain.model.DayData
 import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.domain.model.WeatherCondition
 import com.gago.weatherapp.domain.model.WeatherTypeIcon
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.MeasureUnit
 import com.gago.weatherapp.ui.utils.capitalizeWords
-import com.gago.weatherapp.ui.utils.getHourFromDate
-import java.util.Locale
 import kotlin.math.roundToInt
 
 @Composable
@@ -194,7 +182,7 @@ fun WeatherPresentation(weather: Weather, measureUnit: MeasureUnit) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(text = "sunrise", style = MaterialTheme.typography.titleMedium)
-                        Text(text = getHourFromDate(weather.sys.sunrise))
+                        Text(text = weather.dayData.sunrise)
                     }
                     HorizontalDivider(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp),
@@ -207,7 +195,7 @@ fun WeatherPresentation(weather: Weather, measureUnit: MeasureUnit) {
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
                         Text(text = "sunset", style = MaterialTheme.typography.titleMedium)
-                        Text(text = getHourFromDate(weather.sys.sunset))
+                        Text(text = weather.dayData.sunset)
                     }
                     weather.rain?.let { rain ->
                         HorizontalDivider(
@@ -285,13 +273,10 @@ private fun WeatherPresentationPreview() {
                     id = 6077243,
                     name = "Montreal",
                     timezone = -14400,
-                    sys =
-                    Sys(
-                        country = "CA",
-                        id = 498,
-                        sunrise = 1717664812,
-                        sunset = 1717720798,
-                        type = 1
+                    dayData =
+                    DayData(
+                        sunrise = "01:02 AM",
+                        sunset = "05:58 PM",
                     ),
                     calculatedTime = "2024-06-06 01:29:58",
                     weatherConditions = WeatherCondition(
@@ -333,13 +318,10 @@ private fun WeatherPresentationDarkPreview() {
                     id = 6077243,
                     name = "Montreal",
                     timezone = -14400,
-                    sys =
-                    Sys(
-                        country = "CA",
-                        id = 498,
-                        sunrise = 1717664812,
-                        sunset = 1717720798,
-                        type = 1
+                    dayData =
+                    DayData(
+                        sunrise = "01:02 AM",
+                        sunset = "05:58 PM",
                     ),
                     calculatedTime = "2024-06-06 01:29:58",
                     weatherConditions = WeatherCondition(

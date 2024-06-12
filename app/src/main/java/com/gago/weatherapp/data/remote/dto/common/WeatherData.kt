@@ -1,4 +1,4 @@
-package com.gago.weatherapp.data.remote.dto
+package com.gago.weatherapp.data.remote.dto.common
 
 import com.squareup.moshi.Json
 

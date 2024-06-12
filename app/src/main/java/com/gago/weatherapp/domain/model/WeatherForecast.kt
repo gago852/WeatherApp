@@ -2,21 +2,19 @@ package com.gago.weatherapp.domain.model
 
 import com.gago.weatherapp.data.remote.dto.common.Rain
 import com.gago.weatherapp.data.remote.dto.common.Snow
-import com.gago.weatherapp.data.remote.dto.weather.SysDto
 import com.gago.weatherapp.data.remote.dto.common.WeatherData
 import com.gago.weatherapp.data.remote.dto.common.Wind
+import com.gago.weatherapp.data.remote.dto.forecast.PartOfTheDay
 
-data class Weather(
-    val id: Int,
-    val name: String,
-    val timezone: Int,
-    val dayData: DayData,
+data class WeatherForecast(
     val calculatedTime: String,
-    val weatherConditions: WeatherCondition,
-    val weatherData: WeatherData,
-    val wind: Wind,
+    val calculatedTimeFromServer: String,
+    val mainData: WeatherData,
+    val probabilityOfPrecipitation: Int,
+    val partOfTheDay: PartOfTheDay,
     val visibility: Int,
-    val clouds: Int,
+    val wind: Wind,
+    val weatherCondition: WeatherCondition,
     val rain: Rain?,
     val snow: Snow?
 )

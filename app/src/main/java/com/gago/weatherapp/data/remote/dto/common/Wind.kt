@@ -1,4 +1,4 @@
-package com.gago.weatherapp.data.remote.dto
+package com.gago.weatherapp.data.remote.dto.common
 
 data class Wind(
     val deg: Int,

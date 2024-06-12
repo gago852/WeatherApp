@@ -7,7 +7,7 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-val ONE_MINUTE_IN_MILLIS = 60000
+const val ONE_MINUTE_IN_MILLIS = 60000
 fun getCurrentLanguage(context: Context): String {
 
     val language = context.resources.configuration.locales.get(0).language
@@ -43,8 +43,3 @@ fun String.capitalizeWords(delimiter: String = " ") =
 
     }
 
-fun getHourFromDate(unixTime: Long): String {
-    val date = Date(unixTime * 1000)
-    val dateFormat = SimpleDateFormat("hh:mm a", Locale.getDefault())
-    return dateFormat.format(date)
-}
