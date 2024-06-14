@@ -5,7 +5,7 @@ import com.gago.weatherapp.data.remote.dto.forecast.toForecastFiveDays
 import com.gago.weatherapp.data.remote.dto.weather.toWeather
 import com.gago.weatherapp.data.remote.interceptor.NoNetworkException
 import com.gago.weatherapp.domain.model.Forecast
-import com.gago.weatherapp.domain.model.Weather
+import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.repository.WeatherRepository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
@@ -21,7 +21,7 @@ class WeatherRepositoryImpl @Inject constructor(
         apiKey: String,
         lang: String,
         units: String
-    ): Result<Weather, DataError.Network> {
+    ): Result<CurrentWeather, DataError.Network> {
 
         return try {
             val response = weatherApi.getWeather(latitude, longitude, apiKey, lang, units)

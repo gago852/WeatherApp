@@ -15,6 +15,7 @@ import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
 import com.gago.weatherapp.domain.location.LocationTracker
+import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.domain.repository.WeatherRepository
 import com.gago.weatherapp.domain.utils.DataError
@@ -225,7 +226,7 @@ class WeatherViewModel @Inject constructor(
 
                 val error: Int = getErrorText(DataError.Local.UNKNOWN)
                 state = state.copy(
-                    weatherCurrent = null,
+                    weather = null,
                     error = error,
                     isLoading = false
                 )
@@ -253,7 +254,7 @@ class WeatherViewModel @Inject constructor(
         settings: Settings
     ): String? {
         try {
-            var weather: Weather? = null
+            var currentWeather: CurrentWeather? = null
             val resultCurrentWeather =
                 repository.getWeather(
                     latitude,
@@ -264,7 +265,7 @@ class WeatherViewModel @Inject constructor(
                 )
             when (resultCurrentWeather) {
                 is Result.Success -> {
-                    weather = resultCurrentWeather.data
+                    currentWeather = resultCurrentWeather.data
                 }
 
                 is Result.Error -> {
@@ -272,7 +273,7 @@ class WeatherViewModel @Inject constructor(
                     val error: Int = getErrorText(resultCurrentWeather.error)
 
                     state = state.copy(
-                        weatherCurrent = null,
+                        weather = null,
                         error = error,
                         isLoading = false
                     )
@@ -293,23 +294,26 @@ class WeatherViewModel @Inject constructor(
 
             when (forecastFiveDays) {
                 is Result.Success -> {
+
+                    val weather = Weather(
+                        currentWeather = currentWeather,
+                        forecast = forecastFiveDays.data
+                    )
                     state = state.copy(
-                        weatherCurrent = weather,
-                        forecastFiveDays = forecastFiveDays.data,
+                        weather = weather,
                         error = null,
                         isLoading = false
                     )
                     dataStore.updateData {
                         it.copy(lastUpdate = System.currentTimeMillis())
                     }
-                    return weather.name
+                    return currentWeather.name
                 }
 
                 is Result.Error -> {
                     val error: Int = getErrorText(forecastFiveDays.error)
                     state = state.copy(
-                        weatherCurrent = null,
-                        forecastFiveDays = null,
+                        weather = null,
                         error = error,
                         isLoading = false
                     )
@@ -322,7 +326,7 @@ class WeatherViewModel @Inject constructor(
         } catch (e: Exception) {
             val error: Int = getErrorText(DataError.Local.UNKNOWN)
             state = state.copy(
-                weatherCurrent = null,
+                weather = null,
                 error = error,
                 isLoading = false
             )

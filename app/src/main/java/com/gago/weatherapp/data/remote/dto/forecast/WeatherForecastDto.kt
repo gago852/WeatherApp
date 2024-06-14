@@ -18,7 +18,7 @@ data class WeatherForecastDto(
     val dtTxt: String,
     val clouds: Clouds,
     val main: WeatherData,
-    val pop: Int,
+    val pop: Double,
     @field:Json(name = "sys")
     val partOfTheDay: PartOfTheDay,
     val visibility: Int,

@@ -41,7 +41,6 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.material3.pulltorefresh.PullToRefreshContainer
 import androidx.compose.material3.pulltorefresh.PullToRefreshState
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
@@ -58,7 +57,6 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.platform.LocalLifecycleOwner
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
@@ -66,14 +64,12 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.Lifecycle
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
-import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.ui.WeatherState
 import com.gago.weatherapp.ui.WeatherViewModel
 import com.gago.weatherapp.ui.main.components.AccessCoarseLocationPermissionTextProvider
@@ -181,7 +177,7 @@ fun MainScreen(
             )
         }
 
-    LifecycleResumeEffect {
+    LifecycleResumeEffect(true) {
         Log.d("LifecycleResumeEffect", "resume ${weatherViewModel.wentToSettings}")
         if (weatherViewModel.wentToSettings) {
             weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
@@ -354,7 +350,7 @@ fun NavDrawerMainScreen(
         }) {
 
         Scaffold(modifier =
-        if (state.error != null || state.weatherCurrent != null || settings.permissionAccepted)
+        if (state.error != null || state.weather != null || settings.permissionAccepted)
             Modifier.nestedScroll(pullState.nestedScrollConnection)
         else
             Modifier,
@@ -406,7 +402,7 @@ fun NavDrawerMainScreen(
                         state.error?.let {
                             noWeather = true
                             val error = stringResource(id = it)
-                            if (state.weatherCurrent != null) {
+                            if (state.weather != null) {
                                 scope.launch {
                                     snackbarHostState.showSnackbar(error)
                                 }
@@ -416,15 +412,16 @@ fun NavDrawerMainScreen(
 
                         }
 
-                        state.weatherCurrent?.let {
+                        state.weather?.let {
                             noWeather = false
                             WeatherPresentation(
-                                weather = it,
+                                currentWeather = it.currentWeather,
+                                fiveDaysForecast = it.forecast,
                                 measureUnit = settings.unitOfMeasurement
                             )
                         }
 
-                        if (!state.isLoading && state.error == null && state.weatherCurrent == null) {
+                        if (!state.isLoading && state.error == null && state.weather == null) {
                             noWeather = true
                             if (!settings.permissionAccepted) {
                                 NoWeatherScreen() {

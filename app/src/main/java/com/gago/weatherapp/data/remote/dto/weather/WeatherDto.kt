@@ -8,8 +8,7 @@ import com.gago.weatherapp.data.remote.dto.common.WeatherConditionDto
 import com.gago.weatherapp.data.remote.dto.common.WeatherData
 import com.gago.weatherapp.data.remote.dto.common.Wind
 import com.gago.weatherapp.data.remote.dto.common.toWeatherCondition
-import com.gago.weatherapp.domain.model.DayData
-import com.gago.weatherapp.domain.model.Weather
+import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.utils.convertDateFromUnixLocalTimeZone
 
 data class WeatherDto(
@@ -30,8 +29,8 @@ data class WeatherDto(
     val wind: Wind
 )
 
-fun WeatherDto.toWeather(): Weather {
-    return Weather(
+fun WeatherDto.toWeather(): CurrentWeather {
+    return CurrentWeather(
         id = id,
         name = name,
         timezone = timezone,
