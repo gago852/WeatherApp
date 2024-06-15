@@ -9,7 +9,7 @@ import com.gago.weatherapp.data.remote.dto.common.WeatherData
 import com.gago.weatherapp.data.remote.dto.common.Wind
 import com.gago.weatherapp.data.remote.dto.common.toWeatherCondition
 import com.gago.weatherapp.domain.model.CurrentWeather
-import com.gago.weatherapp.domain.utils.convertDateFromUnixLocalTimeZone
+import com.gago.weatherapp.domain.utils.convertDateFromUnixLocalTimeZoneToFullDate
 
 data class WeatherDto(
     val base: String,
@@ -35,7 +35,7 @@ fun WeatherDto.toWeather(): CurrentWeather {
         name = name,
         timezone = timezone,
         dayData = sys.toDayData(timezone.toLong()),
-        calculatedTime = convertDateFromUnixLocalTimeZone(
+        calculatedTime = convertDateFromUnixLocalTimeZoneToFullDate(
             unixTime = dt.toLong()
         ),
         weatherConditions = weather.first().toWeatherCondition(),

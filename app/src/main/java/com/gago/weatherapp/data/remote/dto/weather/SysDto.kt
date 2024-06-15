@@ -1,7 +1,7 @@
 package com.gago.weatherapp.data.remote.dto.weather
 
 import com.gago.weatherapp.domain.model.DayData
-import com.gago.weatherapp.domain.utils.getHourFromUnixLocatedTimeZone
+import com.gago.weatherapp.domain.utils.getTwelveHourFromUnixLocatedTimeZone
 
 data class SysDto(
     val country: String,
@@ -13,10 +13,10 @@ data class SysDto(
 
 fun SysDto.toDayData(timeZoneOffset: Long): DayData {
     return DayData(
-        sunrise = getHourFromUnixLocatedTimeZone(
+        sunrise = getTwelveHourFromUnixLocatedTimeZone(
             unixTime = sunrise,
             timeZoneOffset = timeZoneOffset
         ),
-        sunset = getHourFromUnixLocatedTimeZone(unixTime = sunset, timeZoneOffset = timeZoneOffset)
+        sunset = getTwelveHourFromUnixLocatedTimeZone(unixTime = sunset, timeZoneOffset = timeZoneOffset)
     )
 }

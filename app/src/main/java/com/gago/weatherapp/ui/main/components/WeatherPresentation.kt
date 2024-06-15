@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.items
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.ElevatedCard
 import androidx.compose.material3.HorizontalDivider
@@ -26,7 +27,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewLightDark
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
@@ -99,9 +99,14 @@ fun WeatherPresentation(
         Spacer(modifier = Modifier.height(8.dp))
 
         //List of 5 days
+        Text(
+            text = "5 Days Forecast",
+            style = MaterialTheme.typography.headlineMedium,
+            modifier = Modifier.padding(start = 8.dp)
+        )
         LazyRow {
-            items(fiveDaysForecast.listForecastWeather.size) {
-
+            items(fiveDaysForecast.listForecastWeather) {
+                ForecastItem(weatherForecast = it)
             }
         }
 

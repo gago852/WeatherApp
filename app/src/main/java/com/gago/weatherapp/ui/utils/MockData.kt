@@ -66,7 +66,7 @@ object MockData {
             forecastCount = 5,
             listForecastWeather = listOf(
                 WeatherForecast(
-                    calculatedTime = "2024-06-06 01:29:58",
+                    calculatedTime = "Martes",
                     calculatedTimeFromServer = "2024-06-06 01:29:58",
                     mainData = WeatherData(
                         feelsLike = 23.42,
@@ -91,5 +91,30 @@ object MockData {
                 )
             )
         )
+    )
+
+    fun getWeatherForecast() = WeatherForecast(
+        calculatedTime = "Martes",
+        calculatedTimeFromServer = "2024-06-06 01:29:58",
+        mainData = WeatherData(
+            feelsLike = 23.42,
+            humidity = 71,
+            pressure = 1003,
+            temp = 23.19,
+            tempMax = 24.27,
+            tempMin = 19.43
+        ),
+        probabilityOfPrecipitation = 1.0,
+        partOfTheDay = PartOfTheDay(""),
+        visibility = 5,
+        wind = Wind(deg = 140, gust = 0.1, speed = 3.09),
+        weatherCondition = WeatherCondition(
+            description = "cielo claro",
+            icon = WeatherTypeIcon.ClearSkyNight,
+            id = 800,
+            mainCondition = "Clear"
+        ),
+        rain = Rain(oneHour = 1.0, threeHour = 2.0),
+        snow = Snow(oneHour = 1.0, threeHour = 3.0)
     )
 }

@@ -1,15 +1,13 @@
 package com.gago.weatherapp.domain.utils
 
-import java.text.SimpleDateFormat
 import java.time.Instant
 import java.time.ZoneId
 import java.time.ZoneOffset
 import java.time.ZonedDateTime
 import java.time.format.DateTimeFormatter
-import java.util.Date
 import java.util.Locale
 
-fun convertDateFromUnixLocalTimeZone(unixTime: Long): String {
+fun convertDateFromUnixLocalTimeZoneToFullDate(unixTime: Long): String {
 
     val zonedDateTimeLocalTZ = ZonedDateTime.ofInstant(
         Instant.ofEpochSecond(unixTime),
@@ -22,7 +20,7 @@ fun convertDateFromUnixLocalTimeZone(unixTime: Long): String {
     return formatterPattern.format(zonedDateTimeLocalTZ)
 }
 
-fun convertDateFromUnixLocatedTimeZone(unixTime: Long, timeZoneOffset: Long): String {
+fun convertDateFromUnixLocatedTimeZoneToFullDate(unixTime: Long, timeZoneOffset: Long): String {
 
     val zonedDateTimeRemoteTZ = ZonedDateTime.ofInstant(
         Instant.ofEpochSecond(unixTime),
@@ -33,18 +31,18 @@ fun convertDateFromUnixLocatedTimeZone(unixTime: Long, timeZoneOffset: Long): St
     return formatterPattern.format(zonedDateTimeRemoteTZ)
 }
 
-fun convertDateWithoutTimeFromUnixLocatedTimeZone(unixTime: Long, timeZoneOffset: Long): String {
+fun convertDateWithoutTimeFromUnixLocatedTimeZoneToDayOfWeek(unixTime: Long, timeZoneOffset: Long): String {
 
     val zonedDateTimeRemoteTZ = ZonedDateTime.ofInstant(
         Instant.ofEpochSecond(unixTime),
         ZoneOffset.ofTotalSeconds(timeZoneOffset.toInt())
     )
-    val formatterPattern = DateTimeFormatter.ofPattern("yyyy-MM-dd", Locale.getDefault())
+    val formatterPattern = DateTimeFormatter.ofPattern("EEEE", Locale.getDefault())
 
     return formatterPattern.format(zonedDateTimeRemoteTZ)
 }
 
-fun getHourFromUnixLocatedTimeZone(unixTime: Long, timeZoneOffset: Long): String {
+fun getTwelveHourFromUnixLocatedTimeZone(unixTime: Long, timeZoneOffset: Long): String {
 
     val zonedDateTimeRemoteTZ = ZonedDateTime.ofInstant(
         Instant.ofEpochSecond(unixTime),
