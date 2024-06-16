@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_request_timeout">Votre demande a expiré. Veuillez réessayer plus tard. Nous vous remercions de votre patience.</string>
+    <string name="error_too_many_requests">Vous avez effectué trop de demandes en peu de temps. Veuillez patienter un moment et réessayer. Nous vous remercions de votre patience.</string>
+    <string name="error_no_internet">Il semble que vous ne soyez pas connecté à l\'internet. Veuillez vérifier votre connexion et réessayer.</string>
+    <string name="error_generic">Une erreur inattendue s\'est produite. Veuillez réessayer plus tard. Si le problème persiste, contactez l\'assistance.</string>
+    <string name="error_server_error">Une erreur de serveur s\'est produite. Veuillez réessayer plus tard. Si le problème persiste, contactez l\'assistance.</string>
+    <string name="button_get_gps">Regarder avec le GPS</string>
+    <string name="menu_text_button">Menu</string>
+    <string name="grant_permission_button_text">Accorder l\'autorisation</string>
+    <string name="error_location">Impossible de récupérer la position. Assurez-vous d\'accorder l\'autorisation et d\'activer le GPS.</string>
+    <string name="info_about_app">Il s\'agit d\'une application météo pour mon portefeuille. Le code est sur mon github.</string>
+    <string name="openWeather_attribution">Données météorologiques fournies par OpenWeather</string>
+    <string name="welcome_message">Nous sommes ravis de vous accueillir. Gardez une longueur d\'avance sur la météo grâce à nos prévisions précises et à nos mises à jour en temps réel. Il vous suffit de cliquer sur le bouton ci-dessous pour obtenir les dernières informations météorologiques pour votre lieu de résidence.</string>
+    <string name="refresh_error">Il n\'y a pas de prévisions météorologiques extraites de la mémoire cache.</string>
+    <string name="from_gps">Du GPS</string>
+    <string name="swipe_to_load_text">Balayer pour charger</string>
+    <string name="permission_declined_permanently_message">Il semble que vous ayez refusé de façon permanente l\'autorisation du GPS. Vous pouvez aller dans les paramètres de l\'application pour l\'autoriser.</string>
+    <string name="gps_permission_message">Cette application nécessite l\'autorisation du GPS pour que vous puissiez obtenir la météo locale.</string>
+    <string name="dialog_title_about">A propos de</string>
+    <string name="welcome_title">Bienvenue sur l\'application météo</string>
+    <string name="permission_required_tittle">Autorisation requise</string>
+    <string name="metric_unit">Système métrique</string>
+    <string name="imperial_unit">Système impérial</string>
+    <string name="unit_of_measurement">Unité de mesure</string>
+    <string name="open_weather_logo_text">Logo OpenWeather</string>
+    <string name="weather_app_repository_text">Lien vers le référentiel de l\'application</string>
+    <string name="feels_like_text">Température Ressentie</string>
+    <string name="five_days_forecast_text">Prévisions à 5 jours</string>
+    <string name="details_text">Détails</string>
+    <string name="wind_text">Vent:</string>
+    <string name="wind_gust_text">Rafale de vent:</string>
+    <string name="humidity_text">Humidité:</string>
+    <string name="pressure_text">Pression:</string>
+    <string name="clouds_text">Nuages:</string>
+    <string name="sunrise_text">Lever du soleil:</string>
+    <string name="sunset_text">Coucher de soleil:</string>
+    <string name="rain_text">Pluie:</string>
+    <string name="last_hour_text">Dernière heure:</string>
+    <string name="last_three_hours_text">Trois dernières heures:</string>
+    <string name="snow_text">Neige:</string>
+    <string name="last_updated_text">Dernière mise à jour:</string>
+    <string name="settings_text">Paramètres</string>
+    <string name="back_button">Retourner</string>
+</resources>

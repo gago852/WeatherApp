@@ -491,7 +491,6 @@ fun NoWeatherScreen(onPermissionRequest: () -> Unit) {
     }
 }
 
-
 fun openAppSettings(context: Context) {
     val intent = Intent(
         android.provider.Settings.ACTION_APPLICATION_DETAILS_SETTINGS,
