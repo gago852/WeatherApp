@@ -31,7 +31,10 @@ fun convertDateFromUnixLocatedTimeZoneToFullDate(unixTime: Long, timeZoneOffset:
     return formatterPattern.format(zonedDateTimeRemoteTZ)
 }
 
-fun convertDateWithoutTimeFromUnixLocatedTimeZoneToDayOfWeek(unixTime: Long, timeZoneOffset: Long): String {
+fun convertDateWithoutTimeFromUnixLocatedTimeZoneToDayOfWeek(
+    unixTime: Long,
+    timeZoneOffset: Long
+): String {
 
     val zonedDateTimeRemoteTZ = ZonedDateTime.ofInstant(
         Instant.ofEpochSecond(unixTime),

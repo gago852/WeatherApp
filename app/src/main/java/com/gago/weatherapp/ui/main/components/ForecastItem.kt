@@ -4,8 +4,6 @@ import android.content.res.Configuration
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.fillMaxSize
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.material3.CardDefaults
@@ -21,7 +19,6 @@ import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gago.weatherapp.domain.model.WeatherForecast
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
-import com.gago.weatherapp.ui.utils.MeasureUnit
 import com.gago.weatherapp.ui.utils.MockData
 import com.gago.weatherapp.ui.utils.capitalizeWords
 import kotlin.math.roundToInt

@@ -1,53 +1,38 @@
 package com.gago.weatherapp.ui.settings
 
-import android.util.Log
-import androidx.compose.foundation.clickable
-import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.wrapContentSize
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.automirrored.filled.ArrowBack
-import androidx.compose.material.icons.filled.ArrowBack
-import androidx.compose.material.icons.filled.Menu
-import androidx.compose.material.icons.filled.MoreVert
-import androidx.compose.material.icons.outlined.Edit
-import androidx.compose.material.icons.outlined.Email
-import androidx.compose.material.icons.outlined.Settings
 import androidx.compose.material3.AlertDialog
-import androidx.compose.material3.BasicAlertDialog
-import androidx.compose.material3.Button
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.ExposedDropdownMenuBox
 import androidx.compose.material3.ExposedDropdownMenuDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
-import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
 import androidx.compose.material3.TopAppBar
-import androidx.compose.material3.TopAppBarDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.ColorFilter
+import androidx.compose.ui.platform.LocalUriHandler
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
@@ -84,14 +69,14 @@ private fun ScaffoldSetting(
     Scaffold(
         topBar = {
             TopAppBar(
-                title = { Text(text = "Settings") },
+                title = { Text(text = stringResource(id = R.string.settings_text)) },
                 navigationIcon = {
                     IconButton(onClick = {
-                        navController.popBackStack()
+                        navController.navigateUp()
                     }) {
                         Icon(
                             imageVector = Icons.AutoMirrored.Filled.ArrowBack,
-                            contentDescription = "Back"
+                            contentDescription = stringResource(R.string.back_button)
                         )
                     }
                 }
@@ -160,7 +145,7 @@ private fun ScaffoldSetting(
                     .height(48.dp)
             ) {
                 Text(
-                    text = "About",
+                    text = stringResource(id = R.string.dialog_title_about),
                     modifier = Modifier.fillMaxWidth(),
                     textAlign = TextAlign.Start
                 )
@@ -176,6 +161,7 @@ private fun ScaffoldSetting(
 
 @Composable
 fun AboutDialog(onDialogChange: () -> Unit) {
+    val uriHandler = LocalUriHandler.current
     AlertDialog(
         onDismissRequest = { onDialogChange() },
         confirmButton = {
@@ -184,7 +170,32 @@ fun AboutDialog(onDialogChange: () -> Unit) {
             }
         },
         title = { Text(text = stringResource(id = R.string.dialog_title_about)) },
-        text = { Text(text = stringResource(id = R.string.info_about_app)) })
+        text = {
+            Column {
+                Text(text = stringResource(id = R.string.info_about_app))
+                TextButton(onClick = { uriHandler.openUri("https://github.com/gago852/WeatherApp") }
+                ) {
+                    Text(
+                        text = stringResource(R.string.weather_app_repository_text),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                Spacer(modifier = Modifier.height(18.dp))
+                Text(text = stringResource(id = R.string.openWeather_attribution))
+                TextButton(onClick = { uriHandler.openUri("https://openweathermap.org/") }
+                ) {
+                    Text(
+                        text = stringResource(R.string.open_weather_text),
+                        style = MaterialTheme.typography.titleMedium
+                    )
+                }
+                Image(
+                    painter = painterResource(id = R.drawable.openweather_logo),
+                    contentDescription = stringResource(R.string.open_weather_logo_text),
+                    colorFilter = ColorFilter.tint(color = MaterialTheme.colorScheme.primary),
+                )
+            }
+        })
 }
 
 @Preview(showBackground = true, showSystemUi = true)
@@ -193,6 +204,18 @@ fun SettingsScreenPreview() {
     WeatherAppTheme {
         Surface(modifier = Modifier.fillMaxSize()) {
             ScaffoldSetting(settings = Settings(), navController = rememberNavController()) {
+
+            }
+        }
+    }
+}
+
+@Preview
+@Composable
+private fun AboutDialogPreview() {
+    WeatherAppTheme {
+        Surface(modifier = Modifier.fillMaxSize()) {
+            AboutDialog {
 
             }
         }

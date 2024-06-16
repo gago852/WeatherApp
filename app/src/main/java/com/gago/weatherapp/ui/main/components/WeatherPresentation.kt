@@ -26,10 +26,12 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import com.gago.weatherapp.R
 import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.model.Forecast
 import com.gago.weatherapp.domain.model.Weather
@@ -85,7 +87,7 @@ fun WeatherPresentation(
                         style = MaterialTheme.typography.titleLarge
                     )
                     Text(
-                        text = "Feels like ${currentWeather.weatherData.feelsLike.roundToInt()}°",
+                        text = "${stringResource(R.string.feels_like_text)} ${currentWeather.weatherData.feelsLike.roundToInt()}°",
                         fontSize = 14.sp
                     )
                     Text(
@@ -100,7 +102,7 @@ fun WeatherPresentation(
 
         //List of 5 days
         Text(
-            text = "5 Days Forecast",
+            text = stringResource(R.string.five_days_forecast_text),
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(start = 8.dp)
         )
@@ -117,7 +119,7 @@ fun WeatherPresentation(
         ) {
             Column(modifier = Modifier.fillMaxWidth()) {
                 Text(
-                    text = "Details",
+                    text = stringResource(R.string.details_text),
                     style = MaterialTheme.typography.headlineLarge,
                     modifier = Modifier.padding(start = 16.dp, top = 16.dp)
                 )
@@ -129,7 +131,10 @@ fun WeatherPresentation(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "wind", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = stringResource(R.string.wind_text),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                         Text(
                             text = "${
                                 currentWeather.wind.deg.toString().plus("°")
@@ -145,7 +150,10 @@ fun WeatherPresentation(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "wind gust", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = stringResource(R.string.wind_gust_text),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                         Text(
                             text = "${currentWeather.wind.gust?.toString() ?: "0"} ${measureUnit.windSpeedText}"
                         )
@@ -160,7 +168,10 @@ fun WeatherPresentation(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "humidity", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = stringResource(R.string.humidity_text),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                         Text(text = currentWeather.weatherData.humidity.toString().plus("%"))
                     }
                     HorizontalDivider(
@@ -173,7 +184,10 @@ fun WeatherPresentation(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "preasure", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = stringResource(R.string.pressure_text),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                         Text(text = currentWeather.weatherData.pressure.toString().plus("hPa"))
                     }
                     HorizontalDivider(
@@ -186,7 +200,10 @@ fun WeatherPresentation(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "clouds", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = stringResource(R.string.clouds_text),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                         Text(text = currentWeather.clouds.toString().plus("%"))
                     }
                     HorizontalDivider(
@@ -199,7 +216,10 @@ fun WeatherPresentation(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "sunrise", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = stringResource(R.string.sunrise_text),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                         Text(text = currentWeather.dayData.sunrise)
                     }
                     HorizontalDivider(
@@ -212,7 +232,10 @@ fun WeatherPresentation(
                             .padding(16.dp),
                         horizontalArrangement = Arrangement.SpaceBetween
                     ) {
-                        Text(text = "sunset", style = MaterialTheme.typography.titleMedium)
+                        Text(
+                            text = stringResource(R.string.sunset_text),
+                            style = MaterialTheme.typography.titleMedium
+                        )
                         Text(text = currentWeather.dayData.sunset)
                     }
                     currentWeather.rain?.let { rain ->
@@ -227,7 +250,8 @@ fun WeatherPresentation(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "rain", style = MaterialTheme.typography.titleMedium,
+                                text = stringResource(R.string.rain_text),
+                                style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
                             Column(
@@ -235,10 +259,18 @@ fun WeatherPresentation(
                                 horizontalAlignment = Alignment.End
                             ) {
                                 rain.oneHour?.let {
-                                    Text(text = "Last hour: ${it.toString().plus("mm")}")
+                                    Text(
+                                        text = "${stringResource(R.string.last_hour_text)} ${
+                                            it.toString().plus("mm")
+                                        }"
+                                    )
                                 }
                                 rain.threeHour?.let {
-                                    Text(text = "Last three hours: ${it.toString().plus("mm")}")
+                                    Text(
+                                        text = "${stringResource(R.string.last_three_hours_text)}  ${
+                                            it.toString().plus("mm")
+                                        }"
+                                    )
                                 }
                             }
                         }
@@ -255,15 +287,24 @@ fun WeatherPresentation(
                             horizontalArrangement = Arrangement.SpaceBetween
                         ) {
                             Text(
-                                text = "snow", style = MaterialTheme.typography.titleMedium,
+                                text = stringResource(R.string.snow_text),
+                                style = MaterialTheme.typography.titleMedium,
                                 modifier = Modifier.align(Alignment.CenterVertically)
                             )
                             Column(horizontalAlignment = Alignment.End) {
                                 snow.oneHour?.let {
-                                    Text(text = "Last hour: ${it.toString().plus("mm")}")
+                                    Text(
+                                        text = "${stringResource(R.string.last_hour_text)} ${
+                                            it.toString().plus("mm")
+                                        }"
+                                    )
                                 }
                                 snow.threeHour?.let {
-                                    Text(text = "Last three hours: ${it.toString().plus("mm")}")
+                                    Text(
+                                        text = "${stringResource(R.string.last_three_hours_text)}  ${
+                                            it.toString().plus("mm")
+                                        }"
+                                    )
                                 }
                             }
                         }
@@ -272,7 +313,7 @@ fun WeatherPresentation(
             }
         }
         Text(
-            text = "Last update: ${currentWeather.calculatedTime}",
+            text = "${stringResource(R.string.last_updated_text)} ${currentWeather.calculatedTime}",
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(end = 8.dp, top = 8.dp)

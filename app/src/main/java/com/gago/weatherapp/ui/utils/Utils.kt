@@ -15,6 +15,7 @@ fun getCurrentLanguage(context: Context): String {
     return when (language) {
         "en" -> "en"
         "es" -> "es"
+        "fr" -> "fr"
         else -> "en"
     }
 }

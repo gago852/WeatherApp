@@ -27,6 +27,7 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -294,7 +295,12 @@ fun NavDrawerMainScreen(
                                 drawerState.close()
                             }
                         }) {
-                        Icon(imageVector = Icons.Filled.Settings, contentDescription = "Settings")
+                        Icon(
+                            imageVector = Icons.Filled.Settings,
+                            contentDescription = stringResource(
+                                R.string.settings_text
+                            )
+                        )
                     }
                 }
                 settings.listWeather.forEach { weather ->
@@ -306,7 +312,7 @@ fun NavDrawerMainScreen(
                             if (weather.isGps) {
                                 Icon(
                                     imageVector = Icons.Filled.LocationOn,
-                                    contentDescription = "From GPS"
+                                    contentDescription = stringResource(R.string.from_gps)
                                 )
                             }
                         },
@@ -364,7 +370,7 @@ fun NavDrawerMainScreen(
 
                 TopAppBar(
 
-                    title = { Text(text = "Weather App $activeWeather") },
+                    title = { Text(text = stringResource(id = R.string.app_name) + " $activeWeather") },
                     navigationIcon = {
                         IconButton(onClick = {
                             scope.launch {
@@ -373,7 +379,7 @@ fun NavDrawerMainScreen(
                         }) {
                             Icon(
                                 imageVector = Icons.Filled.Menu,
-                                contentDescription = "Menu"
+                                contentDescription = stringResource(R.string.menu_text_button)
                             )
                         }
                     }
@@ -395,6 +401,7 @@ fun NavDrawerMainScreen(
                     ) {
                         if (state.isLoading) {
                             noWeather = true
+                            CircularProgressIndicator()
                         } else if (pullState.isRefreshing) {
                             pullState.endRefresh()
                         }
@@ -428,7 +435,7 @@ fun NavDrawerMainScreen(
                                     onPermissionRequest()
                                 }
                             } else {
-                                Text(text = "swipe to load")
+                                Text(text = stringResource(R.string.swipe_to_load_text))
                             }
                         }
                     }
@@ -471,8 +478,11 @@ fun NoWeatherScreen(onPermissionRequest: () -> Unit) {
             )
             Spacer(modifier = Modifier.padding(16.dp))
             Button(onClick = { onPermissionRequest() }) {
-                Icon(imageVector = Icons.Filled.LocationOn, contentDescription = "Gps Activate")
-                Text(text = "Look with GPS")
+                Icon(
+                    imageVector = Icons.Filled.LocationOn,
+                    contentDescription = stringResource(R.string.button_get_gps)
+                )
+                Text(text = stringResource(R.string.button_get_gps))
             }
             Spacer(modifier = Modifier.padding(16.dp))
         }
@@ -533,14 +543,3 @@ private fun MainScreenDarkPreview() {
         }
     }
 }
-
-/*
-weatherCurrent = Weather(
-                        1, "1", 1,
-                        Sys("1", 2, 1, 1, 1), "",
-                        WeatherCondition("", WeatherTypeIcon.Mist, 2, ""),
-                        WeatherData(2.2, 5, 5, 51.5, 1.5, 5.5),
-                        Wind(5), 5, null, null
-                    )
-
- */

@@ -13,15 +13,56 @@
     <string name="error_not_found">error not found</string>
     <string name="error_bad_request">error bad request"</string>
 
-    <string name="error_location">"Couldn't retrieve location. Make sure to grant permission and enable GPS."</string>
+    <!--Buttons-->
+    <string name="dialog_ok">OK</string>
+    <string name="ok_button_text">OK</string>
+    <string name="button_get_gps">Look with GPS</string>
+    <string name="menu_text_button">Menu</string>
+    <string name="grant_permission_button_text">Grant permission</string>
+
+    <!--Messages-->
+    <string name="error_location">Could not retrieve location. Make sure to grant permission and enable GPS.</string>
+    <string name="info_about_app">This is a weather app for my portfolio. The code is on my github.</string>
+    <string name="openWeather_attribution">Weather data provided by OpenWeather</string>
+    <string name="welcome_message">We\'re thrilled to have you here. Stay ahead of the weather with our accurate forecasts and real-time updates. Simply click the button below to get the latest weather information for your location.</string>
+    <string name="refresh_error">Not Weather retrieve from cache</string>
+    <string name="from_gps">From GPS</string>
+    <string name="swipe_to_load_text">Swipe to load</string>
+    <string name="permission_declined_permanently_message">It seems you permanently declined gps permission. You can go to the app settings to grant it.</string>
+    <string name="gps_permission_message">This app needs gps permission so that you can get your local weather.</string>
+
+    <!--title-->
+    <string name="dialog_title_about">About</string>
+    <string name="welcome_title">Welcome to Weather App</string>
+    <string name="permission_required_tittle">Permission required</string>
+
+    <!--Screen settings-->
     <string name="metric_unit">Metric</string>
     <string name="imperial_unit">Imperial</string>
     <string name="unit_of_measurement">Unit of measurement</string>
-    <string name="dialog_ok">OK</string>
-    <string name="dialog_title_about">About</string>
-    <string name="info_about_app">"INFO Lorenmasd asda sd asd asda dasdasdd asda asd   asda "</string>
-    <string name="welcome_title">Welcome to Weather App</string>
-    <string name="welcome_message">We\'re thrilled to have you here. Stay ahead of the weather with our accurate forecasts and real-time updates. Simply click the button below to get the latest weather information for your location.</string>
-    <string name="refresh_error">Not Weather retrieve from cache</string>
+    <string name="open_weather_logo_text">OpenWeather logo</string>
+    <string name="weather_app_repository_text">Link to app repository</string>
+    <string name="open_weather_text">https://openweathermap.org/</string>
+
+    <!--Weather Info-->
+    <string name="feels_like_text">Feels like</string>
+    <string name="five_days_forecast_text">5 Days Forecast</string>
+    <string name="details_text">Details</string>
+    <string name="wind_text">Wind:</string>
+    <string name="wind_gust_text">Wind Gust:</string>
+    <string name="humidity_text">Humidity:</string>
+    <string name="pressure_text">Pressure:</string>
+    <string name="clouds_text">Clouds:</string>
+    <string name="sunrise_text">Sunrise:</string>
+    <string name="sunset_text">Sunset:</string>
+    <string name="rain_text">Rain:</string>
+    <string name="last_hour_text">Last hour:</string>
+    <string name="last_three_hours_text">Last three hours:</string>
+    <string name="snow_text">Snow:</string>
+    <string name="last_updated_text">Last updated:</string>
+
+    <!--Commons-->
+    <string name="settings_text">Settings</string>
+    <string name="back_button">Back</string>
 
 </resources>
