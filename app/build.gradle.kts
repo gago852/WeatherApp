@@ -4,6 +4,8 @@ plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
     alias(libs.plugins.kotlinSerialization)
+    alias(libs.plugins.googleServices)
+    alias(libs.plugins.firebaseCrashlytics)
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
 }
@@ -78,6 +80,10 @@ dependencies {
     implementation(libs.org.jetbrains.kotlinx.collections.immutable)
     implementation(libs.org.jetbrains.kotlinx.serialization.json)
     implementation(libs.androidx.navigation)
+
+    implementation(platform(libs.firebase.bom))
+    implementation(libs.firebase.crashlytics)
+    implementation(libs.firebase.analytics)
 
     implementation(libs.hilt)
     implementation(libs.hilt.navigation.compose)
