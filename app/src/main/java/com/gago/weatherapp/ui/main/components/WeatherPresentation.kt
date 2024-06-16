@@ -25,10 +25,12 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.ContentScale
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.gago.weatherapp.R
@@ -47,20 +49,25 @@ fun WeatherPresentation(
     fiveDaysForecast: Forecast,
     measureUnit: MeasureUnit
 ) {
+    val config = LocalConfiguration.current
+    val screenWidth = config.screenWidthDp.dp
     Column(
         modifier = Modifier
             .fillMaxSize()
     ) {
         OutlinedCard(
-            modifier = Modifier.padding(8.dp),
+            modifier = Modifier
+                .padding(8.dp)
+                .align(alignment = Alignment.CenterHorizontally),
             colors = CardDefaults.cardColors().copy(
                 containerColor =
                 MaterialTheme.colorScheme.surface
             )
         ) {
             Row(
-                modifier = Modifier.fillMaxWidth(),
-                verticalAlignment = Alignment.CenterVertically
+                modifier = Modifier,
+                verticalAlignment = Alignment.CenterVertically,
+                horizontalArrangement = Arrangement.Absolute.Center
             ) {
                 Row(
                     modifier = Modifier,
@@ -115,9 +122,16 @@ fun WeatherPresentation(
 
         Spacer(modifier = Modifier.height(8.dp))
         ElevatedCard(
-            modifier = Modifier.padding(8.dp), colors = CardDefaults.cardColors()
+            modifier = Modifier
+                .padding(8.dp)
+                .align(alignment = Alignment.CenterHorizontally),
+            colors = CardDefaults.cardColors()
         ) {
-            Column(modifier = Modifier.fillMaxWidth()) {
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(if (screenWidth > 480.dp) 0.5f else 1.0f)
+
+            ) {
                 Text(
                     text = stringResource(R.string.details_text),
                     style = MaterialTheme.typography.headlineLarge,

@@ -57,11 +57,13 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.input.nestedscroll.nestedScroll
+import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -453,8 +455,8 @@ fun NavDrawerMainScreen(
 
 @Composable
 fun NoWeatherScreen(onPermissionRequest: () -> Unit) {
-
-
+    val config = LocalConfiguration.current
+    val screenWidth = config.screenWidthDp.dp
     Card(modifier = Modifier.padding(32.dp)) {
         Column(
             verticalArrangement = Arrangement.Center,
@@ -462,7 +464,6 @@ fun NoWeatherScreen(onPermissionRequest: () -> Unit) {
         ) {
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
                     .padding(top = 16.dp, start = 16.dp, end = 16.dp),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
@@ -472,7 +473,7 @@ fun NoWeatherScreen(onPermissionRequest: () -> Unit) {
             Spacer(modifier = Modifier.padding(16.dp))
             Text(
                 modifier = Modifier
-                    .fillMaxWidth()
+                    .fillMaxWidth(if (screenWidth > 500.dp) 0.4f else 1.0f)
                     .padding(start = 16.dp, end = 16.dp),
                 text = stringResource(R.string.welcome_message)
             )
