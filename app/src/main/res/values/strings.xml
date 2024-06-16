@@ -1,21 +1,20 @@
 <resources>
-    <string name="app_name">Weather App</string>
+    <string name="app_name" translatable="false">Weather App</string>
 
     <!--Errors-->
     <string name="error_request_timeout">Your request has timed out. Please try again later. Thank you for your patience.</string>
     <string name="error_too_many_requests">You have made too many requests in a short period. Please wait a moment and try again. Thank you for your patience.</string>
     <string name="error_no_internet">It looks like you\'re not connected to the internet. Please check your connection and try again.</string>
     <string name="error_generic">An unexpected error has occurred. Please try again later. If the problem persists, contact support.</string>
-    <string name="error_payload_too_large">error payload too large</string>
+    <string name="error_payload_too_large" translatable="false">error payload too large</string>
     <string name="error_server_error">A server error has occurred. Please try again later. If the problem persists, contact support.</string>
-    <string name="error_unauthorized">error api key not authorized</string>
-    <string name="error_forbidden">error forbidden</string>
-    <string name="error_not_found">error not found</string>
-    <string name="error_bad_request">error bad request"</string>
+    <string name="error_unauthorized" translatable="false">error api key not authorized</string>
+    <string name="error_forbidden" translatable="false">error forbidden</string>
+    <string name="error_not_found" translatable="false">error not found</string>
+    <string name="error_bad_request" translatable="false">error bad request"</string>
 
     <!--Buttons-->
-    <string name="dialog_ok">OK</string>
-    <string name="ok_button_text">OK</string>
+    <string name="ok_button_text" translatable="false">OK</string>
     <string name="button_get_gps">Look with GPS</string>
     <string name="menu_text_button">Menu</string>
     <string name="grant_permission_button_text">Grant permission</string>
@@ -25,7 +24,7 @@
     <string name="info_about_app">This is a weather app for my portfolio. The code is on my github.</string>
     <string name="openWeather_attribution">Weather data provided by OpenWeather</string>
     <string name="welcome_message">We\'re thrilled to have you here. Stay ahead of the weather with our accurate forecasts and real-time updates. Simply click the button below to get the latest weather information for your location.</string>
-    <string name="refresh_error">Not Weather retrieve from cache</string>
+    <string name="refresh_error">There is no weather forecast retrieved from cache.</string>
     <string name="from_gps">From GPS</string>
     <string name="swipe_to_load_text">Swipe to load</string>
     <string name="permission_declined_permanently_message">It seems you permanently declined gps permission. You can go to the app settings to grant it.</string>
@@ -42,7 +41,7 @@
     <string name="unit_of_measurement">Unit of measurement</string>
     <string name="open_weather_logo_text">OpenWeather logo</string>
     <string name="weather_app_repository_text">Link to app repository</string>
-    <string name="open_weather_text">https://openweathermap.org/</string>
+    <string name="open_weather_text" translatable="false">https://openweathermap.org/</string>
 
     <!--Weather Info-->
     <string name="feels_like_text">Feels like</string>

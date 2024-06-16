@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="error_request_timeout">Su solicitud ha expirado. Vuelva a intentarlo más tarde. Gracias por su paciencia.</string>
+    <string name="error_too_many_requests">Ha realizado demasiadas solicitudes en un corto periodo de tiempo. Espere un momento y vuelva a intentarlo. Gracias por su paciencia.</string>
+    <string name="error_no_internet">Parece que no estás conectado a Internet. Por favor, comprueba tu conexión e inténtalo de nuevo.</string>
+    <string name="error_generic">Se ha producido un error inesperado. Vuelva a intentarlo más tarde. Si el problema persiste, póngase en contacto con el servicio de asistencia.</string>
+    <string name="error_server_error">Se ha producido un error en el servidor. Vuelva a intentarlo más tarde. Si el problema persiste, póngase en contacto con el servicio de asistencia.</string>
+    <string name="button_get_gps">Buscar con GPS</string>
+    <string name="menu_text_button">Menú</string>
+    <string name="grant_permission_button_text">Conceder permiso</string>
+    <string name="error_location">No se ha podido recuperar la ubicación. Asegúrese de conceder permiso y activar el GPS.</string>
+    <string name="info_about_app">Esta es una aplicación meteorológica para mi portafolio. El código está en mi github.</string>
+    <string name="openWeather_attribution">Datos meteorológicos proporcionados por OpenWeather</string>
+    <string name="welcome_message">Estamos encantados de tenerle aquí. Adelántate al tiempo con nuestras previsiones precisas y actualizaciones en tiempo real. Simplemente haga clic en el botón de abajo para obtener la información meteorológica más reciente para su ubicación.</string>
+    <string name="refresh_error">No se ha recuperado ninguna previsión meteorológica de la caché.</string>
+    <string name="from_gps">Desde GPS</string>
+    <string name="swipe_to_load_text">Deslizar para cargar</string>
+    <string name="permission_declined_permanently_message">Parece que has rechazado permanentemente el permiso gps. Puedes ir a los ajustes de la aplicación para concederlo.</string>
+    <string name="gps_permission_message">Esta aplicación necesita permiso gps para que pueda obtener su tiempo local.</string>
+    <string name="dialog_title_about">Acerca de</string>
+    <string name="welcome_title">Bienvenido a Weather App</string>
+    <string name="permission_required_tittle">Permiso necesario</string>
+    <string name="metric_unit">Sistema métrico</string>
+    <string name="imperial_unit">Sistema Imperial</string>
+    <string name="unit_of_measurement">Unidad de medida</string>
+    <string name="open_weather_logo_text">OpenWeather logo</string>
+    <string name="weather_app_repository_text">Enlace al repositorio de la aplicacion</string>
+    <string name="feels_like_text">Sensación térmica</string>
+    <string name="five_days_forecast_text">Previsión 5 días</string>
+    <string name="details_text">Detalles</string>
+    <string name="wind_text">Viento:</string>
+    <string name="wind_gust_text">Ráfaga de viento:</string>
+    <string name="humidity_text">Humedad:</string>
+    <string name="pressure_text">Presión:</string>
+    <string name="clouds_text">Nubes:</string>
+    <string name="sunrise_text">Amanecer:</string>
+    <string name="sunset_text">Atardecer:</string>
+    <string name="rain_text">Lluvia:</string>
+    <string name="last_hour_text">Última hora:</string>
+    <string name="last_three_hours_text">Últimas tres horas:</string>
+    <string name="snow_text">Nieve:</string>
+    <string name="last_updated_text">Última actualización:</string>
+    <string name="settings_text">Ajustes</string>
+    <string name="back_button">Atrás</string>
+</resources>

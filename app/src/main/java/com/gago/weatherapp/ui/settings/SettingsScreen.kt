@@ -166,7 +166,7 @@ fun AboutDialog(onDialogChange: () -> Unit) {
         onDismissRequest = { onDialogChange() },
         confirmButton = {
             TextButton(onClick = { onDialogChange() }) {
-                Text(text = stringResource(id = R.string.dialog_ok))
+                Text(text = stringResource(id = R.string.ok_button_text))
             }
         },
         title = { Text(text = stringResource(id = R.string.dialog_title_about)) },
