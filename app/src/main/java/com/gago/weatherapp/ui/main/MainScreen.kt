@@ -220,11 +220,11 @@ fun MainScreen(
 
                         weatherCurrent?.let { weatherLocal ->
                             if (weatherLocal.isGps) {
-                                if (!it.permissionAccepted) {
-                                    locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-                                } else {
+//                                if (!it.permissionAccepted) {
+                                locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                                /*} else {
                                     weatherViewModel.loadLocationWeather()
-                                }
+                                }*/
                             } else {
                                 weatherViewModel.loadWeatherFromCurrent(weatherLocal)
                             }
