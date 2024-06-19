@@ -54,7 +54,7 @@ class WeatherRepositoryImpl @Inject constructor(
         units: String
     ): Result<Forecast, DataError.Network> {
         return try {
-            val response = weatherApi.getForecast(latitude, longitude, apiKey, lang, units)
+            val response = weatherApi.getForecast(latitude, longitude, apiKey, lang, units, 40)
             Result.Success(response.toForecastFiveDays())
         } catch (e: Exception) {
 
@@ -69,7 +69,10 @@ class WeatherRepositoryImpl @Inject constructor(
                 }
 
                 is NoNetworkException -> Result.Error(DataError.Network.NO_INTERNET)
-                else -> Result.Error(DataError.Network.UNKNOWN)
+                else -> {
+                    e.printStackTrace()
+                    Result.Error(DataError.Network.UNKNOWN)
+                }
             }
 
 

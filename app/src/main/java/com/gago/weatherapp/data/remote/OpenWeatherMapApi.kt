@@ -22,6 +22,7 @@ interface OpenWeatherMapApi {
         @Query("lon") longitude: Double,
         @Query("appid") apiKey: String,
         @Query("lang") language: String,
-        @Query("units") units: String
+        @Query("units") units: String,
+        @Query("cnt") cnt: Int
     ): ForecastDto
 }

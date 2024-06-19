@@ -106,7 +106,7 @@ class WeatherViewModel @Inject constructor(
 
             setting?.let { settingNotNull ->
 
-                if ((currentDate - settingNotNull.lastUpdate) > ONE_MINUTE_IN_MILLIS) {
+                if (((currentDate - settingNotNull.lastUpdate) > ONE_MINUTE_IN_MILLIS) || state.weather == null) {
                     Log.d("WeatherViewModel", "need to refresh")
                     val weather = settingNotNull.listWeather.firstOrNull { it.isActive }
                     weather?.let {
