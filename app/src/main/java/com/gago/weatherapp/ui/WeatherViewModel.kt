@@ -91,6 +91,9 @@ class WeatherViewModel @Inject constructor(
     fun initialStartUp() {
         savedStateHandle["statup"] = false
         reasonForRefresh = ReasonsForRefresh.PULL
+        viewModelScope.launch {
+            dataStore.updateData { it.copy(lastUpdate = 0L) }
+        }
     }
 
     fun refreshWeather() {
@@ -273,7 +276,6 @@ class WeatherViewModel @Inject constructor(
                     val error: Int = getErrorText(resultCurrentWeather.error)
 
                     state = state.copy(
-                        weather = null,
                         error = error,
                         isLoading = false
                     )
@@ -313,7 +315,6 @@ class WeatherViewModel @Inject constructor(
                 is Result.Error -> {
                     val error: Int = getErrorText(forecastFiveDays.error)
                     state = state.copy(
-                        weather = null,
                         error = error,
                         isLoading = false
                     )
@@ -326,7 +327,6 @@ class WeatherViewModel @Inject constructor(
         } catch (e: Exception) {
             val error: Int = getErrorText(DataError.Local.UNKNOWN)
             state = state.copy(
-                weather = null,
                 error = error,
                 isLoading = false
             )
