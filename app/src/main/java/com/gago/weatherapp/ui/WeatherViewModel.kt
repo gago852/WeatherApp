@@ -24,6 +24,7 @@ import com.gago.weatherapp.ui.utils.ONE_MINUTE_IN_MILLIS
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import com.gago.weatherapp.ui.utils.getCurrentLanguage
 import com.gago.weatherapp.ui.utils.getErrorText
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.mutate
 import kotlinx.coroutines.flow.catch
@@ -228,6 +229,7 @@ class WeatherViewModel @Inject constructor(
             } catch (e: NoSuchElementException) {
 
                 val error: Int = getErrorText(DataError.Local.UNKNOWN)
+                FirebaseCrashlytics.getInstance().recordException(e)
                 state = state.copy(
                     weather = null,
                     error = error,
@@ -325,12 +327,12 @@ class WeatherViewModel @Inject constructor(
                 }
             }
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             val error: Int = getErrorText(DataError.Local.UNKNOWN)
             state = state.copy(
                 error = error,
                 isLoading = false
             )
-            e.printStackTrace()
             Log.e("WeatherViewModel", e.message.toString())
             dataStore.updateData {
                 it.copy(lastUpdate = 0L)

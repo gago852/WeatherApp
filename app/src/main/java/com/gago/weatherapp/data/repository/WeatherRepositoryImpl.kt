@@ -9,6 +9,7 @@ import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.repository.WeatherRepository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -39,7 +40,10 @@ class WeatherRepositoryImpl @Inject constructor(
                 }
 
                 is NoNetworkException -> Result.Error(DataError.Network.NO_INTERNET)
-                else -> Result.Error(DataError.Network.UNKNOWN)
+                else -> {
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                    Result.Error(DataError.Network.UNKNOWN)
+                }
             }
 
 
@@ -70,7 +74,7 @@ class WeatherRepositoryImpl @Inject constructor(
 
                 is NoNetworkException -> Result.Error(DataError.Network.NO_INTERNET)
                 else -> {
-                    e.printStackTrace()
+                    FirebaseCrashlytics.getInstance().recordException(e)
                     Result.Error(DataError.Network.UNKNOWN)
                 }
             }

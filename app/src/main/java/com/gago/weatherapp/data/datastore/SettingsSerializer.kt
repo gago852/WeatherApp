@@ -1,6 +1,7 @@
 package com.gago.weatherapp.data.datastore
 
 import androidx.datastore.core.Serializer
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.serialization.ExperimentalSerializationApi
@@ -28,7 +29,7 @@ object SettingsSerializer : Serializer<Settings> {
                 string = input.readBytes().decodeToString()
             )
         } catch (e: SerializationException) {
-            e.printStackTrace()
+            FirebaseCrashlytics.getInstance().recordException(e)
             defaultValue
         }
     }
