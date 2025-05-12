@@ -1,0 +1,11 @@
+---
+description: 
+globs: app/src/test/java/com/gago/**/*.kt,app/src/androidTest/java/com/gago/**/*.kt
+alwaysApply: false
+---
+- Write unit tests for ViewModels and UseCases.
+- Implement UI tests using Compose testing framework.
+- Use fake repositories for testing.
+- Implement proper test coverage.
+
+- Use proper testing coroutine dispatchers.

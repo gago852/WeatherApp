@@ -1,0 +1,13 @@
+---
+description: 
+globs: app/src/main/java/com/gago/**/*.kt
+alwaysApply: false
+---
+- Minimize recomposition using proper keys.
+- Use proper lazy loading with LazyColumn and LazyRow.
+- Implement efficient image loading.
+- Use proper state management to prevent unnecessary updates.
+- Follow proper lifecycle awareness.
+- Implement proper memory management.
+
+- Use proper background processing.
