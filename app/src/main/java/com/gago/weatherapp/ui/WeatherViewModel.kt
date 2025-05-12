@@ -342,7 +342,9 @@ class WeatherViewModel @Inject constructor(
     }
 
     fun dismissDialog() {
-        visiblePermissionDialogQueue.removeFirst()
+        if (visiblePermissionDialogQueue.isNotEmpty()) {
+            visiblePermissionDialogQueue.removeAt(0)
+        }
     }
 
     fun onPermissionResult(

@@ -1,0 +1,6 @@
+---
+description: 
+globs: 
+alwaysApply: true
+---
+- Cada ves que termines de implementar algo compila el proyecto para verificar por errores.

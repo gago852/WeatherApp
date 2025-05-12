@@ -80,6 +80,9 @@ import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
 
 private val permissionsToRequest = arrayOf(
     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -91,27 +94,13 @@ fun MainScreen(
     navController: NavController,
     weatherViewModel: WeatherViewModel = hiltViewModel()
 ) {
-
     val isSetup = weatherViewModel.isStartup.collectAsState().value
-
-
     val state = weatherViewModel.state
-
     val mainScope = rememberCoroutineScope()
-
-//    val pullState = rememberPullToRefreshState()
-
+    val pullState = rememberPullToRefreshState()
 
     val settingValue =
         if (isSetup) Settings() else weatherViewModel.settings.collectAsState(initial = Settings()).value
-
-    if (isSetup) {
-        pullState.startRefresh()
-    }
-
-    val dialogQueue = weatherViewModel.visiblePermissionDialogQueue
-//    Log.d("StateOnMainScreen", state.toString())
-//    Log.d("StateOnMainScreenSettings", settingValue.toString())
 
     val locationPermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),
@@ -125,14 +114,34 @@ fun MainScreen(
                     weatherViewModel.setPermissionAccepted(isGranted)
                     if (isGranted) {
                         weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
-                        pullState.startRefresh()
+                        weatherViewModel.refreshWeather()
                     }
                 }
-
             }
-
         }
     )
+
+    LaunchedEffect(isSetup) {
+        if (isSetup) {
+            val setting = weatherViewModel.getInitialSetUp()
+            setting?.let {
+                val listWeatherStoredActive = it.listWeather.filter { lit -> lit.isActive }
+                val weatherCurrent = listWeatherStoredActive.firstOrNull()
+                weatherCurrent?.let { weatherLocal ->
+                    if (weatherLocal.isGps) {
+                        locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                    } else {
+                        weatherViewModel.loadWeatherFromCurrent(weatherLocal)
+                    }
+                }
+            }
+            weatherViewModel.initialStartUp()
+        }
+    }
+
+    val dialogQueue = weatherViewModel.visiblePermissionDialogQueue
+//    Log.d("StateOnMainScreen", state.toString())
+//    Log.d("StateOnMainScreenSettings", settingValue.toString())
 
     val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestMultiplePermissions(),
@@ -181,59 +190,11 @@ fun MainScreen(
         Log.d("LifecycleResumeEffect", "resume ${weatherViewModel.wentToSettings}")
         if (weatherViewModel.wentToSettings) {
             weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
-            pullState.startRefresh()
+            weatherViewModel.refreshWeather()
             weatherViewModel.setWentToSettings(false)
         }
         onPauseOrDispose {
             Log.d("LifecycleResumeEffect", "pause $weatherViewModel.wentToSettings")
-        }
-    }
-
-
-    if (pullState.isRefreshing) {
-        when (weatherViewModel.reasonForRefresh) {
-
-            ReasonsForRefresh.WEATHER_CHANGED -> run {
-                val settingChanged = weatherViewModel.settingChanged?.copy()
-                settingChanged?.let {
-
-                    weatherViewModel.loadAnotherWeather(it)
-                    weatherViewModel.setSettingChanged(null)
-                } ?: run {
-                    pullState.endRefresh()
-                }
-                weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
-            }
-
-            ReasonsForRefresh.STARTUP -> run {
-
-                LaunchedEffect(Unit) {
-                    val setting = weatherViewModel.getInitialSetUp()
-                    Log.d("startup", "lanzo")
-                    setting?.let {
-                        val listWeatherStoredActive = it.listWeather.filter { lit -> lit.isActive }
-
-                        val weatherCurrent = listWeatherStoredActive.firstOrNull()
-
-                        weatherCurrent?.let { weatherLocal ->
-                            if (weatherLocal.isGps) {
-//                                if (!it.permissionAccepted) {
-                                locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-                                /*} else {
-                                    weatherViewModel.loadLocationWeather()
-                                }*/
-                            } else {
-                                weatherViewModel.loadWeatherFromCurrent(weatherLocal)
-                            }
-                        }
-                        pullState.endRefresh()
-                    }
-                    weatherViewModel.initialStartUp()
-                }
-
-            }
-
-            else -> weatherViewModel.refreshWeather()
         }
     }
 
@@ -248,12 +209,45 @@ fun MainScreen(
             weatherViewModel.setWentToSettings(true)
         },
         pullState = pullState,
-    ) {
-        weatherViewModel.setSettingChanged(it)
-        weatherViewModel.setReasonForRefresh(ReasonsForRefresh.WEATHER_CHANGED)
-        pullState.startRefresh()
-    }
+        onRefresh = {
+            mainScope.launch {
+                when (weatherViewModel.reasonForRefresh) {
+                    ReasonsForRefresh.WEATHER_CHANGED -> {
+                        val settingChanged = weatherViewModel.settingChanged?.copy()
+                        settingChanged?.let {
+                            weatherViewModel.loadAnotherWeather(it)
+                            weatherViewModel.setSettingChanged(null)
+                        }
+                        weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
+                    }
 
+                    ReasonsForRefresh.STARTUP -> {
+                        val setting = weatherViewModel.getInitialSetUp()
+                        setting?.let {
+                            val listWeatherStoredActive =
+                                it.listWeather.filter { lit -> lit.isActive }
+                            val weatherCurrent = listWeatherStoredActive.firstOrNull()
+                            weatherCurrent?.let { weatherLocal ->
+                                if (weatherLocal.isGps) {
+                                    locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                                } else {
+                                    weatherViewModel.loadWeatherFromCurrent(weatherLocal)
+                                }
+                            }
+                        }
+                        weatherViewModel.initialStartUp()
+                    }
+
+                    else -> weatherViewModel.refreshWeather()
+                }
+            }
+        },
+        onActiveWeatherChanged = {
+            weatherViewModel.setSettingChanged(it)
+            weatherViewModel.setReasonForRefresh(ReasonsForRefresh.WEATHER_CHANGED)
+            weatherViewModel.refreshWeather()
+        }
+    )
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -265,6 +259,7 @@ fun NavDrawerMainScreen(
     pullState: PullToRefreshState,
     onPermissionRequest: () -> Unit,
     onSettingsButtonPress: () -> Unit,
+    onRefresh: () -> Unit,
     onActiveWeatherChanged: (Settings) -> Unit
 ) {
     val snackbarHostState = remember { SnackbarHostState() }
@@ -276,7 +271,8 @@ fun NavDrawerMainScreen(
         scope.launch { drawerState.close() }
     }
 
-    ModalNavigationDrawer(drawerState = drawerState,
+    ModalNavigationDrawer(
+        drawerState = drawerState,
         drawerContent = {
             ModalDrawerSheet {
 
@@ -286,7 +282,8 @@ fun NavDrawerMainScreen(
                         .padding(end = 28.dp, bottom = 16.dp),
                     horizontalArrangement = Arrangement.End
                 ) {
-                    IconButton(modifier = Modifier.padding(top = 18.dp),
+                    IconButton(
+                        modifier = Modifier.padding(top = 18.dp),
                         onClick = {
                             onSettingsButtonPress()
                             navController.navigate(AppScreens.SettingScreen.route)
@@ -303,7 +300,8 @@ fun NavDrawerMainScreen(
                     }
                 }
                 settings.listWeather.forEach { weather ->
-                    NavigationDrawerItem(modifier = Modifier.padding(start = 12.dp, end = 12.dp),
+                    NavigationDrawerItem(
+                        modifier = Modifier.padding(start = 12.dp, end = 12.dp),
                         label = {
                             Text(text = weather.name)
                         },
@@ -354,11 +352,8 @@ fun NavDrawerMainScreen(
 
         }) {
 
-        Scaffold(modifier =
-        if (state.error != null || state.weather != null || settings.permissionAccepted)
-            Modifier.nestedScroll(pullState.nestedScrollConnection)
-        else
-            Modifier,
+        Scaffold(
+            modifier = Modifier,
             snackbarHost = {
                 SnackbarHost(hostState = snackbarHostState)
             },
@@ -385,68 +380,75 @@ fun NavDrawerMainScreen(
                 )
             },
             content = { paddingValues ->
-
-                var noWeather by remember {
-                    mutableStateOf(true)
-                }
-
                 Box(modifier = Modifier.padding(paddingValues)) {
-                    Column(
-                        modifier = Modifier
-                            .fillMaxSize()
-                            .verticalScroll(rememberScrollState()),
-                        horizontalAlignment = if (noWeather) Alignment.CenterHorizontally else Alignment.Start,
-                        verticalArrangement = if (noWeather) Arrangement.Center else Arrangement.Top
-                    ) {
-                        if (state.isLoading) {
-                            noWeather = true
-                            CircularProgressIndicator()
-                        } else if (pullState.isRefreshing) {
-                            pullState.endRefresh()
-                        }
-
-                        state.error?.let {
-                            noWeather = true
-                            val error = stringResource(id = it)
-                            if (state.weather != null) {
-                                scope.launch {
-                                    snackbarHostState.showSnackbar(error)
+                    if (state.weather == null && !settings.permissionAccepted) {
+                        NoWeatherScreen(onPermissionRequest = onPermissionRequest)
+                    } else {
+                        PullToRefreshBox(
+                            state = pullState,
+                            isRefreshing = state.isLoading,
+                            onRefresh = onRefresh,
+                            modifier = Modifier.fillMaxSize()
+                        ) {
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxSize()
+                                    .verticalScroll(rememberScrollState()),
+                                horizontalAlignment = if (state.weather == null) Alignment.CenterHorizontally else Alignment.Start,
+                                verticalArrangement = if (state.weather == null) Arrangement.Center else Arrangement.Top
+                            ) {
+                                state.error?.let {
+                                    val error = stringResource(id = it)
+                                    if (state.weather != null) {
+                                        LaunchedEffect(error) {
+                                            snackbarHostState.showSnackbar(error)
+                                        }
+                                    } else {
+                                        Text(text = error, modifier = Modifier.padding(16.dp))
+                                    }
                                 }
-                            } else {
-                                Text(text = error, modifier = Modifier.padding(16.dp))
-                            }
 
-                        }
-
-                        state.weather?.let {
-                            noWeather = false
-                            WeatherPresentation(
-                                currentWeather = it.currentWeather,
-                                fiveDaysForecast = it.forecast,
-                                measureUnit = settings.unitOfMeasurement
-                            )
-                        }
-
-                        if (!state.isLoading && state.error == null && state.weather == null) {
-                            noWeather = true
-                            if (!settings.permissionAccepted) {
-                                NoWeatherScreen() {
-                                    onPermissionRequest()
+                                state.weather?.let {
+                                    WeatherPresentation(
+                                        currentWeather = it.currentWeather,
+                                        fiveDaysForecast = it.forecast,
+                                        measureUnit = settings.unitOfMeasurement
+                                    )
                                 }
-                            } else {
-                                Text(text = stringResource(R.string.swipe_to_load_text))
+
+                                when {
+                                    state.isLoading -> {
+                                        Box(
+                                            modifier = Modifier.fillMaxSize(),
+                                            contentAlignment = Alignment.Center
+                                        ) {
+                                            CircularProgressIndicator()
+                                        }
+                                    }
+
+                                    state.error != null -> {
+                                        val error = stringResource(id = state.error)
+                                        if (state.weather != null) {
+                                            LaunchedEffect(error) {
+                                                snackbarHostState.showSnackbar(error)
+                                            }
+                                        } else {
+                                            Text(text = error, modifier = Modifier.padding(16.dp))
+                                        }
+                                    }
+
+                                    state.weather == null -> {
+                                        Text(text = stringResource(R.string.swipe_to_load_text))
+
+                                    }
+                                }
                             }
                         }
                     }
 
-                    PullToRefreshContainer(
-                        state = pullState,
-                        modifier = Modifier.align(Alignment.TopCenter)
-                    )
-
                 }
-
-            })
+            }
+        )
     }
 }
 
@@ -507,12 +509,12 @@ private fun MainScreenPreview() {
                 state = WeatherState(),
                 settings = Settings(),
                 navController = rememberNavController(),
-                rememberPullToRefreshState(),
-                onPermissionRequest = {
-
-                },
-                onSettingsButtonPress = {}
-            ) {}
+                pullState = rememberPullToRefreshState(),
+                onPermissionRequest = {},
+                onSettingsButtonPress = {},
+                onRefresh = {},
+                onActiveWeatherChanged = {}
+            )
         }
     }
 }
@@ -531,12 +533,12 @@ private fun MainScreenDarkPreview() {
                 state = WeatherState(),
                 settings = Settings(),
                 navController = rememberNavController(),
-                rememberPullToRefreshState(),
-                onPermissionRequest = {
-
-                },
-                onSettingsButtonPress = {}
-            ) {}
+                pullState = rememberPullToRefreshState(),
+                onPermissionRequest = {},
+                onSettingsButtonPress = {},
+                onRefresh = {},
+                onActiveWeatherChanged = {}
+            )
         }
     }
 }

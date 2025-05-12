@@ -12,5 +12,5 @@ alwaysApply: false
 - Implement proper error handling and loading states.
 - Use proper theming with MaterialTheme.
 - Follow accessibility guidelines.
-
+- When adding parameters and are @Compose functions, those should be at the end, as a trailing lambdas. 
 - Implement proper animation patterns.
