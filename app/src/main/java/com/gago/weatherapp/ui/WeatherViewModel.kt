@@ -27,6 +27,7 @@ import com.gago.weatherapp.ui.utils.getErrorText
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.mutate
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
@@ -131,12 +132,14 @@ class WeatherViewModel @Inject constructor(
                     }
                 } else {
                     Log.d("WeatherViewModel", "No need to refresh")
+                    delay(500)
                     state = state.copy(
                         isLoading = false,
                         error = null
                     )
                 }
             } ?: run {
+                delay(500)
                 state = state.copy(
                     isLoading = false,
                     error = R.string.refresh_error
@@ -203,6 +206,7 @@ class WeatherViewModel @Inject constructor(
             }
 
         } ?: run {
+            delay(500)
             state = state.copy(
                 isLoading = false,
                 error = R.string.error_location
@@ -230,6 +234,7 @@ class WeatherViewModel @Inject constructor(
 
                 val error: Int = getErrorText(DataError.Local.UNKNOWN)
                 FirebaseCrashlytics.getInstance().recordException(e)
+                delay(500)
                 state = state.copy(
                     weather = null,
                     error = error,
@@ -276,7 +281,7 @@ class WeatherViewModel @Inject constructor(
                 is Result.Error -> {
 
                     val error: Int = getErrorText(resultCurrentWeather.error)
-
+                    delay(500)
                     state = state.copy(
                         error = error,
                         isLoading = false
@@ -316,6 +321,7 @@ class WeatherViewModel @Inject constructor(
 
                 is Result.Error -> {
                     val error: Int = getErrorText(forecastFiveDays.error)
+                    delay(500)
                     state = state.copy(
                         error = error,
                         isLoading = false
@@ -329,6 +335,7 @@ class WeatherViewModel @Inject constructor(
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
             val error: Int = getErrorText(DataError.Local.UNKNOWN)
+            delay(500)
             state = state.copy(
                 error = error,
                 isLoading = false

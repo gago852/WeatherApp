@@ -20,6 +20,7 @@ import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedCard
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -33,6 +34,7 @@ import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.gago.weatherapp.R
 import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.model.Forecast
@@ -49,8 +51,7 @@ fun WeatherPresentation(
     fiveDaysForecast: Forecast,
     measureUnit: MeasureUnit
 ) {
-    val config = LocalConfiguration.current
-    val screenWidth = config.screenWidthDp.dp
+    val screenWidth = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -61,7 +62,7 @@ fun WeatherPresentation(
                 .align(alignment = Alignment.CenterHorizontally),
             colors = CardDefaults.cardColors().copy(
                 containerColor =
-                MaterialTheme.colorScheme.surface
+                    MaterialTheme.colorScheme.surface
             )
         ) {
             Row(
@@ -113,7 +114,7 @@ fun WeatherPresentation(
             style = MaterialTheme.typography.headlineMedium,
             modifier = Modifier.padding(start = 8.dp)
         )
-        LazyRow {
+        LazyRow(modifier = Modifier.fillMaxWidth(), horizontalArrangement = Arrangement.Center) {
             items(fiveDaysForecast.listForecastWeather) {
                 ForecastItem(weatherForecast = it)
             }
@@ -129,7 +130,12 @@ fun WeatherPresentation(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(if (screenWidth > 480.dp) 0.5f else 1.0f)
+                    .fillMaxWidth(
+                        when (screenWidth) {
+                            WindowWidthSizeClass.COMPACT -> 1.0f
+                            else -> 0.5f
+                        }
+                    )
 
             ) {
                 Text(

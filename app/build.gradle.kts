@@ -74,6 +74,7 @@ dependencies {
     implementation(libs.androidx.ui.graphics)
     implementation(libs.androidx.ui.tooling.preview)
     implementation(libs.androidx.material3)
+    implementation(libs.androidx.material3.adaptive)
     implementation(libs.androidx.datastore)
     implementation(libs.org.jetbrains.kotlinx.collections.immutable)
     implementation(libs.org.jetbrains.kotlinx.serialization.json)

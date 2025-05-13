@@ -9,6 +9,7 @@ import android.content.res.Configuration
 import android.net.Uri
 import android.util.Log
 import androidx.activity.compose.BackHandler
+import androidx.activity.compose.LocalActivity
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Arrangement
@@ -27,7 +28,6 @@ import androidx.compose.material.icons.filled.Menu
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Button
 import androidx.compose.material3.Card
-import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.Icon
@@ -42,31 +42,31 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
 import androidx.compose.material3.Text
 import androidx.compose.material3.TopAppBar
+import androidx.compose.material3.adaptive.currentWindowAdaptiveInfo
+import androidx.compose.material3.pulltorefresh.PullToRefreshBox
+import androidx.compose.material3.pulltorefresh.PullToRefreshState
+import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.input.nestedscroll.nestedScroll
 import androidx.compose.ui.platform.LocalConfiguration
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.tooling.preview.PreviewScreenSizes
 import androidx.compose.ui.unit.dp
 import androidx.core.app.ActivityCompat.shouldShowRequestPermissionRationale
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
+import androidx.window.core.layout.WindowWidthSizeClass
 import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
@@ -80,9 +80,6 @@ import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.launch
-import androidx.compose.material3.pulltorefresh.PullToRefreshBox
-import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
-import androidx.compose.material3.pulltorefresh.PullToRefreshState
 
 private val permissionsToRequest = arrayOf(
     Manifest.permission.ACCESS_COARSE_LOCATION
@@ -91,8 +88,7 @@ private val permissionsToRequest = arrayOf(
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
-    navController: NavController,
-    weatherViewModel: WeatherViewModel = hiltViewModel()
+    navController: NavController, weatherViewModel: WeatherViewModel = hiltViewModel()
 ) {
     val isSetup = weatherViewModel.isStartup.collectAsState().value
     val state = weatherViewModel.state
@@ -103,12 +99,10 @@ fun MainScreen(
         if (isSetup) Settings() else weatherViewModel.settings.collectAsState(initial = Settings()).value
 
     val locationPermissionResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestPermission(),
-        onResult = { isGranted ->
+        contract = ActivityResultContracts.RequestPermission(), onResult = { isGranted ->
             run {
                 weatherViewModel.onPermissionResult(
-                    permission = Manifest.permission.ACCESS_COARSE_LOCATION,
-                    isGranted = isGranted
+                    permission = Manifest.permission.ACCESS_COARSE_LOCATION, isGranted = isGranted
                 )
                 mainScope.launch {
                     weatherViewModel.setPermissionAccepted(isGranted)
@@ -118,8 +112,7 @@ fun MainScreen(
                     }
                 }
             }
-        }
-    )
+        })
 
     LaunchedEffect(isSetup) {
         if (isSetup) {
@@ -144,47 +137,36 @@ fun MainScreen(
 //    Log.d("StateOnMainScreenSettings", settingValue.toString())
 
     val multiplePermissionResultLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.RequestMultiplePermissions(),
-        onResult = { perms ->
+        contract = ActivityResultContracts.RequestMultiplePermissions(), onResult = { perms ->
             permissionsToRequest.forEach { permission ->
                 weatherViewModel.onPermissionResult(
-                    permission = permission,
-                    isGranted = perms[permission] == true
+                    permission = permission, isGranted = perms[permission] == true
                 )
             }
-        }
-    )
+        })
 
     val context = LocalContext.current
 
-    dialogQueue
-        .reversed()
-        .forEach { permission ->
-            PermissionDialog(
-                permissionTextProvider = when (permission) {
-                    Manifest.permission.ACCESS_COARSE_LOCATION -> {
-                        AccessCoarseLocationPermissionTextProvider()
-                    }
-
-                    else -> return@forEach
-                },
-                isPermanentlyDeclined = !shouldShowRequestPermissionRationale(
-                    context as Activity,
-                    permission
-                ),
-                onDismiss = weatherViewModel::dismissDialog,
-                onOkClick = {
-                    weatherViewModel.dismissDialog()
-                    multiplePermissionResultLauncher.launch(
-                        arrayOf(permission)
-                    )
-                },
-                onGoToAppSettingsClick = {
-                    weatherViewModel.dismissDialog()
-                    openAppSettings(context)
+    dialogQueue.reversed().forEach { permission ->
+        PermissionDialog(
+            permissionTextProvider = when (permission) {
+                Manifest.permission.ACCESS_COARSE_LOCATION -> {
+                    AccessCoarseLocationPermissionTextProvider()
                 }
-            )
-        }
+
+                else -> return@forEach
+            }, isPermanentlyDeclined = !shouldShowRequestPermissionRationale(
+                context as Activity, permission
+            ), onDismiss = weatherViewModel::dismissDialog, onOkClick = {
+                weatherViewModel.dismissDialog()
+                multiplePermissionResultLauncher.launch(
+                    arrayOf(permission)
+                )
+            }, onGoToAppSettingsClick = {
+                weatherViewModel.dismissDialog()
+                openAppSettings(context)
+            })
+    }
 
     LifecycleResumeEffect(true) {
         Log.d("LifecycleResumeEffect", "resume ${weatherViewModel.wentToSettings}")
@@ -246,8 +228,7 @@ fun MainScreen(
             weatherViewModel.setSettingChanged(it)
             weatherViewModel.setReasonForRefresh(ReasonsForRefresh.WEATHER_CHANGED)
             weatherViewModel.refreshWeather()
-        }
-    )
+        })
 }
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -272,8 +253,7 @@ fun NavDrawerMainScreen(
     }
 
     ModalNavigationDrawer(
-        drawerState = drawerState,
-        drawerContent = {
+        drawerState = drawerState, drawerContent = {
             ModalDrawerSheet {
 
                 Row(
@@ -283,8 +263,7 @@ fun NavDrawerMainScreen(
                     horizontalArrangement = Arrangement.End
                 ) {
                     IconButton(
-                        modifier = Modifier.padding(top = 18.dp),
-                        onClick = {
+                        modifier = Modifier.padding(top = 18.dp), onClick = {
                             onSettingsButtonPress()
                             navController.navigate(AppScreens.SettingScreen.route)
                             scope.launch {
@@ -313,7 +292,8 @@ fun NavDrawerMainScreen(
                                 )
                             }
                         },
-                        selected = weather.isActive, onClick = {
+                        selected = weather.isActive,
+                        onClick = {
                             if (!weather.isActive) {
                                 val tempActivated = settings.listWeather.find {
                                     it.isActive
@@ -323,11 +303,9 @@ fun NavDrawerMainScreen(
 
                                 tempActivated?.let {
                                     val indexTemp = settings.listWeather.indexOf(it)
-                                    tempList =
-                                        settings.listWeather.set(
-                                            indexTemp,
-                                            it.copy(isActive = false)
-                                        )
+                                    tempList = settings.listWeather.set(
+                                        indexTemp, it.copy(isActive = false)
+                                    )
                                 }
 
                                 val indexActual = settings.listWeather.indexOf(weather)
@@ -352,127 +330,110 @@ fun NavDrawerMainScreen(
 
         }) {
 
-        Scaffold(
-            modifier = Modifier,
-            snackbarHost = {
-                SnackbarHost(hostState = snackbarHostState)
-            },
-            topBar = {
-                val activeWeather = settings.listWeather.find { it.isActive }?.let {
-                    "- ${it.name}"
-                } ?: ""
+        Scaffold(modifier = Modifier, snackbarHost = {
+            SnackbarHost(hostState = snackbarHostState)
+        }, topBar = {
+            val activeWeather = settings.listWeather.find { it.isActive }?.let {
+                "- ${it.name}"
+            } ?: ""
 
-                TopAppBar(
+            TopAppBar(
 
-                    title = { Text(text = stringResource(id = R.string.app_name) + " $activeWeather") },
-                    navigationIcon = {
-                        IconButton(onClick = {
-                            scope.launch {
-                                drawerState.open()
-                            }
-                        }) {
-                            Icon(
-                                imageVector = Icons.Filled.Menu,
-                                contentDescription = stringResource(R.string.menu_text_button)
-                            )
+                title = { Text(text = stringResource(id = R.string.app_name) + " $activeWeather") },
+                navigationIcon = {
+                    IconButton(onClick = {
+                        scope.launch {
+                            drawerState.open()
                         }
+                    }) {
+                        Icon(
+                            imageVector = Icons.Filled.Menu,
+                            contentDescription = stringResource(R.string.menu_text_button)
+                        )
                     }
-                )
-            },
-            content = { paddingValues ->
-                Box(modifier = Modifier.padding(paddingValues)) {
-                    if (state.weather == null && !settings.permissionAccepted) {
-                        NoWeatherScreen(onPermissionRequest = onPermissionRequest)
-                    } else {
-                        PullToRefreshBox(
-                            state = pullState,
-                            isRefreshing = state.isLoading,
-                            onRefresh = onRefresh,
-                            modifier = Modifier.fillMaxSize()
+                })
+        }, content = { paddingValues ->
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .padding(paddingValues),
+                contentAlignment = if (state.weather == null && !settings.permissionAccepted)
+                    Alignment.Center else Alignment.TopStart
+            ) {
+                if (state.weather == null && !settings.permissionAccepted) {
+                    NoWeatherScreen(onPermissionRequest = onPermissionRequest)
+                } else {
+                    PullToRefreshBox(
+                        state = pullState,
+                        isRefreshing = state.isLoading,
+                        onRefresh = onRefresh,
+                        modifier = Modifier.fillMaxSize()
+                    ) {
+                        Column(
+                            modifier = Modifier
+                                .fillMaxSize()
+                                .verticalScroll(rememberScrollState()),
+                            horizontalAlignment = if (state.weather == null) Alignment.CenterHorizontally else Alignment.Start,
+                            verticalArrangement = if (state.weather == null) Arrangement.Center else Arrangement.Top
                         ) {
-                            Column(
-                                modifier = Modifier
-                                    .fillMaxSize()
-                                    .verticalScroll(rememberScrollState()),
-                                horizontalAlignment = if (state.weather == null) Alignment.CenterHorizontally else Alignment.Start,
-                                verticalArrangement = if (state.weather == null) Arrangement.Center else Arrangement.Top
-                            ) {
-                                state.error?.let {
-                                    val error = stringResource(id = it)
-                                    if (state.weather != null) {
-                                        LaunchedEffect(error) {
-                                            snackbarHostState.showSnackbar(error)
-                                        }
-                                    } else {
-                                        Text(text = error, modifier = Modifier.padding(16.dp))
+                            state.error?.let {
+                                val error = stringResource(id = it)
+                                if (state.weather != null) {
+                                    LaunchedEffect(error) {
+                                        snackbarHostState.showSnackbar(error)
                                     }
+                                } else {
+                                    Text(text = error, modifier = Modifier.padding(16.dp))
                                 }
+                            }
 
-                                state.weather?.let {
-                                    WeatherPresentation(
-                                        currentWeather = it.currentWeather,
-                                        fiveDaysForecast = it.forecast,
-                                        measureUnit = settings.unitOfMeasurement
-                                    )
-                                }
+                            state.weather?.let {
+                                WeatherPresentation(
+                                    currentWeather = it.currentWeather,
+                                    fiveDaysForecast = it.forecast,
+                                    measureUnit = settings.unitOfMeasurement
+                                )
+                            }
 
-                                when {
-                                    state.isLoading -> {
-                                        Box(
-                                            modifier = Modifier.fillMaxSize(),
-                                            contentAlignment = Alignment.Center
-                                        ) {
-                                            CircularProgressIndicator()
-                                        }
-                                    }
-
-                                    state.error != null -> {
-                                        val error = stringResource(id = state.error)
-                                        if (state.weather != null) {
-                                            LaunchedEffect(error) {
-                                                snackbarHostState.showSnackbar(error)
-                                            }
-                                        } else {
-                                            Text(text = error, modifier = Modifier.padding(16.dp))
-                                        }
-                                    }
-
-                                    state.weather == null -> {
-                                        Text(text = stringResource(R.string.swipe_to_load_text))
-
-                                    }
-                                }
+                            if (state.weather == null && !state.isLoading) {
+                                Text(text = stringResource(R.string.swipe_to_load_text))
                             }
                         }
                     }
-
                 }
+
             }
-        )
+        })
     }
 }
 
 @Composable
 fun NoWeatherScreen(onPermissionRequest: () -> Unit) {
-    val config = LocalConfiguration.current
-    val screenWidth = config.screenWidthDp.dp
+    val screenWidth = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+
     Card(modifier = Modifier.padding(32.dp)) {
         Column(
             verticalArrangement = Arrangement.Center,
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
-                modifier = Modifier
-                    .padding(top = 16.dp, start = 16.dp, end = 16.dp),
+                modifier = Modifier.padding(top = 16.dp, start = 16.dp, end = 16.dp),
                 style = MaterialTheme.typography.titleLarge,
                 fontWeight = FontWeight.Bold,
                 textAlign = TextAlign.Center,
                 text = stringResource(R.string.welcome_title)
             )
             Spacer(modifier = Modifier.padding(16.dp))
+            //                        if (screenWidth > 500.dp) 0.4f else 1.0f)
             Text(
                 modifier = Modifier
-                    .fillMaxWidth(if (screenWidth > 500.dp) 0.4f else 1.0f)
+                    .fillMaxWidth(
+
+                        when (screenWidth) {
+                            WindowWidthSizeClass.COMPACT -> 1.0f
+                            else -> 0.4f
+                        }
+                    )
                     .padding(start = 16.dp, end = 16.dp),
                 text = stringResource(R.string.welcome_message)
             )
@@ -513,8 +474,7 @@ private fun MainScreenPreview() {
                 onPermissionRequest = {},
                 onSettingsButtonPress = {},
                 onRefresh = {},
-                onActiveWeatherChanged = {}
-            )
+                onActiveWeatherChanged = {})
         }
     }
 }
@@ -522,7 +482,8 @@ private fun MainScreenPreview() {
 @OptIn(ExperimentalMaterial3Api::class)
 @SuppressLint("UnrememberedMutableState")
 @Preview(
-    showBackground = true, showSystemUi = true,
+    showBackground = true,
+    showSystemUi = true,
     uiMode = Configuration.UI_MODE_NIGHT_YES or Configuration.UI_MODE_TYPE_NORMAL
 )
 @Composable
@@ -537,8 +498,7 @@ private fun MainScreenDarkPreview() {
                 onPermissionRequest = {},
                 onSettingsButtonPress = {},
                 onRefresh = {},
-                onActiveWeatherChanged = {}
-            )
+                onActiveWeatherChanged = {})
         }
     }
 }
