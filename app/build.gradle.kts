@@ -19,7 +19,7 @@ android {
         applicationId = "com.gago.weatherapp"
         minSdk = 27
         targetSdk = 35
-        versionCode = 6
+        versionCode = 8
         versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -39,6 +39,9 @@ android {
 
     buildTypes {
         release {
+            ndk {
+                debugSymbolLevel = "FULL"
+            }
             isMinifyEnabled = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
