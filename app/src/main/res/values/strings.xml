@@ -63,5 +63,7 @@
     <!--Commons-->
     <string name="settings_text">Settings</string>
     <string name="back_button">Back</string>
+    <string name="no_weather_text">No weather information available. Please grant location permission to see your local weather.</string>
+    <string name="grant_permission">Grant Permission</string>
 
 </resources>

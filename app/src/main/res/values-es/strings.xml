@@ -42,4 +42,6 @@
     <string name="last_updated_text">Última actualización:</string>
     <string name="settings_text">Ajustes</string>
     <string name="back_button">Atrás</string>
+    <string name="no_weather_text">No hay información meteorológica disponible. Por favor, concede el permiso de ubicación para ver el clima local.</string>
+    <string name="grant_permission">Conceder Permiso</string>
 </resources>

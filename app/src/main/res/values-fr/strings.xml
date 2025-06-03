@@ -42,4 +42,6 @@
     <string name="last_updated_text">Dernière mise à jour:</string>
     <string name="settings_text">Paramètres</string>
     <string name="back_button">Retourner</string>
+    <string name="no_weather_text">Aucune information meteo disponible. Veuillez accorder la permission de localisation pour voir la meteo locale.</string>
+    <string name="grant_permission">Accorder la permission</string>
 </resources>
