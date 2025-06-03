@@ -1,5 +1,6 @@
 package com.gago.weatherapp.ui.main.components
 
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
@@ -38,6 +39,7 @@ private fun DrawerHeader(onSettingsClick: () -> Unit) {
         modifier = Modifier
             .fillMaxWidth()
             .padding(end = 28.dp, bottom = 16.dp),
+        horizontalArrangement = Arrangement.End
     ) {
         IconButton(
             modifier = Modifier.padding(top = 18.dp),
@@ -81,16 +83,16 @@ private fun DrawerItems(
 
 private fun updateActiveWeather(settings: Settings, newActiveWeather: WeatherLocal): Settings {
     val currentActive = settings.listWeather.find { it.isActive }
-    
+
     var tempList = persistentListOf<WeatherLocal>()
-    
+
     currentActive?.let {
         val indexTemp = settings.listWeather.indexOf(it)
         tempList = settings.listWeather.set(indexTemp, it.copy(isActive = false))
     }
-    
+
     val indexActual = settings.listWeather.indexOf(newActiveWeather)
     val newList = tempList.set(indexActual, newActiveWeather.copy(isActive = true))
-    
+
     return settings.copy(listWeather = newList)
 }
