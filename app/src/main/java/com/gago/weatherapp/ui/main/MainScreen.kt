@@ -1,23 +1,18 @@
 package com.gago.weatherapp.ui.main
 
 import android.Manifest
-import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.content.res.Configuration
 import android.net.Uri
-import android.util.Log
 import androidx.activity.compose.BackHandler
 import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
-import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.material3.Button
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -26,7 +21,6 @@ import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Surface
-import androidx.compose.material3.Text
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberDrawerState
 import androidx.compose.runtime.Composable
@@ -36,35 +30,22 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.res.stringResource
-import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.NavController
-import androidx.navigation.compose.rememberNavController
-import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.ui.WeatherState
 import com.gago.weatherapp.ui.WeatherViewModel
-import com.gago.weatherapp.ui.main.components.ErrorDisplay
 import com.gago.weatherapp.ui.main.components.HandlePermissionDialogs
 import com.gago.weatherapp.ui.main.components.NavigationDrawerContent
-import com.gago.weatherapp.ui.main.components.PermissionDialog
 import com.gago.weatherapp.ui.main.components.WeatherContent
 import com.gago.weatherapp.ui.main.components.WeatherTopBar
 import com.gago.weatherapp.ui.main.utils.handleRefresh
 import com.gago.weatherapp.ui.navigation.AppScreens
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
-import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.launch
-
-private val permissionsToRequest = arrayOf(
-    Manifest.permission.ACCESS_COARSE_LOCATION
-)
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
