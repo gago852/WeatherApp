@@ -20,7 +20,7 @@ Se implementará un componente de búsqueda tipo overlay que se mostrará por en
   - Posicionado en la parte superior del overlay
 
 ### Funcionalidad de Debounce
-- Implementar un debounce de 200 milisegundos
+- Implementar un debounce de 200 milisegundos y este se guardara en una constante.
 - El texto de búsqueda se almacenará en dos estados:
   1. `searchText`: Estado inmediato del texto
   2. `debouncedText`: Estado con el texto debounceado
@@ -63,7 +63,8 @@ Se implementará un componente de búsqueda tipo overlay que se mostrará por en
 
 ### Atribución de Google Maps
 - Implementar un componente `GoogleMapsAttribution` que muestre:
-  - Logo de Google Maps
+  - Logo de Google
+  - El logo está ubicado en la carpeta res/drawable-(tamaño de pantalla)/google_on_non_white.png
   - Texto de atribución: "Powered by Google"
   - Enlace a los términos de servicio de Google Maps
   - Ubicación: Esquina inferior derecha del overlay

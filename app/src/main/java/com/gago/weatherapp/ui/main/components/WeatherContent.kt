@@ -26,10 +26,14 @@ fun WeatherContent(
     pullState: PullToRefreshState,
     onRefresh: () -> Unit,
     onPermissionRequest: () -> Unit,
-    onError: (String) -> Unit
+    onError: (String) -> Unit,
+    onShowSearchOverlay: () -> Unit
 ) {
     if (state.weather == null && !settings.permissionAccepted) {
-        WelcomeWeatherScreen(onPermissionRequest = onPermissionRequest)
+        WelcomeWeatherScreen(
+            onPermissionRequest = onPermissionRequest,
+            onShowSearchOverlay = onShowSearchOverlay
+        )
     } else {
         PullToRefreshBox(
             state = pullState,
@@ -76,7 +80,8 @@ private fun WeatherContentPreview() {
                 pullState = rememberPullToRefreshState(),
                 onRefresh = {},
                 onPermissionRequest = {},
-                onError = {}
+                onError = {},
+                onShowSearchOverlay = {}
             )
         }
     }

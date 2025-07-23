@@ -46,12 +46,18 @@ import com.gago.weatherapp.ui.navigation.AppScreens
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import kotlinx.coroutines.launch
+import com.gago.weatherapp.ui.main.viewModels.SearchCityViewModel
+import com.gago.weatherapp.ui.main.viewModels.SearchCityUiState
+import com.gago.weatherapp.ui.main.components.SearchCityOverlay
+import androidx.compose.ui.platform.LocalContext
+import com.gago.weatherapp.ui.main.components.CityResult
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun MainScreen(
     navController: NavController,
-    weatherViewModel: WeatherViewModel = hiltViewModel()
+    weatherViewModel: WeatherViewModel = hiltViewModel(),
+    searchCityViewModel: SearchCityViewModel = hiltViewModel()
 ) {
     val isSetup = weatherViewModel.isStartup.collectAsState().value
     val state = weatherViewModel.state
@@ -77,6 +83,8 @@ fun MainScreen(
             }
         }
     )
+
+    val searchUiState = searchCityViewModel.uiState.collectAsState().value
 
     LaunchedEffect(isSetup) {
         if (isSetup) {
@@ -141,7 +149,13 @@ fun MainScreen(
         },
         onPermissionRequest = {
             locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-        }
+        },
+        searchUiState = searchUiState,
+        onShowSearchOverlay = { searchCityViewModel.showOverlay() },
+        onDismissSearchOverlay = { searchCityViewModel.onDismiss() },
+        onSearchTextChanged = { searchCityViewModel.onSearchTextChanged(it) },
+        onResultClick = { searchCityViewModel.onResultClick(it) },
+        onClearSearch = { searchCityViewModel.onClear() }
     )
 
 }
@@ -155,6 +169,12 @@ fun WeatherNavDrawer(
     onWeatherItemClick: (Settings) -> Unit,
     onRefresh: () -> Unit,
     onPermissionRequest: () -> Unit,
+    searchUiState: SearchCityUiState,
+    onShowSearchOverlay: () -> Unit,
+    onDismissSearchOverlay: () -> Unit,
+    onSearchTextChanged: (String) -> Unit,
+    onResultClick: (CityResult) -> Unit,
+    onClearSearch: () -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -174,6 +194,10 @@ fun WeatherNavDrawer(
                 },
                 onWeatherItemClick = { newSettings ->
                     onWeatherItemClick(newSettings)
+                    navScope.launch { drawerState.close() }
+                },
+                onSearchClick = {
+                    onShowSearchOverlay()
                     navScope.launch { drawerState.close() }
                 }
             )
@@ -203,8 +227,22 @@ fun WeatherNavDrawer(
                     pullState = pullState,
                     onRefresh = onRefresh,
                     onPermissionRequest = onPermissionRequest,
-                    onError = { error -> navScope.launch { snackBarHostState.showSnackbar(error) } }
+                    onError = { error -> navScope.launch { snackBarHostState.showSnackbar(error) } },
+                    onShowSearchOverlay = onShowSearchOverlay
                 )
+                if (searchUiState.isVisible) {
+                    SearchCityOverlay(
+                        isVisible = searchUiState.isVisible,
+                        onDismiss = { onDismissSearchOverlay() },
+                        searchResults = searchUiState.searchResults,
+                        onSearchTextChanged = { onSearchTextChanged(it) },
+                        searchText = searchUiState.searchText,
+                        onResultClick = { onResultClick(it) },
+                        isLoading = searchUiState.isLoading,
+                        error = searchUiState.error,
+                        onClear = { onClearSearch() }
+                    )
+                }
             }
         }
     }
@@ -232,7 +270,13 @@ fun MainScreenPreview() {
                 onSettingsClick = {},
                 onWeatherItemClick = {},
                 onRefresh = {},
-                onPermissionRequest = {}
+                onPermissionRequest = {},
+                searchUiState = SearchCityUiState(),
+                onShowSearchOverlay = {},
+                onDismissSearchOverlay = {},
+                onSearchTextChanged = {},
+                onResultClick = {},
+                onClearSearch = {}
             )
         }
     }
@@ -252,7 +296,13 @@ fun MainScreenDarkPreview() {
                 onSettingsClick = {},
                 onWeatherItemClick = {},
                 onRefresh = {},
-                onPermissionRequest = {}
+                onPermissionRequest = {},
+                searchUiState = SearchCityUiState(),
+                onShowSearchOverlay = {},
+                onDismissSearchOverlay = {},
+                onSearchTextChanged = {},
+                onResultClick = {},
+                onClearSearch = {}
             )
         }
     }

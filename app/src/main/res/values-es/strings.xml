@@ -44,4 +44,5 @@
     <string name="back_button">Atrás</string>
     <string name="no_weather_text">No hay información meteorológica disponible. Por favor, concede el permiso de ubicación para ver el clima local.</string>
     <string name="grant_permission">Conceder Permiso</string>
+    <string name="button_search_city">Buscar ciudad</string>
 </resources>

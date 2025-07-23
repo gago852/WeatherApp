@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
@@ -20,29 +21,44 @@ import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
 import kotlinx.collections.immutable.persistentListOf
+import androidx.compose.ui.platform.testTag
 
 @Composable
 fun NavigationDrawerContent(
     settings: Settings,
     onSettingsClick: () -> Unit,
-    onWeatherItemClick: (Settings) -> Unit
+    onWeatherItemClick: (Settings) -> Unit,
+    onSearchClick: () -> Unit
 ) {
     ModalDrawerSheet {
-        DrawerHeader(onSettingsClick = onSettingsClick)
+        DrawerHeader(onSettingsClick = onSettingsClick, onSearchClick = onSearchClick)
         DrawerItems(settings = settings, onWeatherItemClick = onWeatherItemClick)
     }
 }
 
 @Composable
-private fun DrawerHeader(onSettingsClick: () -> Unit) {
+private fun DrawerHeader(onSettingsClick: () -> Unit, onSearchClick: () -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
-            .padding(end = 28.dp, bottom = 16.dp),
-        horizontalArrangement = Arrangement.End
+            .padding(start = 12.dp, end = 12.dp, bottom = 16.dp),
+        horizontalArrangement = Arrangement.SpaceBetween
     ) {
         IconButton(
-            modifier = Modifier.padding(top = 18.dp),
+            modifier = Modifier
+                .padding(top = 18.dp)
+                .testTag("search_drawer_button"),
+            onClick = onSearchClick
+        ) {
+            Icon(
+                imageVector = Icons.Filled.Search,
+                contentDescription = "Buscar ciudad"
+            )
+        }
+        IconButton(
+            modifier = Modifier
+                .padding(top = 18.dp)
+                .testTag("settings_drawer_button"),
             onClick = onSettingsClick
         ) {
             Icon(
@@ -96,3 +112,4 @@ private fun updateActiveWeather(settings: Settings, newActiveWeather: WeatherLoc
 
     return settings.copy(listWeather = newList)
 }
+

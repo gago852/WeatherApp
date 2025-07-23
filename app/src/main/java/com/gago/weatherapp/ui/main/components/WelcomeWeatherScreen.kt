@@ -9,6 +9,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.LocationOn
+import androidx.compose.material.icons.filled.Search
+import androidx.compose.ui.platform.testTag
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Card
@@ -30,9 +32,13 @@ import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import androidx.compose.foundation.layout.widthIn
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Surface
+import androidx.compose.foundation.layout.Row
 
 @Composable
-fun WelcomeWeatherScreen(onPermissionRequest: () -> Unit) {
+fun WelcomeWeatherScreen(
+    onPermissionRequest: () -> Unit,
+    onShowSearchOverlay: () -> Unit
+) {
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -68,20 +74,40 @@ fun WelcomeWeatherScreen(onPermissionRequest: () -> Unit) {
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                Button(
-                    onClick = onPermissionRequest,
-                    colors = ButtonDefaults.buttonColors(
-                        containerColor = Color(0xFF8B572A), // Marrón
-                        contentColor = Color.White
-                    ),
-                    modifier = Modifier.fillMaxWidth()
+                Row(
+                    modifier = Modifier.fillMaxWidth(),
+                    horizontalArrangement = Arrangement.spacedBy(12.dp)
                 ) {
-                    Icon(
-                        imageVector = Icons.Default.LocationOn,
-                        contentDescription = null
-                    )
-                    Spacer(modifier = Modifier.width(8.dp))
-                    Text(stringResource(R.string.button_get_gps))
+                    Button(
+                        onClick = onPermissionRequest,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        modifier = Modifier.weight(1f).testTag("gps_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.LocationOn,
+                            contentDescription = stringResource(R.string.button_get_gps)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.button_get_gps))
+                    }
+                    Button(
+                        onClick = onShowSearchOverlay,
+                        colors = ButtonDefaults.buttonColors(
+                            containerColor = MaterialTheme.colorScheme.primary,
+                            contentColor = MaterialTheme.colorScheme.onPrimary
+                        ),
+                        modifier = Modifier.weight(1f).testTag("search_button")
+                    ) {
+                        Icon(
+                            imageVector = Icons.Default.Search,
+                            contentDescription = stringResource(R.string.button_search_city)
+                        )
+                        Spacer(modifier = Modifier.width(8.dp))
+                        Text(stringResource(R.string.button_search_city))
+                    }
                 }
             }
         }
@@ -93,7 +119,10 @@ fun WelcomeWeatherScreen(onPermissionRequest: () -> Unit) {
 private fun NoWeatherPreview() {
     WeatherAppTheme {
         Surface {
-            WelcomeWeatherScreen(onPermissionRequest = {})
+            WelcomeWeatherScreen(
+                onPermissionRequest = {},
+                onShowSearchOverlay = {}
+            )
         }
     }
 }
