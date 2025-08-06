@@ -1,5 +1,6 @@
 [versions]
-agp = "8.11.1"
+#core
+agp = "8.12.0"
 kotlin = "2.0.21"
 coreKtx = "1.16.0"
 junit = "4.13.2"
@@ -8,22 +9,35 @@ espressoCore = "3.6.1"
 lifecycleRuntimeKtx = "2.9.0"
 activityCompose = "1.10.1"
 composeBom = "2025.05.00"
-hilt = "2.51.1"
-hiltExt = "1.0.0"
+navigation = "2.9.0"
+kotlinCollectionsImmutable = "0.3.5"
+kotlinSerialization = "1.7.3"
+#retrofit
 retrofit = "2.11.0"
 moshi = "2.9.0"
 ksp = "2.0.21-1.0.28"
+#gsm
 gmsLocation = "21.3.0"
 googleServices = "4.4.2"
+googlePlaces = "4.4.1"
+googleSecrets = "2.0.1"
+#db
 dataStore = "1.1.6"
-kotlinCollectionsImmutable = "0.3.5"
-kotlinSerialization = "1.7.3"
 datastorePreferencesCoreJvm = "1.1.6"
-navigation = "2.9.0"
+#hilt
+hilt = "2.51.1"
+hiltExt = "1.0.0"
 hiltNavigationCompose = "1.2.0"
+#firebase
 firebaseBom = "33.13.0"
 firebaseCrashlytics = "3.0.3"
+#testing
 mockitoKotlin = "5.2.1"
+hamcrest = "2.2"
+mockito = "5.10.0"
+mockwebserver = "4.12.0"
+kotlinxCoroutinesTest = "1.8.1"
+coreTesting = "2.2.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -44,6 +58,7 @@ androidx-material3 = { group = "androidx.compose.material3", name = "material3" 
 androidx-material3-windowSizeClass = { group = "androidx.compose.material3", name = "material3-window-size-class" }
 androidx-material3-adaptive = { group = "androidx.compose.material3.adaptive", name = "adaptive" }
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "dataStore" }
+androidx-datastore-preferences-core-jvm = { group = "androidx.datastore", name = "datastore-preferences-core-jvm", version.ref = "datastorePreferencesCoreJvm" }
 org-jetbrains-kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinCollectionsImmutable" }
 org-jetbrains-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
@@ -51,11 +66,11 @@ firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.r
 firebase-analytics = { group = "com.google.firebase", name = "firebase-analytics" }
 firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashlytics" }
 
-hamcrest = { group = "org.hamcrest", name = "hamcrest", version = "2.2" }
-mockito = { group = "org.mockito", name = "mockito-core", version = "5.10.0" }
-mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version = "4.12.0" }
-kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version = "1.8.1" }
-core-testing = { group = "androidx.arch.core", name = "core-testing", version = "2.2.0" }
+hamcrest = { group = "org.hamcrest", name = "hamcrest", version.ref = "hamcrest" }
+mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "mockwebserver" }
+kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
+core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }
 mockito-kotlin = { group = "org.mockito.kotlin", name = "mockito-kotlin", version.ref = "mockitoKotlin" }
 
 #hilt
@@ -65,9 +80,10 @@ hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-com
 #retrofit
 retrofit = { group = "com.squareup.retrofit2", name = "retrofit", version.ref = "retrofit" }
 converter-moshi = { group = "com.squareup.retrofit2", name = "converter-moshi", version.ref = "moshi" }
-#fusedlocation
+#gsm
 gms-location = { group = "com.google.android.gms", name = "play-services-location", version.ref = "gmsLocation" }
-androidx-datastore-preferences-core-jvm = { group = "androidx.datastore", name = "datastore-preferences-core-jvm", version.ref = "datastorePreferencesCoreJvm" }
+google-places = { group = "com.google.android.libraries.places", name = "places", version.ref = "googlePlaces" }
+
 
 [plugins]
 androidApplication = { id = "com.android.application", version.ref = "agp" }
@@ -78,3 +94,4 @@ ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
 googleServices = { id = "com.google.gms.google-services", version.ref = "googleServices" }
 firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
+google-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleSecrets" }

@@ -54,12 +54,19 @@ Se implementará un componente de búsqueda tipo overlay que se mostrará por en
    - Cerrar el overlay
    - Actualizar la UI con el nuevo pronóstico
 
+### Conexión entre ViewModels
+- El ViewModel de búsqueda se conectará con el ViewModel de pronóstico usando un LaunchedEffect
+- El LaunchedEffect observará el resultado final de la búsqueda
+- La clase T del StateFlow que será observado en el LaunchedEffect será WeatherLocal
+- Esta conexión permitirá que el ViewModel de pronóstico reciba automáticamente los datos de la ciudad seleccionada
+
 ### Estados del Overlay
 - `isVisible`: Controla la visibilidad del overlay
 - `isLoading`: Indica cuando se están cargando resultados
 - `error`: Manejo de errores de las APIs
 - `searchResults`: Lista de resultados de autocomplete
 - `selectedPlace`: Lugar seleccionado con sus detalles
+- `token`: Token para la gestión de sesiones de búsqueda
 
 ### Atribución de Google Maps
 - Implementar un componente `GoogleMapsAttribution` que muestre:

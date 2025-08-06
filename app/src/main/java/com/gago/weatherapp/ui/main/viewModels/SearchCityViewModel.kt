@@ -43,7 +43,12 @@ class SearchCityViewModel @Inject constructor() : ViewModel() {
                 CityResult("New York", "USA"),
                 CityResult("Tokyo", "Japón"),
                 CityResult("London", "UK")
-            ).filter { it.name.contains(query, ignoreCase = true) || it.country.contains(query, ignoreCase = true) }
+            ).filter {
+                it.name.contains(query, ignoreCase = true) || it.country.contains(
+                    query,
+                    ignoreCase = true
+                )
+            }
             _uiState.value = _uiState.value.copy(searchResults = mockResults, isLoading = false)
         }
     }
@@ -53,11 +58,22 @@ class SearchCityViewModel @Inject constructor() : ViewModel() {
     }
 
     fun onClear() {
-        _uiState.value = _uiState.value.copy(searchText = "", debouncedText = "", searchResults = emptyList(), error = null)
+        _uiState.value = _uiState.value.copy(
+            searchText = "",
+            debouncedText = "",
+            searchResults = emptyList(),
+            error = null
+        )
     }
 
     fun onDismiss() {
-        _uiState.value = _uiState.value.copy(isVisible = false, searchText = "", debouncedText = "", searchResults = emptyList(), error = null)
+        _uiState.value = _uiState.value.copy(
+            isVisible = false,
+            searchText = "",
+            debouncedText = "",
+            searchResults = emptyList(),
+            error = null
+        )
     }
 
     fun showOverlay() {
