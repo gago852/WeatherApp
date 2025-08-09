@@ -9,12 +9,11 @@
 - [x] Conectar botones de búsqueda (drawer y welcome) al overlay
 - [x] Refactor para no pasar ViewModel por parámetros, solo funciones y estado
 - [x] Refactor de previews para no usar ViewModel
-- [ ] Integrar Google Places Autocomplete API (llamadas reales)
-- [x] Mostrar resultados reales de la API en la lista (mock)
-- [ ] Preparar modelo CityResult en la capa domain y agregarle coordenadas geográficas
-- [ ] Al hacer clic en un resultado, obtener detalles con Places Details API
+- [x] Integrar Google Places Autocomplete API (estructura base: repositorio, DI, UI state con token, overlay y predicciones)
+- [x] Preparar modelo GeoCoordinate en la capa domain (lat, lon, name)
+- [x] Al hacer clic en un resultado, obtener detalles con Places Details API (coordenadas + formatted address)
 - [ ] Obtener coordenadas y llamar a OpenWeather API
-- [ ] Cerrar overlay y actualizar UI con el nuevo pronóstico
+- [x] Cerrar overlay y actualizar UI con LaunchedEffect (hasta exponer GeoCoordinate vía StateFlow)
 - [ ] Manejo de errores de las APIs (Places, OpenWeather, red, límites, etc)
 - [ ] Animaciones de entrada/salida en lista y overlay
 - [ ] Testing con ComposeTestRule (UI, debounce, integración, accesibilidad, etc)

@@ -47,10 +47,11 @@ import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import kotlinx.coroutines.launch
 import com.gago.weatherapp.ui.main.viewModels.SearchCityViewModel
-import com.gago.weatherapp.ui.main.viewModels.SearchCityUiState
+import com.gago.weatherapp.ui.main.states.SearchCityUiState
 import com.gago.weatherapp.ui.main.components.SearchCityOverlay
 import androidx.compose.ui.platform.LocalContext
-import com.gago.weatherapp.ui.main.components.CityResult
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.gago.weatherapp.domain.model.GeoCoordinate
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -85,6 +86,17 @@ fun MainScreen(
     )
 
     val searchUiState = searchCityViewModel.uiState.collectAsState().value
+    val selectedGeo = searchCityViewModel.selectedGeoCoordinate.collectAsState().value
+
+    LaunchedEffect(selectedGeo) {
+        selectedGeo?.let { geo: GeoCoordinate ->
+            try {
+                // Luego conectaremos la actualización del WeatherViewModel aquí
+            } finally {
+                searchCityViewModel.resetSelectedGeoCoordinate()
+            }
+        }
+    }
 
     LaunchedEffect(isSetup) {
         if (isSetup) {
@@ -173,7 +185,7 @@ fun WeatherNavDrawer(
     onShowSearchOverlay: () -> Unit,
     onDismissSearchOverlay: () -> Unit,
     onSearchTextChanged: (String) -> Unit,
-    onResultClick: (CityResult) -> Unit,
+    onResultClick: (AutocompletePrediction) -> Unit,
     onClearSearch: () -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }

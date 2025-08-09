@@ -10,12 +10,22 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.gago.weatherapp.ui.main.components.CityResult
+import com.gago.weatherapp.ui.main.states.SearchCityUiState
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
+import com.gago.weatherapp.domain.repository.PlacesRepository
+import com.gago.weatherapp.domain.utils.Result
+import com.gago.weatherapp.domain.model.GeoCoordinate
 
 @HiltViewModel
-class SearchCityViewModel @Inject constructor() : ViewModel() {
+class SearchCityViewModel @Inject constructor(
+    private val placesRepository: PlacesRepository
+) : ViewModel() {
     private val _uiState = MutableStateFlow(SearchCityUiState())
     val uiState: StateFlow<SearchCityUiState> = _uiState.asStateFlow()
+
+    private val _selectedGeoCoordinate = MutableStateFlow<GeoCoordinate?>(null)
+    val selectedGeoCoordinate: StateFlow<GeoCoordinate?> = _selectedGeoCoordinate.asStateFlow()
 
     private var debounceJob: Job? = null
 
@@ -25,36 +35,47 @@ class SearchCityViewModel @Inject constructor() : ViewModel() {
         debounceJob = viewModelScope.launch {
             delay(DEBOUNCE_DELAY_MS)
             _uiState.value = _uiState.value.copy(debouncedText = text)
-            fetchMockResults(text)
+            fetchAutocomplete(text)
         }
     }
 
-    private fun fetchMockResults(query: String) {
+    private fun fetchAutocomplete(query: String) {
         viewModelScope.launch {
             if (query.isBlank()) {
                 _uiState.value = _uiState.value.copy(searchResults = emptyList(), isLoading = false)
                 return@launch
             }
-            // Simulación de resultados mockeados
-            val mockResults = listOf(
-                CityResult("Buenos Aires", "Argentina"),
-                CityResult("Madrid", "España"),
-                CityResult("Paris", "Francia"),
-                CityResult("New York", "USA"),
-                CityResult("Tokyo", "Japón"),
-                CityResult("London", "UK")
-            ).filter {
-                it.name.contains(query, ignoreCase = true) || it.country.contains(
-                    query,
-                    ignoreCase = true
-                )
+            val token = _uiState.value.token ?: AutocompleteSessionToken.newInstance()
+            if (_uiState.value.token == null) {
+                _uiState.value = _uiState.value.copy(token = token)
             }
-            _uiState.value = _uiState.value.copy(searchResults = mockResults, isLoading = false)
+            when (val result = placesRepository.autocomplete(query, token, language = "")) {
+                is Result.Success -> {
+                    _uiState.value = _uiState.value.copy(searchResults = result.data, isLoading = false)
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(searchResults = emptyList(), isLoading = false, error = "Error fetching predictions")
+                }
+            }
         }
     }
 
-    fun onResultClick(result: CityResult) {
-        _uiState.value = _uiState.value.copy(selectedPlace = result, isVisible = false)
+    fun onResultClick(result: AutocompletePrediction) {
+        viewModelScope.launch {
+            val token = _uiState.value.token ?: AutocompleteSessionToken.newInstance()
+            if (_uiState.value.token == null) {
+                _uiState.value = _uiState.value.copy(token = token)
+            }
+            when (val fetch = placesRepository.placeCoordinates(result.placeId, token, language = "")) {
+                is Result.Success -> {
+                    _selectedGeoCoordinate.value = fetch.data
+                    _uiState.value = _uiState.value.copy(selectedPlace = result, isVisible = false)
+                }
+                is Result.Error -> {
+                    _uiState.value = _uiState.value.copy(error = "Error fetching place details")
+                }
+            }
+        }
     }
 
     fun onClear() {
@@ -72,25 +93,23 @@ class SearchCityViewModel @Inject constructor() : ViewModel() {
             searchText = "",
             debouncedText = "",
             searchResults = emptyList(),
-            error = null
+            error = null,
+            token = null
         )
     }
 
+    fun resetSelectedGeoCoordinate() {
+        _selectedGeoCoordinate.value = null
+    }
+
     fun showOverlay() {
-        _uiState.value = _uiState.value.copy(isVisible = true)
+        _uiState.value = _uiState.value.copy(
+            isVisible = true,
+            token = AutocompleteSessionToken.newInstance()
+        )
     }
 
     companion object {
         private const val DEBOUNCE_DELAY_MS = 200L
     }
-}
-
-data class SearchCityUiState(
-    val searchText: String = "",
-    val debouncedText: String = "",
-    val isLoading: Boolean = false,
-    val error: String? = null,
-    val searchResults: List<CityResult> = emptyList(),
-    val isVisible: Boolean = false,
-    val selectedPlace: CityResult? = null
-) 
+} 

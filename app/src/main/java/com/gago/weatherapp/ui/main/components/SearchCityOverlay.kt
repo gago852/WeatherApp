@@ -26,16 +26,17 @@ import androidx.compose.ui.window.Dialog
 import com.gago.weatherapp.R
 import androidx.compose.ui.tooling.preview.Preview
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
+import com.google.android.libraries.places.api.model.AutocompletePrediction
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun SearchCityOverlay(
     isVisible: Boolean,
     onDismiss: () -> Unit = {},
-    searchResults: List<CityResult> = emptyList(),
+    searchResults: List<AutocompletePrediction> = emptyList(),
     onSearchTextChanged: (String) -> Unit = {},
     searchText: String = "",
-    onResultClick: (CityResult) -> Unit = {},
+    onResultClick: (AutocompletePrediction) -> Unit = {},
     isLoading: Boolean = false,
     error: String? = null,
     onClear: () -> Unit = {}
@@ -50,7 +51,7 @@ fun SearchCityOverlay(
                 Modifier
                     .align(Alignment.TopCenter)
                     .padding(top = 48.dp)
-                    .fillMaxWidth(0.95f)
+                    .fillMaxWidth()
                     .background(
                         MaterialTheme.colorScheme.surface,
                         shape = MaterialTheme.shapes.medium
@@ -117,12 +118,10 @@ fun SearchCityOverlay(
     }
 }
 
-data class CityResult(val name: String, val country: String)
-
 @Composable
 fun SearchResultsList(
-    results: List<CityResult>,
-    onResultClick: (CityResult) -> Unit
+    results: List<AutocompletePrediction>,
+    onResultClick: (AutocompletePrediction) -> Unit
 ) {
     Surface(
         tonalElevation = 2.dp,
@@ -135,8 +134,8 @@ fun SearchResultsList(
         LazyColumn {
             items(results.take(5)) { result ->
                 ListItem(
-                    headlineContent = { Text(result.name) },
-                    supportingContent = { Text(result.country) },
+                    headlineContent = { Text(result.getPrimaryText(null).toString()) },
+                    supportingContent = { Text(result.getSecondaryText(null).toString()) },
                     modifier = Modifier
                         .clickable { onResultClick(result) }
                         .testTag("search_result_item")
@@ -177,19 +176,10 @@ fun GoogleMapsAttribution(modifier: Modifier = Modifier) {
 @Preview(showBackground = true)
 @Composable
 fun SearchCityOverlayPreview() {
-    val mockResults = listOf(
-        CityResult("Buenos Aires", "Argentina"),
-        CityResult("Madrid", "España"),
-        CityResult("Paris", "Francia"),
-        CityResult("New York", "USA"),
-        CityResult("Tokyo", "Japón"),
-        CityResult("London", "UK"),
-        CityResult("London", "UK")
-    )
     WeatherAppTheme {
         SearchCityOverlay(
             isVisible = true,
-            searchResults = mockResults,
+            searchResults = emptyList(),
             isLoading = false
         )
     }
