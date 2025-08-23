@@ -348,6 +348,75 @@ class WeatherViewModel @Inject constructor(
         }
     }
 
+    fun loadWeatherFromSearch(latitude: Double, longitude: Double, cityName: String) {
+        viewModelScope.launch {
+            state = state.copy(
+                isLoading = true,
+                error = null
+            )
+            
+            try {
+                // 1. Crear o actualizar WeatherLocal para la nueva ciudad
+                val newWeatherLocal = WeatherLocal(
+                    lat = latitude,
+                    lon = longitude,
+                    isActive = true,
+                    isGps = false,
+                    name = cityName
+                )
+                
+                // 2. Actualizar Settings con la nueva ciudad activa
+                dataStore.updateData { currentSettings ->
+                    // Buscar si ya existe una ciudad con las mismas coordenadas
+                    val existingCityIndex = currentSettings.listWeather.indexOfFirst { weather ->
+                        weather.lat == latitude && weather.lon == longitude
+                    }
+                    
+                    if (existingCityIndex != -1) {
+                        // Actualizar ciudad existente
+                        currentSettings.copy(
+                            listWeather = currentSettings.listWeather.mutate { list ->
+                                list[existingCityIndex] = newWeatherLocal
+                                // Desactivar todas las demás ciudades
+                                list.forEachIndexed { index, weather ->
+                                    if (index != existingCityIndex) {
+                                        list[index] = weather.copy(isActive = false)
+                                    }
+                                }
+                            },
+                            lastUpdate = 0L // Forzar actualización
+                        )
+                    } else {
+                        // Agregar nueva ciudad y desactivar todas las existentes
+                        currentSettings.copy(
+                            listWeather = currentSettings.listWeather.mutate { list ->
+                                list.forEachIndexed { index, _ ->
+                                    list[index] = list[index].copy(isActive = false)
+                                }
+                                list.add(newWeatherLocal)
+                            },
+                            lastUpdate = 0L // Forzar actualización
+                        )
+                    }
+                }
+                
+                // 3. Obtener el clima de la nueva ciudad
+                val settings = settings.first()
+                getWeatherFromApi(latitude, longitude, settings)
+                
+            } catch (e: Exception) {
+                FirebaseCrashlytics.getInstance().recordException(e)
+                val error: Int = getErrorText(DataError.Local.UNKNOWN)
+                delay(500)
+                state = state.copy(
+                    error = error,
+                    isLoading = false
+                )
+                Log.e("WeatherViewModel", "Error loading weather from search: ${e.message}")
+            }
+        }
+    }
+
     fun dismissDialog() {
         if (visiblePermissionDialogQueue.isNotEmpty()) {
             visiblePermissionDialogQueue.removeAt(0)

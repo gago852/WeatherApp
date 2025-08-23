@@ -12,7 +12,7 @@
 - [x] Integrar Google Places Autocomplete API (estructura base: repositorio, DI, UI state con token, overlay y predicciones)
 - [x] Preparar modelo GeoCoordinate en la capa domain (lat, lon, name)
 - [x] Al hacer clic en un resultado, obtener detalles con Places Details API (coordenadas + formatted address)
-- [ ] Obtener coordenadas y llamar a OpenWeather API
+- [x] Obtener coordenadas y llamar a OpenWeather API
 - [x] Cerrar overlay y actualizar UI con LaunchedEffect (hasta exponer GeoCoordinate vía StateFlow)
 - [ ] Manejo de errores de las APIs (Places, OpenWeather, red, límites, etc)
 - [ ] Animaciones de entrada/salida en lista y overlay

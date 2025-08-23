@@ -91,8 +91,15 @@ fun MainScreen(
     LaunchedEffect(selectedGeo) {
         selectedGeo?.let { geo: GeoCoordinate ->
             try {
-                // Luego conectaremos la actualización del WeatherViewModel aquí
+                // Llamar al WeatherViewModel para actualizar el clima con las nuevas coordenadas
+                weatherViewModel.loadWeatherFromSearch(
+                    latitude = geo.latitude,
+                    longitude = geo.longitude,
+                    cityName = geo.name ?: "Unknown City"
+                )
             } finally {
+                // Resetear completamente el overlay con valores por defecto
+                searchCityViewModel.onDismiss()
                 searchCityViewModel.resetSelectedGeoCoordinate()
             }
         }
