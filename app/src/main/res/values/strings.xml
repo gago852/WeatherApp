@@ -12,6 +12,25 @@
     <string name="error_forbidden" translatable="false">error forbidden</string>
     <string name="error_not_found" translatable="false">error not found</string>
     <string name="error_bad_request" translatable="false">error bad request"</string>
+    
+    <!--Places API Errors-->
+    <string name="error_places_quota_exceeded">API quota exceeded</string>
+    <string name="error_places_over_query_limit">Query limit exceeded</string>
+    <string name="error_places_invalid_request">Invalid request</string>
+    <string name="error_places_not_found">No results found</string>
+    <string name="error_places_unknown">Unknown search error</string>
+    
+    <!--Weather API Errors-->
+    <string name="error_weather_api_key_invalid">Invalid API key</string>
+    <string name="error_weather_api_key_expired">API key expired</string>
+    <string name="error_weather_quota_exceeded">Weather API quota exceeded</string>
+    <string name="error_weather_city_not_found">City not found</string>
+    <string name="error_weather_invalid_coordinates">Invalid coordinates</string>
+    <string name="error_weather_unknown">Unknown weather error</string>
+    
+    <!--Search Errors-->
+    <string name="error_search_session">Search session error</string>
+    <string name="error_connection">Connection error</string>
 
     <!--Buttons-->
     <string name="ok_button_text" translatable="false">OK</string>

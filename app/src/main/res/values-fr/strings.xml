@@ -42,7 +42,26 @@
     <string name="last_updated_text">Dernière mise à jour:</string>
     <string name="settings_text">Paramètres</string>
     <string name="back_button">Retourner</string>
-    <string name="no_weather_text">Aucune information meteo disponible. Veuillez accorder la permission de localisation pour voir la meteo locale.</string>
-    <string name="grant_permission">Accorder la permission</string>
+    <string name="no_weather_text">Aucune information météorologique n\'est disponible. Veuillez autoriser l\'emplacement à voir votre météo locale.</string>
+    <string name="grant_permission">Accorder l\'autorisation</string>
     <string name="button_search_city">Rechercher une ville</string>
+    
+    <!--Places API Errors-->
+    <string name="error_places_quota_exceeded">Dépassement du quota de l\'API</string>
+    <string name="error_places_over_query_limit">Limite d\'interrogation dépassée</string>
+    <string name="error_places_invalid_request">Demande non valide</string>
+    <string name="error_places_not_found">Aucun résultat trouvé</string>
+    <string name="error_places_unknown">Erreur de recherche inconnue</string>
+    
+    <!--Weather API Errors-->
+    <string name="error_weather_api_key_invalid">Clé API invalide</string>
+    <string name="error_weather_api_key_expired">La clé API a expiré</string>
+    <string name="error_weather_quota_exceeded">Dépassement du quota de l\'API météo</string>
+    <string name="error_weather_city_not_found">Ville non trouvée</string>
+    <string name="error_weather_invalid_coordinates">Coordonnées non valides</string>
+    <string name="error_weather_unknown">Erreur météorologique inconnue</string>
+    
+    <!--Search Errors-->
+    <string name="error_search_session">Erreur de session de recherche</string>
+    <string name="error_connection">Erreur de connexion</string>
 </resources>

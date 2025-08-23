@@ -7,7 +7,7 @@ data class SearchCityUiState(
     val searchText: String = "",
     val debouncedText: String = "",
     val isLoading: Boolean = false,
-    val error: String? = null,
+    val error: Int? = null,
     val searchResults: List<AutocompletePrediction> = emptyList(),
     val isVisible: Boolean = false,
     val selectedPlace: AutocompletePrediction? = null,

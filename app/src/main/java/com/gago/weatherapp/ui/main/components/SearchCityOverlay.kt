@@ -20,6 +20,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.input.TextFieldValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
@@ -38,7 +39,7 @@ fun SearchCityOverlay(
     searchText: String = "",
     onResultClick: (AutocompletePrediction) -> Unit = {},
     isLoading: Boolean = false,
-    error: String? = null,
+    error: Int? = null,
     onClear: () -> Unit = {}
 ) {
     if (!isVisible) return
@@ -65,11 +66,11 @@ fun SearchCityOverlay(
                         text = it
                         onSearchTextChanged(it.text)
                     },
-                    label = { Text("Buscar ciudad") },
+                    label = { Text(stringResource(R.string.button_search_city)) },
                     leadingIcon = {
                         Icon(
                             imageVector = Icons.Default.Search,
-                            contentDescription = "Buscar ciudad"
+                            contentDescription = stringResource(R.string.button_search_city)
                         )
                     },
                     trailingIcon = {
@@ -104,8 +105,11 @@ fun SearchCityOverlay(
                 AnimatedVisibility(visible = isLoading) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 }
-                error?.let {
-                    Text(text = it, color = MaterialTheme.colorScheme.error)
+                error?.let { errorResId ->
+                    Text(
+                        text = stringResource(errorResId), 
+                        color = MaterialTheme.colorScheme.error
+                    )
                 }
                 AnimatedVisibility(visible = searchResults.isNotEmpty()) {
                     SearchResultsList(

@@ -49,7 +49,6 @@ import kotlinx.coroutines.launch
 import com.gago.weatherapp.ui.main.viewModels.SearchCityViewModel
 import com.gago.weatherapp.ui.main.states.SearchCityUiState
 import com.gago.weatherapp.ui.main.components.SearchCityOverlay
-import androidx.compose.ui.platform.LocalContext
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.gago.weatherapp.domain.model.GeoCoordinate
 
@@ -63,7 +62,6 @@ fun MainScreen(
     val isSetup = weatherViewModel.isStartup.collectAsState().value
     val state = weatherViewModel.state
     val mainScope = rememberCoroutineScope()
-
 
     val settingValue =
         if (isSetup) Settings() else weatherViewModel.settings.collectAsState(initial = Settings()).value

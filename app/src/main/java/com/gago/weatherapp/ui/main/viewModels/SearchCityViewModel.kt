@@ -15,7 +15,10 @@ import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.gago.weatherapp.domain.repository.PlacesRepository
 import com.gago.weatherapp.domain.utils.Result
+import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.model.GeoCoordinate
+import com.gago.weatherapp.ui.utils.getPlacesErrorMessage
+import com.gago.weatherapp.R
 
 @HiltViewModel
 class SearchCityViewModel @Inject constructor(
@@ -40,40 +43,92 @@ class SearchCityViewModel @Inject constructor(
     }
 
     private fun fetchAutocomplete(query: String) {
+        if (query.length < 2) {
+            _uiState.value = _uiState.value.copy(
+                searchResults = emptyList(),
+                isLoading = false,
+                error = null
+            )
+            return
+        }
+
         viewModelScope.launch {
-            if (query.isBlank()) {
-                _uiState.value = _uiState.value.copy(searchResults = emptyList(), isLoading = false)
-                return@launch
-            }
-            val token = _uiState.value.token ?: AutocompleteSessionToken.newInstance()
-            if (_uiState.value.token == null) {
-                _uiState.value = _uiState.value.copy(token = token)
-            }
-            when (val result = placesRepository.autocomplete(query, token, language = "")) {
-                is Result.Success -> {
-                    _uiState.value = _uiState.value.copy(searchResults = result.data, isLoading = false)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
+            
+            try {
+                val token = _uiState.value.token
+                if (token == null) {
+                    _uiState.value = _uiState.value.copy(
+                        isLoading = false,
+                        error = R.string.error_search_session
+                    )
+                    return@launch
                 }
-                is Result.Error -> {
-                    _uiState.value = _uiState.value.copy(searchResults = emptyList(), isLoading = false, error = "Error fetching predictions")
+
+                val result = placesRepository.autocomplete(query, token, "es")
+                when (result) {
+                    is Result.Success -> {
+                        _uiState.value = _uiState.value.copy(
+                            searchResults = result.data,
+                            isLoading = false,
+                            error = null
+                        )
+                    }
+                    is Result.Error -> {
+                        val errorMessage = getPlacesErrorMessage(result.error)
+                        _uiState.value = _uiState.value.copy(
+                            searchResults = emptyList(),
+                            isLoading = false,
+                            error = errorMessage
+                        )
+                    }
                 }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    searchResults = emptyList(),
+                    isLoading = false,
+                    error = R.string.error_connection
+                )
             }
         }
     }
 
     fun onResultClick(result: AutocompletePrediction) {
+        _uiState.value = _uiState.value.copy(
+            selectedPlace = result,
+            isVisible = false
+        )
+
         viewModelScope.launch {
-            val token = _uiState.value.token ?: AutocompleteSessionToken.newInstance()
-            if (_uiState.value.token == null) {
-                _uiState.value = _uiState.value.copy(token = token)
-            }
-            when (val fetch = placesRepository.placeCoordinates(result.placeId, token, language = "")) {
-                is Result.Success -> {
-                    _selectedGeoCoordinate.value = fetch.data
-                    _uiState.value = _uiState.value.copy(selectedPlace = result, isVisible = false)
+            try {
+                val token = _uiState.value.token
+                if (token == null) {
+                    _uiState.value = _uiState.value.copy(
+                        error = R.string.error_search_session
+                    )
+                    return@launch
                 }
-                is Result.Error -> {
-                    _uiState.value = _uiState.value.copy(error = "Error fetching place details")
+
+                val geoResult = placesRepository.placeCoordinates(
+                    result.placeId,
+                    token,
+                    "es"
+                )
+                
+                when (geoResult) {
+                    is Result.Success -> {
+                        _selectedGeoCoordinate.value = geoResult.data
+                        _uiState.value = _uiState.value.copy(error = null)
+                    }
+                    is Result.Error -> {
+                        val errorMessage = getPlacesErrorMessage(geoResult.error)
+                        _uiState.value = _uiState.value.copy(error = errorMessage)
+                    }
                 }
+            } catch (e: Exception) {
+                _uiState.value = _uiState.value.copy(
+                    error = R.string.error_connection
+                )
             }
         }
     }

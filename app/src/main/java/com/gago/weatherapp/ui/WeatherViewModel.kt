@@ -27,6 +27,7 @@ import com.gago.weatherapp.ui.utils.getErrorText
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.mutate
+import kotlinx.collections.immutable.toPersistentList
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -371,38 +372,26 @@ class WeatherViewModel @Inject constructor(
                     val existingCityIndex = currentSettings.listWeather.indexOfFirst { weather ->
                         weather.lat == latitude && weather.lon == longitude
                     }
-                    
-                    if (existingCityIndex != -1) {
-                        // Actualizar ciudad existente
-                        currentSettings.copy(
-                            listWeather = currentSettings.listWeather.mutate { list ->
-                                list[existingCityIndex] = newWeatherLocal
-                                // Desactivar todas las demás ciudades
-                                list.forEachIndexed { index, weather ->
-                                    if (index != existingCityIndex) {
-                                        list[index] = weather.copy(isActive = false)
-                                    }
-                                }
-                            },
-                            lastUpdate = 0L // Forzar actualización
-                        )
+
+                    val updatedList = if (existingCityIndex != -1) {
+                        // Reemplazar la ciudad existente y desactivar las demás sin mutación en iteración
+                        currentSettings.listWeather.mapIndexed { index, weather ->
+                            if (index == existingCityIndex) newWeatherLocal else weather.copy(isActive = false)
+                        }
                     } else {
-                        // Agregar nueva ciudad y desactivar todas las existentes
-                        currentSettings.copy(
-                            listWeather = currentSettings.listWeather.mutate { list ->
-                                list.forEachIndexed { index, _ ->
-                                    list[index] = list[index].copy(isActive = false)
-                                }
-                                list.add(newWeatherLocal)
-                            },
-                            lastUpdate = 0L // Forzar actualización
-                        )
+                        // Desactivar todas y agregar la nueva ciudad al final
+                        currentSettings.listWeather.map { it.copy(isActive = false) } + newWeatherLocal
                     }
+
+                    currentSettings.copy(
+                        listWeather = updatedList.toPersistentList(),
+                        lastUpdate = 0L // Forzar actualización
+                    )
                 }
                 
                 // 3. Obtener el clima de la nueva ciudad
-                val settings = settings.first()
-                getWeatherFromApi(latitude, longitude, settings)
+                val currentSettings = settings.first()
+                getWeatherFromApi(latitude, longitude, currentSettings)
                 
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)

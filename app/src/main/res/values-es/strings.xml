@@ -45,4 +45,23 @@
     <string name="no_weather_text">No hay información meteorológica disponible. Por favor, concede el permiso de ubicación para ver el clima local.</string>
     <string name="grant_permission">Conceder Permiso</string>
     <string name="button_search_city">Buscar ciudad</string>
+    
+    <!--Places API Errors-->
+    <string name="error_places_quota_exceeded">Cuota API superada</string>
+    <string name="error_places_over_query_limit">Límite de consulta superado</string>
+    <string name="error_places_invalid_request">Solicitud no válida</string>
+    <string name="error_places_not_found">No se han encontrado resultados</string>
+    <string name="error_places_unknown">Error de búsqueda desconocido</string>
+    
+    <!--Weather API Errors-->
+    <string name="error_weather_api_key_invalid">Clave API no válida</string>
+    <string name="error_weather_api_key_expired">Clave API caducada</string>
+    <string name="error_weather_quota_exceeded">Se ha superado la cuota de la API meteorológica</string>
+    <string name="error_weather_city_not_found">Ciudad no encontrada</string>
+    <string name="error_weather_invalid_coordinates">Coordenadas no válidas</string>
+    <string name="error_weather_unknown">Error meteorológico desconocido</string>
+    
+    <!--Search Errors-->
+    <string name="error_search_session">Error en la sesión de búsqueda</string>
+    <string name="error_connection">Error de conexión</string>
 </resources>

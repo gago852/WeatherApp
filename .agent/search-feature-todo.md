@@ -14,7 +14,7 @@
 - [x] Al hacer clic en un resultado, obtener detalles con Places Details API (coordenadas + formatted address)
 - [x] Obtener coordenadas y llamar a OpenWeather API
 - [x] Cerrar overlay y actualizar UI con LaunchedEffect (hasta exponer GeoCoordinate vía StateFlow)
-- [ ] Manejo de errores de las APIs (Places, OpenWeather, red, límites, etc)
+- [x] Manejo de errores de las APIs (Places, OpenWeather, red, límites, etc) con localización completa usando recursos Int
 - [ ] Animaciones de entrada/salida en lista y overlay
 - [ ] Testing con ComposeTestRule (UI, debounce, integración, accesibilidad, etc)
 - [ ] Accesibilidad completa (TalkBack, content descriptions, navegación teclado)

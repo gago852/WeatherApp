@@ -36,6 +36,27 @@ fun getErrorText(error: DataError): Int {
     }
 }
 
+fun getPlacesErrorMessage(error: DataError.Places): Int {
+    return when (error) {
+        DataError.Places.QUOTA_EXCEEDED -> R.string.error_places_quota_exceeded
+        DataError.Places.OVER_QUERY_LIMIT -> R.string.error_places_over_query_limit
+        DataError.Places.INVALID_REQUEST -> R.string.error_places_invalid_request
+        DataError.Places.NOT_FOUND -> R.string.error_places_not_found
+        DataError.Places.UNKNOWN -> R.string.error_places_unknown
+    }
+}
+
+fun getWeatherErrorMessage(error: DataError.Weather): Int {
+    return when (error) {
+        DataError.Weather.API_KEY_INVALID -> R.string.error_weather_api_key_invalid
+        DataError.Weather.API_KEY_EXPIRED -> R.string.error_weather_api_key_expired
+        DataError.Weather.QUOTA_EXCEEDED -> R.string.error_weather_quota_exceeded
+        DataError.Weather.CITY_NOT_FOUND -> R.string.error_weather_city_not_found
+        DataError.Weather.INVALID_COORDINATES -> R.string.error_weather_invalid_coordinates
+        DataError.Weather.UNKNOWN -> R.string.error_weather_unknown
+    }
+}
+
 fun String.capitalizeWords(delimiter: String = " ") =
     split(delimiter).joinToString(delimiter) { word ->
 
