@@ -60,6 +60,7 @@ gen-external-apklibs
 bin/
 gen/
 out/
+.kotlin/
 
 # Gradle files
 .gradle

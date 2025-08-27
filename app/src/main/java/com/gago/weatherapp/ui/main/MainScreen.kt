@@ -154,7 +154,12 @@ fun MainScreen(
         onWeatherItemClick = { newSettings ->
             weatherViewModel.setSettingChanged(newSettings)
             weatherViewModel.setReasonForRefresh(ReasonsForRefresh.WEATHER_CHANGED)
-            weatherViewModel.refreshWeather()
+            mainScope.launch {
+                handleRefresh(
+                    weatherViewModel = weatherViewModel,
+                    locationPermissionResultLauncher = locationPermissionResultLauncher
+                )
+            }
         },
         onRefresh = {
             mainScope.launch {
