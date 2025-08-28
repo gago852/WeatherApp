@@ -1,4 +1,4 @@
-package com.gago.weatherapp.ui
+package com.gago.weatherapp.ui.main.viewModels
 
 import android.app.Application
 import android.util.Log
@@ -20,6 +20,7 @@ import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.domain.repository.WeatherRepository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
+import com.gago.weatherapp.ui.main.states.WeatherState
 import com.gago.weatherapp.ui.utils.ONE_MINUTE_IN_MILLIS
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import com.gago.weatherapp.ui.utils.getCurrentLanguage
@@ -32,6 +33,8 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.firstOrNull
+import kotlinx.coroutines.flow.last
+import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -119,7 +122,7 @@ class WeatherViewModel @Inject constructor(
                         if (it.isGps) {
                             loadWeatherFromGpsAsync()
                         } else {
-                            getWeatherFromApi(it.lat, it.lon, settings.first())
+                            getWeatherFromApi(it.lat, it.lon, settingNotNull)
                         }
                     } ?: run {
                         if (settingNotNull.permissionAccepted) {
@@ -355,7 +358,7 @@ class WeatherViewModel @Inject constructor(
                 isLoading = true,
                 error = null
             )
-            
+
             try {
                 // 1. Crear o actualizar WeatherLocal para la nueva ciudad
                 val newWeatherLocal = WeatherLocal(
@@ -365,7 +368,7 @@ class WeatherViewModel @Inject constructor(
                     isGps = false,
                     name = cityName
                 )
-                
+
                 // 2. Actualizar Settings con la nueva ciudad activa
                 dataStore.updateData { currentSettings ->
                     // Buscar si ya existe una ciudad con las mismas coordenadas
@@ -376,7 +379,9 @@ class WeatherViewModel @Inject constructor(
                     val updatedList = if (existingCityIndex != -1) {
                         // Reemplazar la ciudad existente y desactivar las demás sin mutación en iteración
                         currentSettings.listWeather.mapIndexed { index, weather ->
-                            if (index == existingCityIndex) newWeatherLocal else weather.copy(isActive = false)
+                            if (index == existingCityIndex) newWeatherLocal else weather.copy(
+                                isActive = false
+                            )
                         }
                     } else {
                         // Desactivar todas y agregar la nueva ciudad al final
@@ -388,11 +393,11 @@ class WeatherViewModel @Inject constructor(
                         lastUpdate = 0L // Forzar actualización
                     )
                 }
-                
+
                 // 3. Obtener el clima de la nueva ciudad
                 val currentSettings = settings.first()
                 getWeatherFromApi(latitude, longitude, currentSettings)
-                
+
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
                 val error: Int = getErrorText(DataError.Local.UNKNOWN)

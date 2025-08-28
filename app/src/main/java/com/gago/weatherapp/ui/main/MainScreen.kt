@@ -35,8 +35,8 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.NavController
 import com.gago.weatherapp.data.datastore.Settings
-import com.gago.weatherapp.ui.WeatherState
-import com.gago.weatherapp.ui.WeatherViewModel
+import com.gago.weatherapp.ui.main.states.WeatherState
+import com.gago.weatherapp.ui.main.viewModels.WeatherViewModel
 import com.gago.weatherapp.ui.main.components.HandlePermissionDialogs
 import com.gago.weatherapp.ui.main.components.NavigationDrawerContent
 import com.gago.weatherapp.ui.main.components.WeatherContent
@@ -63,8 +63,8 @@ fun MainScreen(
     val state = weatherViewModel.state
     val mainScope = rememberCoroutineScope()
 
-    val settingValue =
-        if (isSetup) Settings() else weatherViewModel.settings.collectAsState(initial = Settings()).value
+//    val settingValue =  if (isSetup) Settings() else weatherViewModel.settings.collectAsState(initial = Settings()).value
+    val settingValue = weatherViewModel.settings.collectAsState(initial = Settings()).value
 
     val locationPermissionResultLauncher = rememberLauncherForActivityResult(
         contract = ActivityResultContracts.RequestPermission(),

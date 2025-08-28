@@ -50,7 +50,7 @@ import androidx.navigation.NavController
 import androidx.navigation.compose.rememberNavController
 import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
-import com.gago.weatherapp.ui.SettingViewModel
+import com.gago.weatherapp.ui.settings.SettingViewModel
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.MeasureUnit
 

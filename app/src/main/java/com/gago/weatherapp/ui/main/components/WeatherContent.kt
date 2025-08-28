@@ -15,7 +15,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import com.gago.weatherapp.data.datastore.Settings
-import com.gago.weatherapp.ui.WeatherState
+import com.gago.weatherapp.ui.main.states.WeatherState
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 
 @OptIn(ExperimentalMaterial3Api::class)

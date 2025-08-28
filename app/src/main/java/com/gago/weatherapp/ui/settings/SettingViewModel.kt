@@ -1,4 +1,4 @@
-package com.gago.weatherapp.ui
+package com.gago.weatherapp.ui.settings
 
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel

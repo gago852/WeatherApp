@@ -2,7 +2,7 @@ package com.gago.weatherapp.ui.main.utils
 
 import android.Manifest
 import androidx.activity.result.ActivityResultLauncher
-import com.gago.weatherapp.ui.WeatherViewModel
+import com.gago.weatherapp.ui.main.viewModels.WeatherViewModel
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 
 suspend fun handleRefresh(
@@ -11,7 +11,7 @@ suspend fun handleRefresh(
 ) {
     when (weatherViewModel.reasonForRefresh) {
         ReasonsForRefresh.WEATHER_CHANGED -> {
-            val settingChanged = weatherViewModel.settingChanged?.copy()
+            val settingChanged = weatherViewModel.settingChanged
             settingChanged?.let {
                 weatherViewModel.loadAnotherWeather(it)
                 weatherViewModel.setSettingChanged(null)
