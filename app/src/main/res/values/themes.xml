@@ -2,4 +2,14 @@
 <resources>
 
     <style name="Theme.WeatherApp" parent="android:Theme.Material.Light.NoActionBar" />
+
+    <!-- Splash theme using AndroidX Core SplashScreen (backported) -->
+    <style name="Theme.WeatherApp.Splash" parent="Theme.WeatherApp">
+        <!-- Background color for the splash screen -->
+        <item name="windowSplashScreenBackground">@android:color/white</item>
+        <!-- Icon shown in the splash (can be animated on API 31+) -->
+        <item name="windowSplashScreenAnimatedIcon">@mipmap/ic_launcher</item>
+        <!-- Theme to apply after the splash is dismissed -->
+        <item name="postSplashScreenTheme">@style/Theme.WeatherApp</item>
+    </style>
 </resources>

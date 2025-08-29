@@ -29,7 +29,7 @@ fun WeatherContent(
     onError: (String) -> Unit,
     onShowSearchOverlay: () -> Unit
 ) {
-    if (state.weather == null && !settings.permissionAccepted) {
+    if (!state.isLoading && state.weather == null && !settings.permissionAccepted) {
         WelcomeWeatherScreen(
             onPermissionRequest = onPermissionRequest,
             onShowSearchOverlay = onShowSearchOverlay

@@ -105,19 +105,11 @@ fun MainScreen(
 
     LaunchedEffect(isSetup) {
         if (isSetup) {
-            val setting = weatherViewModel.getInitialSetUp()
-            setting?.let {
-                val listWeatherStoredActive = it.listWeather.filter { lit -> lit.isActive }
-                val weatherCurrent = listWeatherStoredActive.firstOrNull()
-                weatherCurrent?.let { weatherLocal ->
-                    if (weatherLocal.isGps) {
-                        locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
-                    } else {
-                        weatherViewModel.loadWeatherFromCurrent(weatherLocal)
-                    }
-                }
-            }
-            weatherViewModel.initialStartUp()
+            weatherViewModel.setReasonForRefresh(ReasonsForRefresh.STARTUP)
+            handleRefresh(
+                weatherViewModel = weatherViewModel,
+                locationPermissionResultLauncher = locationPermissionResultLauncher
+            )
         }
     }
 

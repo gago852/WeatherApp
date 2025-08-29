@@ -102,6 +102,9 @@ dependencies {
     implementation(libs.gms.location)
     implementation(libs.google.places)
 
+    // SplashScreen API
+    implementation(libs.androidx.core.splashscreen)
+
     testImplementation(libs.junit)
 
     testImplementation(libs.hamcrest)

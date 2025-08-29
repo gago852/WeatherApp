@@ -5,6 +5,6 @@ import com.gago.weatherapp.domain.model.Weather
 
 data class WeatherState(
     val weather: Weather? = null,
-    val isLoading: Boolean = false,
+    val isLoading: Boolean = true,
     @StringRes val error: Int? = null
 )
