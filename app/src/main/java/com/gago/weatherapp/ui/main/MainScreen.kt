@@ -77,7 +77,7 @@ fun MainScreen(
                 weatherViewModel.setPermissionAccepted(isGranted)
                 if (isGranted) {
                     weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
-                    weatherViewModel.refreshWeather()
+                    weatherViewModel.loadLocationWeather()
                 }
             }
         }
@@ -169,7 +169,17 @@ fun MainScreen(
         onDismissSearchOverlay = { searchCityViewModel.onDismiss() },
         onSearchTextChanged = { searchCityViewModel.onSearchTextChanged(it) },
         onResultClick = { searchCityViewModel.onResultClick(it) },
-        onClearSearch = { searchCityViewModel.onClear() }
+        onClearSearch = { searchCityViewModel.onClear() },
+        showAddGpsButton = settingValue.listWeather.none { it.isGps },
+        onAddGpsCity = {
+            if (settingValue.permissionAccepted) {
+                mainScope.launch { weatherViewModel.loadLocationWeather() }
+                searchCityViewModel.onDismiss()
+            } else {
+                locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
+                searchCityViewModel.onDismiss()
+            }
+        }
     )
 
 }
@@ -188,7 +198,9 @@ fun WeatherNavDrawer(
     onDismissSearchOverlay: () -> Unit,
     onSearchTextChanged: (String) -> Unit,
     onResultClick: (AutocompletePrediction) -> Unit,
-    onClearSearch: () -> Unit
+    onClearSearch: () -> Unit,
+    showAddGpsButton: Boolean,
+    onAddGpsCity: () -> Unit
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
     val drawerState = rememberDrawerState(DrawerValue.Closed)
@@ -254,7 +266,9 @@ fun WeatherNavDrawer(
                         onResultClick = { onResultClick(it) },
                         isLoading = searchUiState.isLoading,
                         error = searchUiState.error,
-                        onClear = { onClearSearch() }
+                        onClear = { onClearSearch() },
+                        showAddGpsButton = showAddGpsButton,
+                        onAddGpsCity = onAddGpsCity
                     )
                 }
             }
@@ -290,7 +304,9 @@ fun MainScreenPreview() {
                 onDismissSearchOverlay = {},
                 onSearchTextChanged = {},
                 onResultClick = {},
-                onClearSearch = {}
+                onClearSearch = {},
+                showAddGpsButton = false,
+                onAddGpsCity = {}
             )
         }
     }
@@ -316,7 +332,9 @@ fun MainScreenDarkPreview() {
                 onDismissSearchOverlay = {},
                 onSearchTextChanged = {},
                 onResultClick = {},
-                onClearSearch = {}
+                onClearSearch = {},
+                showAddGpsButton = false,
+                onAddGpsCity = {}
             )
         }
     }

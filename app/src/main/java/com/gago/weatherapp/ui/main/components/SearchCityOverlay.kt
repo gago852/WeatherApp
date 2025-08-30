@@ -12,6 +12,7 @@ import androidx.compose.foundation.lazy.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Clear
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material.icons.filled.LocationOn
 import androidx.compose.material3.*
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.runtime.*
@@ -40,7 +41,9 @@ fun SearchCityOverlay(
     onResultClick: (AutocompletePrediction) -> Unit = {},
     isLoading: Boolean = false,
     error: Int? = null,
-    onClear: () -> Unit = {}
+    onClear: () -> Unit = {},
+    showAddGpsButton: Boolean = false,
+    onAddGpsCity: () -> Unit = {}
 ) {
     if (!isVisible) return
     Dialog(onDismissRequest = onDismiss) {
@@ -102,6 +105,26 @@ fun SearchCityOverlay(
                         .align(Alignment.End)
                         .padding(bottom = 8.dp)
                 )
+                // GPS add-city button
+                AnimatedVisibility(visible = showAddGpsButton) {
+                    Row(
+                        modifier = Modifier.fillMaxWidth(),
+                        horizontalArrangement = Arrangement.End
+                    ) {
+                        OutlinedButton(
+                            onClick = onAddGpsCity,
+                            enabled = !isLoading,
+                            modifier = Modifier.testTag("gps_search_button")
+                        ) {
+                            Icon(
+                                imageVector = Icons.Default.LocationOn,
+                                contentDescription = stringResource(R.string.button_use_my_location)
+                            )
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text(text = stringResource(R.string.button_use_my_location))
+                        }
+                    }
+                }
                 AnimatedVisibility(visible = isLoading) {
                     LinearProgressIndicator(modifier = Modifier.fillMaxWidth())
                 }

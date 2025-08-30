@@ -45,7 +45,8 @@
     <string name="no_weather_text">Aucune information météorologique n\'est disponible. Veuillez autoriser l\'emplacement à voir votre météo locale.</string>
     <string name="grant_permission">Accorder l\'autorisation</string>
     <string name="button_search_city">Rechercher une ville</string>
-    
+    <string name="button_use_my_location">Utiliser ma position</string>
+
     <!--Places API Errors-->
     <string name="error_places_quota_exceeded">Dépassement du quota de l\'API</string>
     <string name="error_places_over_query_limit">Limite d\'interrogation dépassée</string>

@@ -20,11 +20,13 @@ suspend fun handleRefresh(
         }
 
         ReasonsForRefresh.STARTUP -> {
+            var isFirstTime = true
             val setting = weatherViewModel.getInitialSetUp()
             setting?.let {
                 val listWeatherStoredActive = it.listWeather.filter { lit -> lit.isActive }
                 val weatherCurrent = listWeatherStoredActive.firstOrNull()
                 weatherCurrent?.let { weatherLocal ->
+                    isFirstTime = false
                     if (weatherLocal.isGps) {
                         locationPermissionResultLauncher.launch(Manifest.permission.ACCESS_COARSE_LOCATION)
                     } else {
@@ -32,7 +34,7 @@ suspend fun handleRefresh(
                     }
                 }
             }
-            weatherViewModel.initialStartUp()
+            weatherViewModel.initialStartUp(isFirstTime)
         }
 
         else -> weatherViewModel.refreshWeather()

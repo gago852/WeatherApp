@@ -38,6 +38,7 @@
     <string name="menu_text_button">Menu</string>
     <string name="grant_permission_button_text">Grant permission</string>
     <string name="button_search_city">Search city</string>
+    <string name="button_use_my_location">Use my location</string>
 
     <!--Messages-->
     <string name="error_location">Could not retrieve location. Make sure to grant permission and enable GPS.</string>

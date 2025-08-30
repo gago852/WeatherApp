@@ -50,9 +50,9 @@ class WeatherViewModel @Inject constructor(
     var state by mutableStateOf(WeatherState())
         private set
 
-    val settings = dataStore.data.catch {
+    val settings = dataStore.data.catch { throwable ->
         emit(Settings())
-//        Log.e("StateOnMainScreenSettings", it.message.toString())
+//        Log.e("StateOnMainScreenSettings", throwable.message.toString())
     }
 
     var reasonForRefresh = ReasonsForRefresh.STARTUP
@@ -69,8 +69,8 @@ class WeatherViewModel @Inject constructor(
     suspend fun setPermissionAccepted(isAccepted: Boolean) {
 
         try {
-            dataStore.updateData {
-                it.copy(permissionAccepted = isAccepted)
+            dataStore.updateData { currentSettings ->
+                currentSettings.copy(permissionAccepted = isAccepted)
             }
         } catch (e: Exception) {
             Log.e("WeatherViewModel", e.message.toString())
@@ -94,11 +94,16 @@ class WeatherViewModel @Inject constructor(
     }
 
     suspend fun getInitialSetUp(): Settings? = dataStore.data.firstOrNull()
-    fun initialStartUp() {
+    fun initialStartUp(isFirstTime: Boolean) {
         savedStateHandle["statup"] = false
         reasonForRefresh = ReasonsForRefresh.PULL
+        if (isFirstTime) {
+            state = state.copy(
+                isLoading = false
+            )
+        }
         viewModelScope.launch {
-            dataStore.updateData { it.copy(lastUpdate = 0L) }
+            dataStore.updateData { currentSettings -> currentSettings.copy(lastUpdate = 0L) }
         }
     }
 
@@ -117,12 +122,13 @@ class WeatherViewModel @Inject constructor(
 
                 if (((currentDate - settingNotNull.lastUpdate) > ONE_MINUTE_IN_MILLIS) || state.weather == null) {
                     Log.d("WeatherViewModel", "need to refresh")
-                    val weather = settingNotNull.listWeather.firstOrNull { it.isActive }
-                    weather?.let {
-                        if (it.isGps) {
+                    val weather =
+                        settingNotNull.listWeather.firstOrNull { weatherLocal -> weatherLocal.isActive }
+                    weather?.let { activeWeather ->
+                        if (activeWeather.isGps) {
                             loadWeatherFromGpsAsync()
                         } else {
-                            getWeatherFromApi(it.lat, it.lon, settingNotNull)
+                            getWeatherFromApi(activeWeather.lat, activeWeather.lon, settingNotNull)
                         }
                     } ?: run {
                         if (settingNotNull.permissionAccepted) {
@@ -162,6 +168,16 @@ class WeatherViewModel @Inject constructor(
                 error = null
             )
 
+            val setting = settings.first()
+
+            val listDeactivated = setting.listWeather.mutate { list ->
+                list.forEachIndexed { index, weatherLocal ->
+                    list[index] = weatherLocal.copy(isActive = false)
+                }
+            }
+
+            dataStore.updateData { currentSettings -> currentSettings.copy(listWeather = listDeactivated) }
+
             loadWeatherFromGpsAsync()
         }
     }
@@ -171,7 +187,7 @@ class WeatherViewModel @Inject constructor(
             val setting = settings.first()
             val name = getWeatherFromApi(location.latitude, location.longitude, setting)
 
-            name?.let {
+            name?.let { weatherName ->
 
                 val weatherFromGps = setting.listWeather.find { weatherLocal -> weatherLocal.isGps }
 
@@ -180,14 +196,14 @@ class WeatherViewModel @Inject constructor(
                 weatherFromGps?.let { localWeather ->
                     val indexActual = setting.listWeather.indexOf(localWeather)
                     tempWeather = localWeather.copy(
-                        name = it,
+                        name = weatherName,
                         isActive = true,
                         isGps = true,
                         lat = location.latitude,
                         lon = location.longitude
                     )
-                    dataStore.updateData {
-                        it.copy(listWeather = it.listWeather.mutate { list ->
+                    dataStore.updateData { currentSettings ->
+                        currentSettings.copy(listWeather = currentSettings.listWeather.mutate { list ->
                             list[indexActual] = tempWeather
                         })
                     }
@@ -197,11 +213,11 @@ class WeatherViewModel @Inject constructor(
                         lon = location.longitude,
                         isActive = true,
                         isGps = true,
-                        name = it
+                        name = weatherName
                     )
-                    dataStore.updateData { setting ->
-                        setting.copy(listWeather = setting.listWeather.mutate {
-                            it.add(tempWeather)
+                    dataStore.updateData { currentSettings ->
+                        currentSettings.copy(listWeather = currentSettings.listWeather.mutate { list ->
+                            list.add(tempWeather)
                         })
                     }
                 }
@@ -226,12 +242,12 @@ class WeatherViewModel @Inject constructor(
                 error = null
             )
 
-            dataStore.updateData {
+            dataStore.updateData { currentSettings ->
                 settings
             }
 
             try {
-                val weather = settings.listWeather.first { it.isActive }
+                val weather = settings.listWeather.first { weatherLocal -> weatherLocal.isActive }
 
                 getWeatherFromApi(weather.lat, weather.lon, settings)
             } catch (e: NoSuchElementException) {
@@ -290,8 +306,8 @@ class WeatherViewModel @Inject constructor(
                         error = error,
                         isLoading = false
                     )
-                    dataStore.updateData {
-                        it.copy(lastUpdate = 0L)
+                    dataStore.updateData { currentSettings ->
+                        currentSettings.copy(lastUpdate = 0L)
                     }
                     return null
                 }
@@ -317,8 +333,8 @@ class WeatherViewModel @Inject constructor(
                         error = null,
                         isLoading = false
                     )
-                    dataStore.updateData {
-                        it.copy(lastUpdate = System.currentTimeMillis())
+                    dataStore.updateData { currentSettings ->
+                        currentSettings.copy(lastUpdate = System.currentTimeMillis())
                     }
                     return currentWeather.name
                 }
@@ -330,8 +346,8 @@ class WeatherViewModel @Inject constructor(
                         error = error,
                         isLoading = false
                     )
-                    dataStore.updateData {
-                        it.copy(lastUpdate = 0L)
+                    dataStore.updateData { currentSettings ->
+                        currentSettings.copy(lastUpdate = 0L)
                     }
                     return null
                 }
@@ -345,8 +361,8 @@ class WeatherViewModel @Inject constructor(
                 isLoading = false
             )
             Log.e("WeatherViewModel", e.message.toString())
-            dataStore.updateData {
-                it.copy(lastUpdate = 0L)
+            dataStore.updateData { currentSettings ->
+                currentSettings.copy(lastUpdate = 0L)
             }
             return null
         }
@@ -385,7 +401,7 @@ class WeatherViewModel @Inject constructor(
                         }
                     } else {
                         // Desactivar todas y agregar la nueva ciudad al final
-                        currentSettings.listWeather.map { it.copy(isActive = false) } + newWeatherLocal
+                        currentSettings.listWeather.map { weather -> weather.copy(isActive = false) } + newWeatherLocal
                     }
 
                     currentSettings.copy(

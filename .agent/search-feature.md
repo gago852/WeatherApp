@@ -123,3 +123,47 @@ Se implementará un componente de búsqueda tipo overlay que se mostrará por en
   - Errores de la API de OpenWeather
   - Tiempo de espera agotado
   - Límites de uso excedidos
+
+---
+
+# GPS Add-City Button (Search Overlay)
+
+This section documents the "Use my location" button added to the search overlay to allow adding a city by GPS.
+
+## UI
+- Component: `OutlinedButton` placed directly below the search text field, right-aligned.
+- Label: `Use my location` (`button_use_my_location`).
+- Icon: `Icons.Default.LocationOn` (Material Icons baseline location_on).
+- TestTag: `gps_search_button`.
+- Disabled while the search overlay is in a loading state (`isLoading=true`).
+
+## Visibility Rules
+- The button is visible only when there is no GPS-based city already present in `Settings.listWeather` (`none { it.isGps }`).
+- It remains hidden once a GPS city exists, or can be disabled while a load is in progress to prevent duplicates.
+
+## Interaction
+- On click (`onAddGpsCity`):
+  - If location permission is already accepted, trigger `WeatherViewModel.loadLocationWeather()` and dismiss the overlay.
+  - If permission is not accepted, launch the permission request flow using the existing `locationPermissionResultLauncher`, then dismiss the overlay.
+
+## Wiring
+- `SearchCityOverlay` props:
+  - `showAddGpsButton: Boolean` — controls visibility.
+  - `onAddGpsCity: () -> Unit` — click handler.
+- `MainScreen.kt` computes `showAddGpsButton` from `Settings` and wires `onAddGpsCity` to either request permission or call `loadLocationWeather()`.
+
+## Accessibility
+- The button includes a clear text label via `stringResource(R.string.button_use_my_location)` for TalkBack.
+- The icon uses the same content description; the text label ensures sufficient clarity.
+- Ensure focus order: text field -> GPS button -> results list.
+
+## Testing (Compose)
+- Visibility:
+  - When `listWeather.none { it.isGps }` -> node with tag `gps_search_button` exists and is enabled if `!isLoading`.
+  - When a GPS city exists -> node does not exist.
+- Interaction:
+  - Click triggers either permission launcher or `loadLocationWeather()` (can be validated via fake/spy or state side-effects).
+  - Button is disabled while `isLoading=true`.
+
+## i18n
+- Added `button_use_my_location` in `res/values/strings.xml` (en), `res/values-es/strings.xml` (es), `res/values-fr/strings.xml` (fr).
