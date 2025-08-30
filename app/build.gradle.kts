@@ -20,7 +20,7 @@ android {
         applicationId = "com.gago.weatherapp"
         minSdk = 27
         targetSdk = 35
-        versionCode = 8
+        versionCode = 9
         versionName = "0.1"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
@@ -109,6 +109,7 @@ dependencies {
 
     testImplementation(libs.hamcrest)
     testImplementation(libs.mockito)
+    // mockito-inline removed; using mockito-core + mock-maker-inline resource
     testImplementation(libs.mockito.kotlin)
     testImplementation(libs.mockwebserver)
     testImplementation(libs.kotlinx.coroutines.test)

@@ -71,6 +71,7 @@ firebase-crashlytics = { group = "com.google.firebase", name = "firebase-crashly
 
 hamcrest = { group = "org.hamcrest", name = "hamcrest", version.ref = "hamcrest" }
 mockito = { group = "org.mockito", name = "mockito-core", version.ref = "mockito" }
+mockito-inline = { group = "org.mockito", name = "mockito-inline", version.ref = "mockito" }
 mockwebserver = { group = "com.squareup.okhttp3", name = "mockwebserver", version.ref = "mockwebserver" }
 kotlinx-coroutines-test = { group = "org.jetbrains.kotlinx", name = "kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesTest" }
 core-testing = { group = "androidx.arch.core", name = "core-testing", version.ref = "coreTesting" }

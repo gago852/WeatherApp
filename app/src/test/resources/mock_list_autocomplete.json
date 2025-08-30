@@ -1,0 +1,27 @@
+[
+    {
+        "placeid": "6077243",
+        "primaryName": "Montreal",
+        "secundaryName": "Montreal, Quebec, Canada"
+    },
+    {
+        "placeid": "5995538",
+        "primaryName": "Mexico City",
+        "secundaryName": "Mexico City, Mexico"
+    },
+    {
+        "placeid": "5938316",
+        "primaryName": "Madrid",
+        "secundaryName": "Madrid, Spain"
+    },
+    {
+        "placeid": "5128638",
+        "primaryName": "Miami",
+        "secundaryName": "Miami, Florida, USA"
+    },
+    {
+        "placeid": "4458953",
+        "primaryName": "Manila",
+        "secundaryName": "Manila, National Capital Region, Philippines"
+    }
+]

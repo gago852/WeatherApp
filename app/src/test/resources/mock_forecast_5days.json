@@ -1,0 +1,117 @@
+{
+  "cod": "200",
+  "message": 0,
+  "city": {
+    "id": 6077243,
+    "name": "Montreal",
+    "country": "CA",
+    "population": 1704694,
+    "sunrise": 1699960000,
+    "sunset": 1700002000,
+    "timezone": -18000,
+    "coord": { "lat": 45.5017, "lon": -73.5673 }
+  },
+  "cnt": 5,
+  "list": [
+    {
+      "dt": 1700052000,
+      "dt_txt": "2023-11-15 12:00:00",
+      "clouds": { "all": 20 },
+      "main": {
+        "feels_like": 271.15,
+        "humidity": 70,
+        "pressure": 1020,
+        "temp": 274.15,
+        "temp_max": 275.15,
+        "temp_min": 273.15
+      },
+      "pop": 0.0,
+      "sys": { "pod": "d" },
+      "visibility": 10000,
+      "wind": { "deg": 180, "gust": 4.5, "speed": 3.1 },
+      "weather": [ { "id": 800, "main": "Clear", "description": "clear sky", "icon": "01d" } ],
+      "rain": null,
+      "snow": null
+    },
+    {
+      "dt": 1700138400,
+      "dt_txt": "2023-11-16 12:00:00",
+      "clouds": { "all": 50 },
+      "main": {
+        "feels_like": 270.15,
+        "humidity": 75,
+        "pressure": 1018,
+        "temp": 273.15,
+        "temp_max": 274.15,
+        "temp_min": 272.15
+      },
+      "pop": 0.1,
+      "sys": { "pod": "d" },
+      "visibility": 10000,
+      "wind": { "deg": 200, "gust": 5.0, "speed": 3.4 },
+      "weather": [ { "id": 802, "main": "Clouds", "description": "scattered clouds", "icon": "03d" } ],
+      "rain": null,
+      "snow": null
+    },
+    {
+      "dt": 1700224800,
+      "dt_txt": "2023-11-17 12:00:00",
+      "clouds": { "all": 90 },
+      "main": {
+        "feels_like": 268.15,
+        "humidity": 85,
+        "pressure": 1015,
+        "temp": 271.15,
+        "temp_max": 272.15,
+        "temp_min": 270.15
+      },
+      "pop": 0.6,
+      "sys": { "pod": "d" },
+      "visibility": 9000,
+      "wind": { "deg": 220, "gust": 6.0, "speed": 4.0 },
+      "weather": [ { "id": 500, "main": "Rain", "description": "light rain", "icon": "10d" } ],
+      "rain": { "3h": 0.4 },
+      "snow": null
+    },
+    {
+      "dt": 1700311200,
+      "dt_txt": "2023-11-18 12:00:00",
+      "clouds": { "all": 30 },
+      "main": {
+        "feels_like": 266.15,
+        "humidity": 65,
+        "pressure": 1016,
+        "temp": 269.15,
+        "temp_max": 270.15,
+        "temp_min": 268.15
+      },
+      "pop": 0.0,
+      "sys": { "pod": "d" },
+      "visibility": 10000,
+      "wind": { "deg": 160, "gust": 3.0, "speed": 2.5 },
+      "weather": [ { "id": 800, "main": "Clear", "description": "clear sky", "icon": "01d" } ],
+      "rain": null,
+      "snow": null
+    },
+    {
+      "dt": 1700397600,
+      "dt_txt": "2023-11-19 12:00:00",
+      "clouds": { "all": 10 },
+      "main": {
+        "feels_like": 267.15,
+        "humidity": 60,
+        "pressure": 1019,
+        "temp": 270.15,
+        "temp_max": 271.15,
+        "temp_min": 269.15
+      },
+      "pop": 0.0,
+      "sys": { "pod": "d" },
+      "visibility": 10000,
+      "wind": { "deg": 140, "gust": 2.0, "speed": 2.0 },
+      "weather": [ { "id": 801, "main": "Clouds", "description": "few clouds", "icon": "02d" } ],
+      "rain": null,
+      "snow": null
+    }
+  ]
+}
