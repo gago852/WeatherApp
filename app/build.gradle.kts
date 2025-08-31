@@ -1,5 +1,3 @@
-import java.util.Properties
-
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -30,10 +28,10 @@ android {
 
         android.buildFeatures.buildConfig = true
 
-        val properties: Properties = Properties()
-        properties.load(rootProject.file("local.properties").inputStream())
-
-        buildConfigField("String", "API_KEY", properties.getProperty("API_KEY"))
+        // Read API key from Gradle properties (prefer secrets.properties via Secrets Gradle Plugin).
+        // Falls back to empty for CI/unit tests where key is not needed.
+//        val apiKey = (project.findProperty("API_KEY") as String?) ?: ""
+//        buildConfigField("String", "API_KEY", "\"$apiKey\"")
         // PLACES_API_KEY is provided by the Secrets Gradle Plugin; no manual buildConfig field needed here.
     }
 
