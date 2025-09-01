@@ -5,10 +5,10 @@ import com.gago.weatherapp.domain.utils.getTwelveHourFromUnixLocatedTimeZone
 
 data class SysDto(
     val country: String,
-    val id: Int,
+    val id: Int? = null,
     val sunrise: Long,
     val sunset: Long,
-    val type: Int
+    val type: Int? = null
 )
 
 fun SysDto.toDayData(timeZoneOffset: Long): DayData {
@@ -17,6 +17,9 @@ fun SysDto.toDayData(timeZoneOffset: Long): DayData {
             unixTime = sunrise,
             timeZoneOffset = timeZoneOffset
         ),
-        sunset = getTwelveHourFromUnixLocatedTimeZone(unixTime = sunset, timeZoneOffset = timeZoneOffset)
+        sunset = getTwelveHourFromUnixLocatedTimeZone(
+            unixTime = sunset,
+            timeZoneOffset = timeZoneOffset
+        )
     )
 }

@@ -15,9 +15,9 @@ data class ForecastDto(
     val cod: String,
     val message: Int,
     val city: City,
-    @field:Json(name = "cnt")
+    @Json(name = "cnt")
     val count: Int,
-    @field:Json(name = "list")
+    @Json(name = "list")
     val listWeatherForecast: List<WeatherForecastDto>
 )
 

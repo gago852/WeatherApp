@@ -35,6 +35,11 @@ android {
         // PLACES_API_KEY is provided by the Secrets Gradle Plugin; no manual buildConfig field needed here.
     }
 
+    lint {
+        baseline = file("lint-baseline.xml")
+//        warning("RestrictedApi")
+    }
+
     buildTypes {
         release {
             ndk {
@@ -96,6 +101,7 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
+    implementation(libs.moshi.kotlin)
 
     implementation(libs.gms.location)
     implementation(libs.google.places)

@@ -22,6 +22,7 @@ import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
 import kotlinx.collections.immutable.persistentListOf
 import androidx.compose.ui.platform.testTag
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 @Composable
 fun NavigationDrawerContent(
@@ -106,6 +107,13 @@ private fun updateActiveWeather(settings: Settings, newActiveWeather: WeatherLoc
         val indexTemp = settings.listWeather.indexOf(it)
         tempList = settings.listWeather.set(indexTemp, it.copy(isActive = false))
     }
+
+    val crashlytics = FirebaseCrashlytics.getInstance()
+    crashlytics.setCustomKey("List size", settings.listWeather.size)
+    crashlytics.setCustomKey("Current Active", currentActive?.name ?: "None")
+    crashlytics.setCustomKey("New Active", newActiveWeather.toString())
+    crashlytics.log("Updating active weather from drawer")
+    crashlytics.recordException(Exception("Updating active weather"))
 
     val indexActual = settings.listWeather.indexOf(newActiveWeather)
     val newList = tempList.set(indexActual, newActiveWeather.copy(isActive = true))

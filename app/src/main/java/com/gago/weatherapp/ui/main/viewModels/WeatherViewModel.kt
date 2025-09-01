@@ -29,6 +29,7 @@ import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.collections.immutable.mutate
 import kotlinx.collections.immutable.toPersistentList
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.first
@@ -36,6 +37,7 @@ import kotlinx.coroutines.flow.firstOrNull
 import kotlinx.coroutines.flow.last
 import kotlinx.coroutines.flow.lastOrNull
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
 @HiltViewModel
@@ -128,7 +130,11 @@ class WeatherViewModel @Inject constructor(
                         if (activeWeather.isGps) {
                             loadWeatherFromGpsAsync()
                         } else {
-                            getWeatherFromApi(activeWeather.lat, activeWeather.lon, settingNotNull)
+                            getWeatherFromApi(
+                                activeWeather.lat,
+                                activeWeather.lon,
+                                settingNotNull
+                            )
                         }
                     } ?: run {
                         if (settingNotNull.permissionAccepted) {
@@ -170,11 +176,9 @@ class WeatherViewModel @Inject constructor(
 
             val setting = settings.first()
 
-            val listDeactivated = setting.listWeather.mutate { list ->
-                list.forEachIndexed { index, weatherLocal ->
-                    list[index] = weatherLocal.copy(isActive = false)
-                }
-            }
+            val listDeactivated = setting.listWeather.map { weatherLocal ->
+                weatherLocal.copy(isActive = false)
+            }.toPersistentList()
 
             dataStore.updateData { currentSettings -> currentSettings.copy(listWeather = listDeactivated) }
 
@@ -185,7 +189,11 @@ class WeatherViewModel @Inject constructor(
     private suspend fun loadWeatherFromGpsAsync() {
         locationTracker.getCurrentLocation()?.also { location ->
             val setting = settings.first()
-            val name = getWeatherFromApi(location.latitude, location.longitude, setting)
+            val name = getWeatherFromApi(
+                location.latitude,
+                location.longitude,
+                setting
+            )
 
             name?.let { weatherName ->
 
@@ -273,7 +281,6 @@ class WeatherViewModel @Inject constructor(
                 isLoading = true,
                 error = null
             )
-
             getWeatherFromApi(weather.lat, weather.lon, settings.first())
         }
     }

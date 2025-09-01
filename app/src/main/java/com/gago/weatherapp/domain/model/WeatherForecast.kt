@@ -12,7 +12,7 @@ data class WeatherForecast(
     val mainData: WeatherData,
     val probabilityOfPrecipitation: Double,
     val partOfTheDay: PartOfTheDay,
-    val visibility: Int,
+    val visibility: Int?,
     val wind: Wind,
     val weatherCondition: WeatherCondition,
     val rain: Rain?,

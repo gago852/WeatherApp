@@ -13,18 +13,18 @@ import com.squareup.moshi.Json
 
 data class WeatherForecastDto(
     val dt: Int,
-    @field:Json(name = "dt_txt")
+    @Json(name = "dt_txt")
     val dtTxt: String,
     val clouds: Clouds,
     val main: WeatherData,
     val pop: Double,
-    @field:Json(name = "sys")
+    @Json(name = "sys")
     val partOfTheDay: PartOfTheDay,
-    val visibility: Int,
+    val visibility: Int? = null,
     val wind: Wind,
     val weather: List<WeatherConditionDto>,
-    val rain: Rain?,
-    val snow: Snow?
+    val rain: Rain? = null,
+    val snow: Snow? = null
 )
 
 fun WeatherForecastDto.toWeatherForecast(timeZoneOffset: Long): WeatherForecast {

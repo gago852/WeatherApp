@@ -19,7 +19,7 @@ data class WeatherDto(
     val dt: Int,
     val id: Int,
     val main: WeatherData,
-    val visibility: Int,
+    val visibility: Int? = null,
     val name: String,
     val rain: Rain? = null,
     val snow: Snow? = null,

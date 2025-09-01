@@ -14,7 +14,7 @@ data class CurrentWeather(
     val weatherConditions: WeatherCondition,
     val weatherData: WeatherData,
     val wind: Wind,
-    val visibility: Int,
+    val visibility: Int?,
     val clouds: Int,
     val rain: Rain?,
     val snow: Snow?

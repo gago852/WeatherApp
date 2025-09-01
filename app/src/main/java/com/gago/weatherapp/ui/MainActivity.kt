@@ -1,6 +1,7 @@
 package com.gago.weatherapp.ui
 
 import android.os.Bundle
+import android.os.StrictMode
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.viewModels
@@ -28,6 +29,17 @@ class MainActivity : ComponentActivity() {
         splash.setKeepOnScreenCondition {
             !startupViewModel.isReady.value
         }
+
+//        StrictMode.setThreadPolicy(
+//            StrictMode.ThreadPolicy.Builder()
+//                .detectDiskReads()
+//                .detectDiskWrites()
+//                .detectNetwork()
+//                .penaltyLog() // ✅ Esto te mostrará detalles en el LogCat
+//                .penaltyDeath()
+//                .build()
+//        )
+
 
         setContent {
             WeatherAppTheme {

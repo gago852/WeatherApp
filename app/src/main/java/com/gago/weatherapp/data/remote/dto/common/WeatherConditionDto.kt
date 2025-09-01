@@ -6,7 +6,7 @@ import com.squareup.moshi.Json
 
 data class WeatherConditionDto(
     val id: Int,
-    @field:Json(name = "main")
+    @Json(name = "main")
     val mainCondition: String,
     val description: String,
     val icon: String
