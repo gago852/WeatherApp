@@ -27,6 +27,7 @@ class PlacesRepositoryImpl @Inject constructor(
         return try {
             val request = FindAutocompletePredictionsRequest.builder()
                 .setSessionToken(sessionToken)
+                .setTypesFilter(listOf("locality", "administrative_area_level_1"))
                 .setQuery(query)
                 .build()
             val response = placesClient.findAutocompletePredictions(request).await()
@@ -59,7 +60,7 @@ class PlacesRepositoryImpl @Inject constructor(
             val response = placesClient.fetchPlace(request).await()
             val location = response.place.location
             val formattedAddress = response.place.formattedAddress
-            
+
             return if (location != null) {
                 Result.Success(
                     GeoCoordinate(

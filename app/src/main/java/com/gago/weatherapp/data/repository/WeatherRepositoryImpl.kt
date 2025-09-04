@@ -1,6 +1,5 @@
 package com.gago.weatherapp.data.repository
 
-import android.util.Log
 import com.gago.weatherapp.data.remote.OpenWeatherMapApi
 import com.gago.weatherapp.data.remote.dto.forecast.toForecastFiveDays
 import com.gago.weatherapp.data.remote.dto.weather.toWeather
@@ -11,6 +10,7 @@ import com.gago.weatherapp.domain.repository.WeatherRepository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
 import com.google.firebase.crashlytics.FirebaseCrashlytics
+import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
 import retrofit2.HttpException
@@ -19,6 +19,7 @@ import javax.inject.Inject
 class WeatherRepositoryImpl @Inject constructor(
     private val weatherApi: OpenWeatherMapApi
 ) : WeatherRepository {
+
     override suspend fun getWeather(
         latitude: Double,
         longitude: Double,
@@ -44,6 +45,7 @@ class WeatherRepositoryImpl @Inject constructor(
                     }
 
                     is NoNetworkException -> Result.Error(DataError.Network.NO_INTERNET)
+                    is CancellationException -> throw e
                     else -> {
                         FirebaseCrashlytics.getInstance().recordException(e)
                         Result.Error(DataError.Network.UNKNOWN)

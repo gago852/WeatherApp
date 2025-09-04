@@ -14,12 +14,18 @@ import org.junit.Before
 import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
+import com.squareup.moshi.Moshi
+import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
+import com.google.firebase.crashlytics.FirebaseCrashlytics
+import org.mockito.MockedStatic
+import org.mockito.Mockito
 
 class WeatherRepositoryImplTest {
 
     private lateinit var server: MockWebServer
     private lateinit var api: OpenWeatherMapApi
     private lateinit var repository: WeatherRepositoryImpl
+    private lateinit var crashlyticsStatic: MockedStatic<FirebaseCrashlytics>
 
     @Before
     fun setUp() {
@@ -27,19 +33,34 @@ class WeatherRepositoryImplTest {
         server.start()
 
         val client = OkHttpClient.Builder().build()
+        val moshi = Moshi.Builder()
+            .addLast(KotlinJsonAdapterFactory())
+            .build()
         val retrofit = Retrofit.Builder()
             .baseUrl(server.url("/"))
-            .addConverterFactory(MoshiConverterFactory.create())
+            .addConverterFactory(MoshiConverterFactory.create(moshi))
             .client(client)
             .build()
 
         api = retrofit.create(OpenWeatherMapApi::class.java)
+
+        // Mock static FirebaseCrashlytics.getInstance() to avoid Android deps in JVM tests
+        crashlyticsStatic = Mockito.mockStatic(FirebaseCrashlytics::class.java)
+        val mockCrashlytics = Mockito.mock(FirebaseCrashlytics::class.java)
+        crashlyticsStatic.`when`<FirebaseCrashlytics> { FirebaseCrashlytics.getInstance() }
+            .thenReturn(mockCrashlytics)
+        Mockito.doNothing().`when`(mockCrashlytics).recordException(Mockito.any())
+
         repository = WeatherRepositoryImpl(api)
     }
 
     @After
     fun tearDown() {
-        server.shutdown()
+        try {
+            crashlyticsStatic.close()
+        } finally {
+            server.shutdown()
+        }
     }
 
     private fun readResource(name: String): String {
@@ -54,6 +75,7 @@ class WeatherRepositoryImplTest {
         server.enqueue(
             MockResponse()
                 .setResponseCode(200)
+                .addHeader("Content-Type", "application/json")
                 .setBody(body)
         )
 
@@ -102,6 +124,8 @@ class WeatherRepositoryImplTest {
         server.enqueue(
             MockResponse()
                 .setResponseCode(401)
+                .addHeader("Content-Type", "application/json")
+                .setBody("{\"cod\":401,\"message\":\"unauthorized\"}")
         )
 
         val result = repository.getWeather(0.0, 0.0, "bad", "en", "metric")
@@ -114,6 +138,8 @@ class WeatherRepositoryImplTest {
         server.enqueue(
             MockResponse()
                 .setResponseCode(404)
+                .addHeader("Content-Type", "application/json")
+                .setBody("{\"cod\":404,\"message\":\"not found\"}")
         )
 
         val result = repository.getForecastFiveDays(0.0, 0.0, "test", "en", "metric")

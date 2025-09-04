@@ -102,10 +102,14 @@ private fun updateActiveWeather(settings: Settings, newActiveWeather: WeatherLoc
     val currentActive = settings.listWeather.find { it.isActive }
 
     var tempList = persistentListOf<WeatherLocal>()
-
+    var newList = persistentListOf<WeatherLocal>()
     currentActive?.let {
         val indexTemp = settings.listWeather.indexOf(it)
         tempList = settings.listWeather.set(indexTemp, it.copy(isActive = false))
+        val indexActual = settings.listWeather.indexOf(newActiveWeather)
+        newList = tempList.set(indexActual, newActiveWeather.copy(isActive = true))
+    } ?: run {
+        newList = tempList.add(newActiveWeather.copy(isActive = true))
     }
 
     val crashlytics = FirebaseCrashlytics.getInstance()
@@ -114,9 +118,6 @@ private fun updateActiveWeather(settings: Settings, newActiveWeather: WeatherLoc
     crashlytics.setCustomKey("New Active", newActiveWeather.toString())
     crashlytics.log("Updating active weather from drawer")
     crashlytics.recordException(Exception("Updating active weather"))
-
-    val indexActual = settings.listWeather.indexOf(newActiveWeather)
-    val newList = tempList.set(indexActual, newActiveWeather.copy(isActive = true))
 
     return settings.copy(listWeather = newList)
 }
