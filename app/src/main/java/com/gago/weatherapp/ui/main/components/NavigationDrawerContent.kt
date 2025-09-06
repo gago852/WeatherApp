@@ -112,13 +112,6 @@ private fun updateActiveWeather(settings: Settings, newActiveWeather: WeatherLoc
         newList = tempList.add(newActiveWeather.copy(isActive = true))
     }
 
-    val crashlytics = FirebaseCrashlytics.getInstance()
-    crashlytics.setCustomKey("List size", settings.listWeather.size)
-    crashlytics.setCustomKey("Current Active", currentActive?.name ?: "None")
-    crashlytics.setCustomKey("New Active", newActiveWeather.toString())
-    crashlytics.log("Updating active weather from drawer")
-    crashlytics.recordException(Exception("Updating active weather"))
-
     return settings.copy(listWeather = newList)
 }
 
