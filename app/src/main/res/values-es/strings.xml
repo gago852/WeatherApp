@@ -11,7 +11,7 @@
     <string name="error_location">No se ha podido recuperar la ubicación. Asegúrese de conceder permiso y activar el GPS.</string>
     <string name="info_about_app">Esta es una aplicación meteorológica para mi portafolio. El código está en mi github.</string>
     <string name="openWeather_attribution">Datos meteorológicos proporcionados por OpenWeather</string>
-    <string name="welcome_message">Estamos encantados de tenerle aquí. Adelántate al tiempo con nuestras previsiones precisas y actualizaciones en tiempo real. Simplemente haga clic en el botón de abajo para obtener la información meteorológica más reciente para su ubicación.</string>
+    <string name="welcome_message">Estamos encantados de tenerte aquí. Mantente al tanto del tiempo con nuestras previsiones precisas y actualizaciones en tiempo real. Solo tienes que hacer clic en el primer botón de abajo para obtener la información meteorológica más reciente de tu ubicación o pulsar el segundo botón para buscar una ciudad.</string>
     <string name="refresh_error">No se ha recuperado ninguna previsión meteorológica de la caché.</string>
     <string name="from_gps">Desde GPS</string>
     <string name="swipe_to_load_text">Deslizar para cargar</string>
@@ -53,7 +53,7 @@
     <string name="error_places_invalid_request">Solicitud no válida</string>
     <string name="error_places_not_found">No se han encontrado resultados</string>
     <string name="error_places_unknown">Error de búsqueda desconocido</string>
-    
+
     <!--Weather API Errors-->
     <string name="error_weather_api_key_invalid">Clave API no válida</string>
     <string name="error_weather_api_key_expired">Clave API caducada</string>
@@ -61,7 +61,7 @@
     <string name="error_weather_city_not_found">Ciudad no encontrada</string>
     <string name="error_weather_invalid_coordinates">Coordenadas no válidas</string>
     <string name="error_weather_unknown">Error meteorológico desconocido</string>
-    
+
     <!--Search Errors-->
     <string name="error_search_session">Error en la sesión de búsqueda</string>
     <string name="error_connection">Error de conexión</string>

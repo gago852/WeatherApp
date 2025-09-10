@@ -10,9 +10,12 @@ import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.safeContent
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
@@ -231,7 +234,7 @@ fun WeatherNavDrawer(
     ) {
         Scaffold(
             modifier = Modifier,
-            contentWindowInsets = WindowInsets.safeDrawing,
+            contentWindowInsets = WindowInsets(0, 0, 0, 0),
             snackbarHost = { SnackbarHost(hostState = snackBarHostState) },
             topBar = {
                 WeatherTopBar(
@@ -243,7 +246,8 @@ fun WeatherNavDrawer(
             Box(
                 modifier = Modifier
                     .fillMaxSize()
-                    .padding(paddingValues),
+                    .padding(paddingValues)
+                    .consumeWindowInsets(paddingValues),
                 contentAlignment = if (state.weather == null && !settingValue.permissionAccepted)
                     Alignment.Center else Alignment.TopStart
             ) {
@@ -284,7 +288,7 @@ fun openAppSettings(context: Context) {
     context.startActivity(intent)
 }
 
-@Preview
+@Preview(showSystemUi = true)
 @Composable
 fun MainScreenPreview() {
     WeatherAppTheme {
@@ -294,7 +298,7 @@ fun MainScreenPreview() {
         ) {
             WeatherNavDrawer(
                 settingValue = Settings(),
-                state = WeatherState(),
+                state = WeatherState(isLoading = false),
                 onSettingsClick = {},
                 onWeatherItemClick = {},
                 onRefresh = {},
@@ -312,7 +316,7 @@ fun MainScreenPreview() {
     }
 }
 
-@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES)
+@Preview(uiMode = Configuration.UI_MODE_NIGHT_YES, showSystemUi = true)
 @Composable
 fun MainScreenDarkPreview() {
     WeatherAppTheme {
@@ -322,7 +326,7 @@ fun MainScreenDarkPreview() {
         ) {
             WeatherNavDrawer(
                 settingValue = Settings(),
-                state = WeatherState(),
+                state = WeatherState(isLoading = false),
                 onSettingsClick = {},
                 onWeatherItemClick = {},
                 onRefresh = {},

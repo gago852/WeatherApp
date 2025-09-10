@@ -11,7 +11,7 @@
     <string name="error_location">Impossible de récupérer la position. Assurez-vous d\'accorder l\'autorisation et d\'activer le GPS.</string>
     <string name="info_about_app">Il s\'agit d\'une application météo pour mon portefeuille. Le code est sur mon github.</string>
     <string name="openWeather_attribution">Données météorologiques fournies par OpenWeather</string>
-    <string name="welcome_message">Nous sommes ravis de vous accueillir. Gardez une longueur d\'avance sur la météo grâce à nos prévisions précises et à nos mises à jour en temps réel. Il vous suffit de cliquer sur le bouton ci-dessous pour obtenir les dernières informations météorologiques pour votre lieu de résidence.</string>
+    <string name="welcome_message">Nous sommes ravis de vous accueillir. Restez informé des conditions météorologiques grâce à nos prévisions précises et nos mises à jour en temps réel. Il vous suffit de cliquer sur le premier bouton ci-dessous pour obtenir les dernières informations météorologiques pour votre emplacement ou d\'appuyer sur le deuxième bouton pour rechercher une ville.</string>
     <string name="refresh_error">Il n\'y a pas de prévisions météorologiques extraites de la mémoire cache.</string>
     <string name="from_gps">Du GPS</string>
     <string name="swipe_to_load_text">Balayer pour charger</string>
@@ -53,7 +53,7 @@
     <string name="error_places_invalid_request">Demande non valide</string>
     <string name="error_places_not_found">Aucun résultat trouvé</string>
     <string name="error_places_unknown">Erreur de recherche inconnue</string>
-    
+
     <!--Weather API Errors-->
     <string name="error_weather_api_key_invalid">Clé API invalide</string>
     <string name="error_weather_api_key_expired">La clé API a expiré</string>
@@ -61,7 +61,7 @@
     <string name="error_weather_city_not_found">Ville non trouvée</string>
     <string name="error_weather_invalid_coordinates">Coordonnées non valides</string>
     <string name="error_weather_unknown">Erreur météorologique inconnue</string>
-    
+
     <!--Search Errors-->
     <string name="error_search_session">Erreur de session de recherche</string>
     <string name="error_connection">Erreur de connexion</string>

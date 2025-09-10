@@ -74,9 +74,8 @@ fun WelcomeWeatherScreen(
                     textAlign = TextAlign.Center
                 )
                 Spacer(modifier = Modifier.height(24.dp))
-                Row(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalArrangement = Arrangement.spacedBy(12.dp)
+                Column(
+                    modifier = Modifier.fillMaxWidth()
                 ) {
                     Button(
                         onClick = onPermissionRequest,
@@ -84,7 +83,9 @@ fun WelcomeWeatherScreen(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
-                        modifier = Modifier.weight(1f).testTag("gps_button")
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("gps_button")
                     ) {
                         Icon(
                             imageVector = Icons.Default.LocationOn,
@@ -99,7 +100,9 @@ fun WelcomeWeatherScreen(
                             containerColor = MaterialTheme.colorScheme.primary,
                             contentColor = MaterialTheme.colorScheme.onPrimary
                         ),
-                        modifier = Modifier.weight(1f).testTag("search_button")
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .testTag("search_button")
                     ) {
                         Icon(
                             imageVector = Icons.Default.Search,

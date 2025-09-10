@@ -12,14 +12,14 @@
     <string name="error_forbidden" translatable="false">error forbidden</string>
     <string name="error_not_found" translatable="false">error not found</string>
     <string name="error_bad_request" translatable="false">error bad request"</string>
-    
+
     <!--Places API Errors-->
     <string name="error_places_quota_exceeded">API quota exceeded</string>
     <string name="error_places_over_query_limit">Query limit exceeded</string>
     <string name="error_places_invalid_request">Invalid request</string>
     <string name="error_places_not_found">No results found</string>
     <string name="error_places_unknown">Unknown search error</string>
-    
+
     <!--Weather API Errors-->
     <string name="error_weather_api_key_invalid">Invalid API key</string>
     <string name="error_weather_api_key_expired">API key expired</string>
@@ -27,7 +27,7 @@
     <string name="error_weather_city_not_found">City not found</string>
     <string name="error_weather_invalid_coordinates">Invalid coordinates</string>
     <string name="error_weather_unknown">Unknown weather error</string>
-    
+
     <!--Search Errors-->
     <string name="error_search_session">Search session error</string>
     <string name="error_connection">Connection error</string>
@@ -44,7 +44,7 @@
     <string name="error_location">Could not retrieve location. Make sure to grant permission and enable GPS.</string>
     <string name="info_about_app">This is a weather app for my portfolio. The code is on my github.</string>
     <string name="openWeather_attribution">Weather data provided by OpenWeather</string>
-    <string name="welcome_message">We\'re thrilled to have you here. Stay ahead of the weather with our accurate forecasts and real-time updates. Simply click the button below to get the latest weather information for your location.</string>
+    <string name="welcome_message">We\'re thrilled to have you here. Stay ahead of the weather with our accurate forecasts and real-time updates. Simply click the first button below to get the latest weather information for your location or press the second button to search a city.</string>
     <string name="refresh_error">There is no weather forecast retrieved from cache.</string>
     <string name="from_gps">From GPS</string>
     <string name="swipe_to_load_text">Swipe to load</string>
