@@ -12,6 +12,7 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.google.android.libraries.places.api.net.PlacesStatusCodes
+import com.google.firebase.crashlytics.FirebaseCrashlytics
 import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
@@ -37,10 +38,14 @@ class PlacesRepositoryImpl @Inject constructor(
                 PlacesStatusCodes.OVER_QUERY_LIMIT -> DataError.Places.OVER_QUERY_LIMIT
                 PlacesStatusCodes.INVALID_REQUEST -> DataError.Places.INVALID_REQUEST
                 PlacesStatusCodes.NOT_FOUND -> DataError.Places.NOT_FOUND
-                else -> DataError.Places.UNKNOWN
+                else -> {
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                    DataError.Places.UNKNOWN
+                }
             }
             Result.Error(error)
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             Result.Error(DataError.Places.UNKNOWN)
         }
     }
@@ -77,10 +82,14 @@ class PlacesRepositoryImpl @Inject constructor(
                 PlacesStatusCodes.OVER_QUERY_LIMIT -> DataError.Places.OVER_QUERY_LIMIT
                 PlacesStatusCodes.INVALID_REQUEST -> DataError.Places.INVALID_REQUEST
                 PlacesStatusCodes.NOT_FOUND -> DataError.Places.NOT_FOUND
-                else -> DataError.Places.UNKNOWN
+                else -> {
+                    FirebaseCrashlytics.getInstance().recordException(e)
+                    DataError.Places.UNKNOWN
+                }
             }
             Result.Error(error)
         } catch (e: Exception) {
+            FirebaseCrashlytics.getInstance().recordException(e)
             Result.Error(DataError.Places.UNKNOWN)
         }
     }
