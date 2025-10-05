@@ -1,3 +1,5 @@
+import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+
 plugins {
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsKotlinAndroid)
@@ -18,8 +20,8 @@ android {
         applicationId = "com.gago.weatherapp"
         minSdk = 27
         targetSdk = 35
-        versionCode = 12
-        versionName = "0.1.4"
+        versionCode = 13
+        versionName = "0.2.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -51,9 +53,17 @@ android {
         sourceCompatibility = JavaVersion.VERSION_11
         targetCompatibility = JavaVersion.VERSION_11
     }
-    kotlinOptions {
-        jvmTarget = "11"
+//    kotlinOptions {
+//        jvmTarget = "11"
+//    }
+
+    kotlin {
+        compilerOptions {
+            jvmTarget = JvmTarget.fromTarget("11")
+            freeCompilerArgs.add("-Xannotation-default-target=param-property")
+        }
     }
+
     buildFeatures {
         compose = true
     }
@@ -91,7 +101,8 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     implementation(libs.hilt)
-    implementation(libs.hilt.navigation.compose)
+//    implementation(libs.hilt.navigation.compose)
+    implementation(libs.hilt.lifecycle.viewmodel.compose)
     ksp(libs.hilt.compiler)
 
     implementation(libs.retrofit)

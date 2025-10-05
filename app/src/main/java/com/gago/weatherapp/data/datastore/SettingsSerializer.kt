@@ -6,6 +6,7 @@ import kotlinx.collections.immutable.PersistentList
 import kotlinx.collections.immutable.toPersistentList
 import kotlinx.serialization.ExperimentalSerializationApi
 import kotlinx.serialization.KSerializer
+import kotlinx.serialization.SealedSerializationApi
 import kotlinx.serialization.SerializationException
 import kotlinx.serialization.builtins.ListSerializer
 import kotlinx.serialization.decodeFromString
@@ -49,6 +50,7 @@ class MyPersistentListSerializer(
     private val elementSerializer: KSerializer<WeatherLocal>
 ) : KSerializer<PersistentList<WeatherLocal>> {
 
+    @OptIn(SealedSerializationApi::class)
     private class PersistentListDescriptor :
         SerialDescriptor by serialDescriptor<List<WeatherLocal>>() {
         @ExperimentalSerializationApi
