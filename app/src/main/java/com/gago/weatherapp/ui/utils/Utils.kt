@@ -42,7 +42,7 @@ fun getPlacesErrorMessage(error: DataError.Places): Int {
         DataError.Places.OVER_QUERY_LIMIT -> R.string.error_places_over_query_limit
         DataError.Places.INVALID_REQUEST -> R.string.error_places_invalid_request
         DataError.Places.NOT_FOUND -> R.string.error_places_not_found
-        DataError.Places.UNKNOWN -> R.string.error_places_unknown
+        DataError.Places.UNKNOWN -> R.string.error_generic
     }
 }
 

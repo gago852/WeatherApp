@@ -14,12 +14,12 @@ plugins {
 
 android {
     namespace = "com.gago.weatherapp"
-    compileSdk = 35
+    compileSdk = 36
 
     defaultConfig {
         applicationId = "com.gago.weatherapp"
         minSdk = 27
-        targetSdk = 35
+        targetSdk = 36
         versionCode = 13
         versionName = "0.2.0"
 
