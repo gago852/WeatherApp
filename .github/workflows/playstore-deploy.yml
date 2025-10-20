@@ -4,9 +4,9 @@ on:
   workflow_dispatch:
     inputs:
       track:
-        description: 'Play Store track (internal/alpha/beta/production)'
+        description: "Play Store track (internal/alpha/beta/production)"
         required: true
-        default: 'internal'
+        default: "internal"
         type: choice
         options:
           - internal
@@ -14,9 +14,9 @@ on:
           - beta
           - production
       release_type:
-        description: 'GitHub Release type'
+        description: "GitHub Release type"
         required: true
-        default: 'prerelease'
+        default: "prerelease"
         type: choice
         options:
           - prerelease
@@ -44,8 +44,8 @@ jobs:
       - name: Set up JDK 21
         uses: actions/setup-java@v4
         with:
-          distribution: 'temurin'
-          java-version: '21'
+          distribution: "temurin"
+          java-version: "21"
 
       - name: Setup Gradle
         uses: gradle/actions/setup-gradle@v4
@@ -85,6 +85,18 @@ jobs:
             -Pandroid.injected.signing.key.alias=$SIGNING_KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$SIGNING_KEY_PASSWORD
 
+      - name: Build Release APK
+        env:
+          SIGNING_KEY_ALIAS: ${{ secrets.SIGNING_KEY_ALIAS }}
+          SIGNING_KEY_PASSWORD: ${{ secrets.SIGNING_KEY_PASSWORD }}
+          SIGNING_STORE_PASSWORD: ${{ secrets.SIGNING_STORE_PASSWORD }}
+        run: |
+          ./gradlew assembleRelease \
+            -Pandroid.injected.signing.store.file=${{ github.workspace }}/app/release-keystore.jks \
+            -Pandroid.injected.signing.store.password=$SIGNING_STORE_PASSWORD \
+            -Pandroid.injected.signing.key.alias=$SIGNING_KEY_ALIAS \
+            -Pandroid.injected.signing.key.password=$SIGNING_KEY_PASSWORD
+
       - name: Upload AAB to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
@@ -102,7 +114,7 @@ jobs:
           VERSION_NAME=${{ steps.version.outputs.version_name }}
           TRACK=${{ github.event.inputs.track || 'internal' }}
           RELEASE_TYPE=${{ github.event.inputs.release_type || 'prerelease' }}
-          
+
           # Determinar el tag según el track
           if [ "$TRACK" == "production" ]; then
             TAG="v$VERSION_NAME"
@@ -120,7 +132,7 @@ jobs:
             TAG="v$VERSION_NAME-internal"
             PRERELEASE="true"
           fi
-          
+
           echo "tag=$TAG" >> $GITHUB_OUTPUT
           echo "prerelease=$PRERELEASE" >> $GITHUB_OUTPUT
           echo "Release tag: $TAG (prerelease: $PRERELEASE)"
@@ -132,29 +144,29 @@ jobs:
           name: Release ${{ steps.release_info.outputs.tag }}
           body: |
             ## WeatherApp ${{ steps.version.outputs.version_name }}
-            
+
             **Version Code:** ${{ steps.version.outputs.version_code }}
             **Play Store Track:** ${{ github.event.inputs.track || 'internal' }}
             **Status:** Draft (not published yet)
-            
+
             ### Changes
             - App bundle uploaded to Google Play Store
             - Ready for manual release from Play Console
-            
+
             ### Download
-            The AAB file has been uploaded to Google Play Store Console.
+            The APK file is attached to this release.
           files: |
-            app/build/outputs/bundle/release/app-release.aab
+            app/build/outputs/apk/release/app-release.apk
             app/build/outputs/mapping/release/mapping.txt
           prerelease: ${{ steps.release_info.outputs.prerelease }}
           draft: false
           generate_release_notes: true
 
-      - name: Upload AAB artifact
+      - name: Upload APK artifact
         uses: actions/upload-artifact@v4
         with:
-          name: app-release-aab
-          path: app/build/outputs/bundle/release/app-release.aab
+          name: app-release-apk
+          path: app/build/outputs/apk/release/app-release.apk
           retention-days: 30
 
       - name: Upload Mapping file
