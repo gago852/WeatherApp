@@ -4,10 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.LocationOn
-import androidx.compose.material.icons.filled.Search
-import androidx.compose.material.icons.filled.Settings
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.ModalDrawerSheet
@@ -15,14 +11,15 @@ import androidx.compose.material3.NavigationDrawerItem
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.stringResource
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.unit.dp
 import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
 import kotlinx.collections.immutable.persistentListOf
-import androidx.compose.ui.platform.testTag
-import com.google.firebase.crashlytics.FirebaseCrashlytics
 
 @Composable
 fun NavigationDrawerContent(
@@ -52,7 +49,7 @@ private fun DrawerHeader(onSettingsClick: () -> Unit, onSearchClick: () -> Unit)
             onClick = onSearchClick
         ) {
             Icon(
-                imageVector = Icons.Filled.Search,
+                imageVector = ImageVector.vectorResource(R.drawable.search_icon),
                 contentDescription = "Buscar ciudad"
             )
         }
@@ -63,7 +60,7 @@ private fun DrawerHeader(onSettingsClick: () -> Unit, onSearchClick: () -> Unit)
             onClick = onSettingsClick
         ) {
             Icon(
-                imageVector = Icons.Filled.Settings,
+                imageVector = ImageVector.vectorResource(R.drawable.settings_icon),
                 contentDescription = stringResource(R.string.settings_text)
             )
         }
@@ -82,7 +79,7 @@ private fun DrawerItems(
             icon = {
                 if (weather.isGps) {
                     Icon(
-                        imageVector = Icons.Filled.LocationOn,
+                        imageVector = ImageVector.vectorResource(R.drawable.location_icon),
                         contentDescription = stringResource(R.string.from_gps)
                     )
                 }

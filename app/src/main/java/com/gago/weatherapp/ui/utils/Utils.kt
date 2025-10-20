@@ -3,9 +3,6 @@ package com.gago.weatherapp.ui.utils
 import android.content.Context
 import com.gago.weatherapp.R
 import com.gago.weatherapp.domain.utils.DataError
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 const val ONE_MINUTE_IN_MILLIS = 60000
 fun getCurrentLanguage(context: Context): String {
@@ -42,7 +39,7 @@ fun getPlacesErrorMessage(error: DataError.Places): Int {
         DataError.Places.OVER_QUERY_LIMIT -> R.string.error_places_over_query_limit
         DataError.Places.INVALID_REQUEST -> R.string.error_places_invalid_request
         DataError.Places.NOT_FOUND -> R.string.error_places_not_found
-        DataError.Places.UNKNOWN -> R.string.error_places_unknown
+        DataError.Places.UNKNOWN -> R.string.error_generic
     }
 }
 

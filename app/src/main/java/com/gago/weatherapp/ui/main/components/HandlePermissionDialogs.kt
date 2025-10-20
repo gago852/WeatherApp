@@ -22,6 +22,7 @@ fun HandlePermissionDialogs(
                 Manifest.permission.ACCESS_COARSE_LOCATION -> {
                     AccessCoarseLocationPermissionTextProvider()
                 }
+
                 else -> return@forEach
             },
             isPermanentlyDeclined = !ActivityCompat.shouldShowRequestPermissionRationale(

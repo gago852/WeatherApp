@@ -2,6 +2,14 @@ package com.gago.weatherapp.ui.main.viewModels
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.gago.weatherapp.R
+import com.gago.weatherapp.domain.model.GeoCoordinate
+import com.gago.weatherapp.domain.repository.PlacesRepository
+import com.gago.weatherapp.domain.utils.Result
+import com.gago.weatherapp.ui.main.states.SearchCityUiState
+import com.gago.weatherapp.ui.utils.getPlacesErrorMessage
+import com.google.android.libraries.places.api.model.AutocompletePrediction
+import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Job
 import kotlinx.coroutines.delay
@@ -10,15 +18,6 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
-import com.gago.weatherapp.ui.main.states.SearchCityUiState
-import com.google.android.libraries.places.api.model.AutocompletePrediction
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
-import com.gago.weatherapp.domain.repository.PlacesRepository
-import com.gago.weatherapp.domain.utils.Result
-import com.gago.weatherapp.domain.utils.DataError
-import com.gago.weatherapp.domain.model.GeoCoordinate
-import com.gago.weatherapp.ui.utils.getPlacesErrorMessage
-import com.gago.weatherapp.R
 
 @HiltViewModel
 class SearchCityViewModel @Inject constructor(
@@ -54,7 +53,7 @@ class SearchCityViewModel @Inject constructor(
 
         viewModelScope.launch {
             _uiState.value = _uiState.value.copy(isLoading = true, error = null)
-            
+
             try {
                 val token = _uiState.value.token
                 if (token == null) {
@@ -74,6 +73,7 @@ class SearchCityViewModel @Inject constructor(
                             error = null
                         )
                     }
+
                     is Result.Error -> {
                         val errorMessage = getPlacesErrorMessage(result.error)
                         _uiState.value = _uiState.value.copy(
@@ -114,12 +114,13 @@ class SearchCityViewModel @Inject constructor(
                     token,
                     "es"
                 )
-                
+
                 when (geoResult) {
                     is Result.Success -> {
                         _selectedGeoCoordinate.value = geoResult.data
                         _uiState.value = _uiState.value.copy(error = null)
                     }
+
                     is Result.Error -> {
                         val errorMessage = getPlacesErrorMessage(geoResult.error)
                         _uiState.value = _uiState.value.copy(error = errorMessage)

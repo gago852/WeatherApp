@@ -35,7 +35,7 @@ class MainActivity : ComponentActivity() {
 //                .detectDiskReads()
 //                .detectDiskWrites()
 //                .detectNetwork()
-//                .penaltyLog() // ✅ Esto te mostrará detalles en el LogCat
+//                .penaltyLog()
 //                .penaltyDeath()
 //                .build()
 //        )
