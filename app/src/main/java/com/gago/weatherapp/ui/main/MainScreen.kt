@@ -13,11 +13,7 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.consumeWindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeContent
-import androidx.compose.foundation.layout.safeDrawing
-import androidx.compose.foundation.layout.statusBars
 import androidx.compose.material3.DrawerValue
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
@@ -38,24 +34,24 @@ import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.NavController
 import com.gago.weatherapp.data.datastore.Settings
-import com.gago.weatherapp.ui.main.states.WeatherState
-import com.gago.weatherapp.ui.main.viewModels.WeatherViewModel
+import com.gago.weatherapp.domain.model.GeoCoordinate
 import com.gago.weatherapp.ui.main.components.HandlePermissionDialogs
 import com.gago.weatherapp.ui.main.components.NavigationDrawerContent
+import com.gago.weatherapp.ui.main.components.SearchCityOverlay
 import com.gago.weatherapp.ui.main.components.WeatherContent
 import com.gago.weatherapp.ui.main.components.WeatherTopBar
+import com.gago.weatherapp.ui.main.states.SearchCityUiState
+import com.gago.weatherapp.ui.main.states.WeatherState
 import com.gago.weatherapp.ui.main.utils.handleRefresh
+import com.gago.weatherapp.ui.main.viewModels.SearchCityViewModel
+import com.gago.weatherapp.ui.main.viewModels.WeatherViewModel
 import com.gago.weatherapp.ui.navigation.AppScreens
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
-import kotlinx.coroutines.launch
-import com.gago.weatherapp.ui.main.viewModels.SearchCityViewModel
-import com.gago.weatherapp.ui.main.states.SearchCityUiState
-import com.gago.weatherapp.ui.main.components.SearchCityOverlay
 import com.google.android.libraries.places.api.model.AutocompletePrediction
-import com.gago.weatherapp.domain.model.GeoCoordinate
+import kotlinx.coroutines.launch
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun MainScreen(
     navController: NavController,
@@ -187,7 +183,7 @@ fun MainScreen(
 
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun WeatherNavDrawer(
     settingValue: Settings,

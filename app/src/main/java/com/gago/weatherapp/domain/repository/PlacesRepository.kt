@@ -12,7 +12,7 @@ interface PlacesRepository {
         sessionToken: AutocompleteSessionToken,
         language: String
     ): Result<List<AutocompletePrediction>, DataError.Places>
-    
+
     suspend fun placeCoordinates(
         placeId: String,
         sessionToken: AutocompleteSessionToken,

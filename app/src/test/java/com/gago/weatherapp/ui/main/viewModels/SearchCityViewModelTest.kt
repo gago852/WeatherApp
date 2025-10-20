@@ -3,7 +3,6 @@ package com.gago.weatherapp.ui.main.viewModels
 import com.gago.weatherapp.R
 import com.gago.weatherapp.fakes.FakePlacesRepository
 import com.gago.weatherapp.rules.MainDispatcherRule
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.test.advanceTimeBy
 import kotlinx.coroutines.test.advanceUntilIdle

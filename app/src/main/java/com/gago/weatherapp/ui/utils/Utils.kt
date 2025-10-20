@@ -3,9 +3,6 @@ package com.gago.weatherapp.ui.utils
 import android.content.Context
 import com.gago.weatherapp.R
 import com.gago.weatherapp.domain.utils.DataError
-import java.text.SimpleDateFormat
-import java.util.Date
-import java.util.Locale
 
 const val ONE_MINUTE_IN_MILLIS = 60000
 fun getCurrentLanguage(context: Context): String {

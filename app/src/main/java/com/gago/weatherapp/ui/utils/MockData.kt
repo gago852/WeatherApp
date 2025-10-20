@@ -21,10 +21,10 @@ object MockData {
             name = "Montreal",
             timezone = -14400,
             dayData =
-            DayData(
-                sunrise = "01:02 AM",
-                sunset = "05:58 PM",
-            ),
+                DayData(
+                    sunrise = "01:02 AM",
+                    sunset = "05:58 PM",
+                ),
             calculatedTime = "2024-06-06 01:29:58",
             weatherConditions = WeatherCondition(
                 description = "cielo claro",

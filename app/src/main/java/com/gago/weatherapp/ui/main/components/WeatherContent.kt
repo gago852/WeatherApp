@@ -2,7 +2,6 @@ package com.gago.weatherapp.ui.main.components
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -18,7 +17,7 @@ import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.ui.main.states.WeatherState
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Composable
 fun WeatherContent(
     state: WeatherState,
@@ -68,7 +67,7 @@ fun WeatherContent(
     }
 }
 
-@OptIn(ExperimentalMaterial3Api::class)
+
 @Preview
 @Composable
 private fun WeatherContentPreview() {

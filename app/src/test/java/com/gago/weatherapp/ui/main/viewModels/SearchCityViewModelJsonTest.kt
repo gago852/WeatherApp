@@ -5,7 +5,6 @@ import com.gago.weatherapp.domain.utils.Result
 import com.gago.weatherapp.fakes.FakePlacesRepository
 import com.gago.weatherapp.rules.MainDispatcherRule
 import com.google.android.libraries.places.api.model.AutocompletePrediction
-import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import kotlinx.coroutines.ExperimentalCoroutinesApi
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.advanceTimeBy
