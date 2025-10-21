@@ -40,8 +40,11 @@ android {
     signingConfigs {
         create("release") {
             // Configuración para CI/CD (GitHub Actions)
-            if (System.getenv("CI") == "true") {
-                storeFile = file(System.getProperty("android.injected.signing.store.file") ?: "release-keystore.jks")
+            if (System.getenv("GITHUB_WORKFLOW") == "Deploy to Play Store") {
+                storeFile = file(
+                    System.getProperty("android.injected.signing.store.file")
+                        ?: "release-keystore.jks"
+                )
                 storePassword = System.getProperty("android.injected.signing.store.password")
                 keyAlias = System.getProperty("android.injected.signing.key.alias")
                 keyPassword = System.getProperty("android.injected.signing.key.password")
@@ -52,10 +55,10 @@ android {
     buildTypes {
         release {
             // Usar configuración de firma si está disponible
-            if (System.getenv("CI") == "true") {
+            if (System.getenv("GITHUB_WORKFLOW") == "Deploy to Play Store") {
                 signingConfig = signingConfigs.getByName("release")
             }
-            
+
             ndk {
                 debugSymbolLevel = "FULL"
             }

@@ -97,6 +97,18 @@ jobs:
             -Pandroid.injected.signing.key.alias=$SIGNING_KEY_ALIAS \
             -Pandroid.injected.signing.key.password=$SIGNING_KEY_PASSWORD
 
+      - name: Zip native debug symbols
+        run: |
+          SYMBOLS_DIR="app/build/intermediates/merged_native_libs/release/mergeReleaseNativeLibs/out/lib"
+          echo "Symbols dir: $SYMBOLS_DIR"
+          mkdir -p app/build/outputs
+          if [ -d "$SYMBOLS_DIR" ]; then
+            (cd "$SYMBOLS_DIR" && zip -r "${GITHUB_WORKSPACE}/app/build/outputs/native-debug-symbols.zip" .)
+            echo "Zipped native symbols to app/build/outputs/native-debug-symbols.zip"
+          else
+            echo "Native symbols directory not found, skipping zip: $SYMBOLS_DIR"
+          fi
+
       - name: Upload AAB to Play Store
         uses: r0adkll/upload-google-play@v1
         with:
@@ -107,6 +119,7 @@ jobs:
           status: draft
           inAppUpdatePriority: 2
           mappingFile: app/build/outputs/mapping/release/mapping.txt
+          debugSymbols: app/build/outputs/native-debug-symbols.zip
 
       - name: Determine release tag and type
         id: release_info
@@ -174,4 +187,11 @@ jobs:
         with:
           name: mapping-file
           path: app/build/outputs/mapping/release/mapping.txt
+          retention-days: 90
+
+      - name: Upload Native Debug Symbols
+        uses: actions/upload-artifact@v4
+        with:
+          name: native-debug-symbols
+          path: app/build/outputs/native-debug-symbols.zip
           retention-days: 90
