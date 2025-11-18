@@ -157,11 +157,61 @@ jobs:
           echo "prerelease=$PRERELEASE" >> $GITHUB_OUTPUT
           echo "Release tag: $TAG (prerelease: $PRERELEASE)"
 
+      - name: Ensure unique tag
+        id: tag_uniqueness
+        env:
+          BASE_TAG: ${{ steps.release_info.outputs.tag }}
+        run: |
+          git fetch --tags --quiet
+          python <<'PYTHON'
+          import os
+          import re
+          import subprocess
+
+          base = os.environ["BASE_TAG"]
+          result = subprocess.run(
+              ["git", "tag", "-l", base, f"{base}.*"],
+              capture_output=True,
+              text=True,
+              check=True,
+          )
+
+          tags = [t.strip() for t in result.stdout.splitlines() if t.strip()]
+          pattern = re.compile(rf"^{re.escape(base)}(?:\.([0-9]+))?$")
+
+          matched = False
+          has_base = False
+          highest = 0
+
+          for tag in tags:
+              match = pattern.match(tag)
+              if not match:
+                  continue
+              matched = True
+              suffix = match.group(1)
+              if suffix is None:
+                  has_base = True
+                  continue
+              highest = max(highest, int(suffix))
+
+          if not matched:
+              final_tag = base
+          else:
+              if not has_base and highest == 0:
+                  final_tag = f"{base}.1"
+              else:
+                  final_tag = f"{base}.{highest + 1}"
+
+          print(f"Resolved tag: {final_tag}")
+          with open(os.environ["GITHUB_OUTPUT"], "a", encoding="utf-8") as fh:
+              fh.write(f"tag={final_tag}\n")
+          PYTHON
+
       - name: Create GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          tag_name: ${{ steps.release_info.outputs.tag }}
-          name: Release ${{ steps.release_info.outputs.tag }}
+          tag_name: ${{ steps.tag_uniqueness.outputs.tag }}
+          name: Release ${{ steps.tag_uniqueness.outputs.tag }}
           body: |
             ## WeatherApp ${{ steps.version.outputs.version_name }}
 
