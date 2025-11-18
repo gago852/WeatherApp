@@ -33,7 +33,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.tooling.preview.PreviewParameter
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
-import androidx.window.core.layout.WindowWidthSizeClass
+import androidx.window.core.layout.WindowSizeClass
 import com.gago.weatherapp.R
 import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.model.Forecast
@@ -50,7 +50,9 @@ fun WeatherPresentation(
     fiveDaysForecast: Forecast,
     measureUnit: MeasureUnit
 ) {
-    val screenWidth = currentWindowAdaptiveInfo().windowSizeClass.windowWidthSizeClass
+    val screenClass = currentWindowAdaptiveInfo().windowSizeClass
+    val isCompactSize =
+        screenClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
     Column(
         modifier = Modifier
             .fillMaxSize()
@@ -130,13 +132,7 @@ fun WeatherPresentation(
         ) {
             Column(
                 modifier = Modifier
-                    .fillMaxWidth(
-                        when (screenWidth) {
-                            WindowWidthSizeClass.COMPACT -> 1.0f
-                            else -> 0.5f
-                        }
-                    )
-
+                    .fillMaxWidth(if (isCompactSize) 0.5f else 1.0f)
             ) {
                 Text(
                     text = stringResource(R.string.details_text),
