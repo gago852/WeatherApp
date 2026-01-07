@@ -1,14 +1,15 @@
 [versions]
 #core
-agp = "8.13.1"
-kotlin = "2.2.21"
+agp = "8.13.2"
+kotlin = "2.3.0"
 coreKtx = "1.17.0"
 junit = "4.13.2"
 junitVersion = "1.3.0"
 espressoCore = "3.7.0"
-lifecycleRuntimeKtx = "2.9.4"
-activityCompose = "1.11.0"
-composeBom = "2025.11.00"
+kotlinMetadataJvm = "2.3.0"
+lifecycleRuntimeKtx = "2.10.0"
+activityCompose = "1.12.2"
+composeBom = "2025.12.01"
 navigation = "2.9.6"
 kotlinCollectionsImmutable = "0.4.0"
 kotlinSerialization = "1.9.0"
@@ -17,27 +18,27 @@ splashscreen = "1.2.0"
 #retrofit
 retrofit = "2.12.0"
 moshi = "1.15.2"
-ksp = "2.2.21-2.0.4"
+ksp = "2.3.4"
 #gsm
 gmsLocation = "21.3.0"
 googleServices = "4.4.4"
-googlePlaces = "5.0.0"
+googlePlaces = "5.1.1"
 googleSecrets = "2.0.1"
 #db
-dataStore = "1.1.7"
-datastorePreferencesCoreJvm = "1.1.7"
+dataStore = "1.2.0"
+datastorePreferencesCoreJvm = "1.2.0"
 #hilt
 hilt = "2.57.2"
 hiltExt = "1.3.0"
 hiltNavigationCompose = "1.3.0"
 #firebase
-firebaseBom = "34.6.0"
+firebaseBom = "34.7.0"
 firebaseCrashlytics = "3.0.6"
 #testing
 mockitoKotlin = "6.1.0"
 hamcrest = "3.0"
-mockito = "5.20.0"
-mockwebserver = "5.3.1"
+mockito = "5.21.0"
+mockwebserver = "5.3.2"
 kotlinxCoroutinesTest = "1.10.2"
 coreTesting = "2.2.0"
 
@@ -62,6 +63,7 @@ androidx-material3-adaptive = { group = "androidx.compose.material3.adaptive", n
 androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "dataStore" }
 androidx-datastore-preferences-core-jvm = { group = "androidx.datastore", name = "datastore-preferences-core-jvm", version.ref = "datastorePreferencesCoreJvm" }
 androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "splashscreen" }
+kotlin-metadata-jvm = { module = "org.jetbrains.kotlin:kotlin-metadata-jvm", version.ref = "kotlinMetadataJvm" }
 org-jetbrains-kotlinx-collections-immutable = { group = "org.jetbrains.kotlinx", name = "kotlinx-collections-immutable", version.ref = "kotlinCollectionsImmutable" }
 org-jetbrains-kotlinx-serialization-json = { group = "org.jetbrains.kotlinx", name = "kotlinx-serialization-json", version.ref = "kotlinSerialization" }
 androidx-navigation = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigation" }
@@ -102,4 +104,4 @@ googleServices = { id = "com.google.gms.google-services", version.ref = "googleS
 firebaseCrashlytics = { id = "com.google.firebase.crashlytics", version.ref = "firebaseCrashlytics" }
 google-secrets = { id = "com.google.android.libraries.mapsplatform.secrets-gradle-plugin", version.ref = "googleSecrets" }
 
-stability-analyzer = { id = "com.github.skydoves.compose.stability.analyzer", version = "0.5.2" }
+stability-analyzer = { id = "com.github.skydoves.compose.stability.analyzer", version = "0.6.6" }
