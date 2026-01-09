@@ -205,3 +205,16 @@
 -keepnames @kotlin.Metadata class com.gago.weatherapp.data.remote.dto.**
 -keep class com.gago.weatherapp.data.remote.dto.** { *; }
 -keepclassmembers class com.gago.weatherapp.data.remote.dto.** { *; }
+
+# Reglas para Google Places SDK
+-dontwarn io.grpc.internal.DnsNameResolverProvider
+-dontwarn io.grpc.internal.PickFirstLoadBalancerProvider
+
+# Mantener constructores sin argumentos para ServiceLoader
+-keepclassmembers class * {
+    <init>();
+}
+
+# Reglas específicas para evitar ServiceConfigurationError
+-keep class com.google.android.libraries.places.** { *; }
+-dontwarn com.google.android.libraries.places.**
