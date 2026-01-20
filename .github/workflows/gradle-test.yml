@@ -3,8 +3,18 @@ name: gradle-test
 on:
   push:
     branches: [main, dev]
+    paths: &android-paths
+      - "app/**"
+      - "buildSrc/**"
+      - "gradle/**"
+      - "gradlew"
+      - "settings.gradle"
+      - "settings.gradle.kts"
+      - "build.gradle"
+      - "build.gradle.kts"
   pull_request:
     branches: [main, dev]
+    paths: *android-paths
 
 permissions:
   contents: write
