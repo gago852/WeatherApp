@@ -12,12 +12,12 @@
 name: "CodeQL and dependency Scanning"
 
 on:
-  push:
-    branches: ["main"]
-  pull_request:
-    branches: ["main"]
-  schedule:
-    - cron: "0 0 * * 1"
+ # push:
+  #  branches: ["main"]
+ # pull_request:
+   # branches: ["main"]
+ # schedule:
+  #  - cron: "0 0 * * 1"
   workflow_dispatch:
 
 jobs:
