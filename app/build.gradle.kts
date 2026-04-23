@@ -9,18 +9,19 @@ plugins {
     alias(libs.plugins.ksp)
     alias(libs.plugins.hilt)
     alias(libs.plugins.google.secrets)
+    alias(libs.plugins.stability.analyzer)
 }
 
 android {
     namespace = "com.gago.weatherapp"
-    compileSdk = 36
+    compileSdk = 37
 
     defaultConfig {
         applicationId = "com.gago.weatherapp"
         minSdk = 27
-        targetSdk = 36
-        versionCode = 18
-        versionName = "0.2.2"
+        targetSdk = 37
+        versionCode = 19
+        versionName = "0.2.3"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
