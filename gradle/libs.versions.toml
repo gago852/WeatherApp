@@ -1,6 +1,6 @@
 [versions]
 #core
-agp = "9.0.1"
+agp = "9.2.0"
 kotlin = "2.3.10"
 coreKtx = "1.17.0"
 junit = "4.13.2"
@@ -16,7 +16,7 @@ kotlinSerialization = "1.10.0"
 splashscreen = "1.2.0"
 
 #retrofit
-retrofit = "2.12.0"
+retrofit = "3.0.0"
 moshi = "1.15.2"
 ksp = "2.3.4"
 #gsm
