@@ -1,37 +1,15 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 8.13.2" type="baseline" client="gradle" dependencies="false" name="AGP (8.13.2)" variant="all" version="8.13.2">
+<issues format="6" by="lint 9.2.0" type="baseline" client="gradle" dependencies="false" name="AGP (9.2.0)" variant="all" version="9.2.0">
 
     <issue
-        id="AndroidGradlePluginVersion"
-        message="A newer version of Gradle than 8.13 is available: 8.14.3"
-        errorLine1="distributionUrl=https\://services.gradle.org/distributions/gradle-8.13-bin.zip"
-        errorLine2="                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        id="MissingClass"
+        message="Class referenced in the manifest, `com.google.android.libraries.places.widget.internal.photoviewer.PlacesLightboxActivity`, was not found in the project or the libraries"
+        errorLine1="            android:name=&quot;com.google.android.libraries.places.widget.internal.photoviewer.PlacesLightboxActivity&quot;"
+        errorLine2="                          ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
         <location
-            file="$HOME/dev/android/proyecto/WeatherApp/gradle/wrapper/gradle-wrapper.properties"
-            line="4"
-            column="17"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.squareup.retrofit2:converter-moshi than 2.12.0 is available: 3.0.0"
-        errorLine1="retrofit = &quot;2.12.0&quot;"
-        errorLine2="           ~~~~~~~~">
-        <location
-            file="$HOME/dev/android/proyecto/WeatherApp/gradle/libs.versions.toml"
-            line="19"
-            column="12"/>
-    </issue>
-
-    <issue
-        id="NewerVersionAvailable"
-        message="A newer version of com.squareup.retrofit2:retrofit than 2.12.0 is available: 3.0.0"
-        errorLine1="retrofit = &quot;2.12.0&quot;"
-        errorLine2="           ~~~~~~~~">
-        <location
-            file="$HOME/dev/android/proyecto/WeatherApp/gradle/libs.versions.toml"
-            line="19"
-            column="12"/>
+            file="src/main/AndroidManifest.xml"
+            line="35"
+            column="27"/>
     </issue>
 
     <issue
@@ -166,6 +144,17 @@
         <location
             file="src/main/res/values/strings.xml"
             line="88"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="NotShrinkingResources"
+        message="If enabling minification, also set isShrinkResources = true"
+        errorLine1="            isMinifyEnabled = true"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="build.gradle.kts"
+            line="65"
             column="13"/>
     </issue>
 
