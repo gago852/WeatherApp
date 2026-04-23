@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -20,8 +21,8 @@ android {
         applicationId = "com.gago.weatherapp"
         minSdk = 27
         targetSdk = 37
-        versionCode = 20
-        versionName = "0.2.3"
+        versionCode = 21
+        versionName = "0.2.4"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -63,6 +64,7 @@ android {
                 debugSymbolLevel = "FULL"
             }
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -77,12 +79,7 @@ android {
 //        jvmTarget = "11"
 //    }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.fromTarget("17")
-            freeCompilerArgs.add("-Xannotation-default-target=param-property")
-        }
-    }
+
 
     buildFeatures {
         compose = true
@@ -93,10 +90,19 @@ android {
         }
     }
 
-    secrets {
-        propertiesFileName = "secrets.properties"
-        defaultPropertiesFileName = "local.defaults.properties"
+
+}
+
+configure<KotlinAndroidProjectExtension> {
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget("17")
+        freeCompilerArgs.add("-Xannotation-default-target=param-property")
     }
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
 }
 
 dependencies {
