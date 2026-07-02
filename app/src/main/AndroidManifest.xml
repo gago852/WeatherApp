@@ -32,7 +32,7 @@
             android:name="com.google.android.libraries.places.widget.BasicPlaceAutocompleteActivity"
             tools:node="remove" />
         <activity
-            android:name="com.google.android.libraries.places.widget.internal.photoviewer.PlacesLightboxActivity"
+            android:name="com.google.android.libraries.places.widget.internal.placedetails.photoviewer.PlacesLightboxActivity"
             tools:node="remove" />
         <activity
             android:name="com.google.android.libraries.places.widget.PlaceAutocompleteActivity"

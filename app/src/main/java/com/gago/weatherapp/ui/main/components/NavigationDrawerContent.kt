@@ -102,11 +102,11 @@ private fun updateActiveWeather(settings: Settings, newActiveWeather: WeatherLoc
     var newList = persistentListOf<WeatherLocal>()
     currentActive?.let {
         val indexTemp = settings.listWeather.indexOf(it)
-        tempList = settings.listWeather.set(indexTemp, it.copy(isActive = false))
+        tempList = settings.listWeather.replacingAt(indexTemp, it.copy(isActive = false))
         val indexActual = settings.listWeather.indexOf(newActiveWeather)
-        newList = tempList.set(indexActual, newActiveWeather.copy(isActive = true))
+        newList = tempList.replacingAt(indexActual, newActiveWeather.copy(isActive = true))
     } ?: run {
-        newList = tempList.add(newActiveWeather.copy(isActive = true))
+        newList = tempList.adding(newActiveWeather.copy(isActive = true))
     }
 
     return settings.copy(listWeather = newList)
