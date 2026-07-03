@@ -10,6 +10,9 @@ import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
 import com.gago.weatherapp.domain.location.LocationTracker
+import com.gago.weatherapp.domain.usecase.GetWeatherUseCase
+import com.gago.weatherapp.domain.usecase.ManageCitiesUseCase
+import com.gago.weatherapp.domain.usecase.RefreshWeatherUseCase
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
 import com.gago.weatherapp.fakes.FakeDataStore
@@ -69,7 +72,9 @@ class WeatherViewModelTest {
         locationTracker: LocationTracker = FakeLocationTracker(),
         dataStore: FakeDataStore = FakeDataStore()
     ) = WeatherViewModel(
-        repository = repository,
+        getWeatherUseCase = GetWeatherUseCase(repository, dataStore),
+        refreshWeatherUseCase = RefreshWeatherUseCase(),
+        manageCitiesUseCase = ManageCitiesUseCase(dataStore),
         locationTracker = locationTracker,
         dataStore = dataStore,
         savedStateHandle = SavedStateHandle(),
@@ -281,12 +286,10 @@ class WeatherViewModelTest {
     }
 
     @Test
-    fun `refreshWeather on api error currently falls back to the generic refresh error`() = runTest {
-        // Pins current behavior (tracked in #30): in refreshWeather the
-        // active-city branch is `weather?.let { getWeatherFromApi(...) } ?: run { ... }`,
-        // and since getWeatherFromApi returns null on failure, the elvis branch
-        // also runs and overwrites the mapped error with refresh_error. When #30
-        // is fixed, update this test to expect the mapped error instead.
+    fun `refreshWeather on api error surfaces the mapped error`() = runTest {
+        // #30 fixed by the use-case refactor: the RefreshDecision branches are
+        // exclusive, so a failed load keeps the mapped error instead of being
+        // overwritten by the generic refresh_error.
         val repository = FakeWeatherRepository().apply {
             weatherResult = Result.Error(DataError.Network.NO_INTERNET)
         }
@@ -298,7 +301,7 @@ class WeatherViewModelTest {
 
         assertThat(repository.getWeatherCallCount, `is`(1))
         assertThat(viewModel.state.isLoading, `is`(false))
-        assertThat(viewModel.state.error, `is`(R.string.refresh_error))
+        assertThat(viewModel.state.error, `is`(R.string.error_no_internet))
         assertThat(dataStore.data.first().lastUpdate, `is`(0L))
     }
 
