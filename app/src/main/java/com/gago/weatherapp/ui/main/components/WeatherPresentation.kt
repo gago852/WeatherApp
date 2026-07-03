@@ -122,6 +122,14 @@ fun WeatherPresentation(
             }
         }
 
+        Spacer(modifier = Modifier.height(8.dp))
+        TemperatureChart(
+            forecast = fiveDaysForecast.listForecastWeather,
+            measureUnit = measureUnit,
+            modifier = Modifier
+                .fillMaxWidth(if (isCompactSize) 0.5f else 1.0f)
+                .align(alignment = Alignment.CenterHorizontally)
+        )
 
         Spacer(modifier = Modifier.height(8.dp))
         ElevatedCard(
