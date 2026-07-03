@@ -57,7 +57,7 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.findAutocompletePredictions(any<FindAutocompletePredictionsRequest>()))
             .thenReturn(Tasks.forResult(response))
 
-        val result = repo.autocomplete("Mo", token, "es")
+        val result = repo.autocomplete("Mo", token)
 
         assertThat(result, instanceOf(Result.Success::class.java))
         val list = (result as Result.Success).data
@@ -71,7 +71,7 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.findAutocompletePredictions(any<FindAutocompletePredictionsRequest>()))
             .thenReturn(Tasks.forException(ex))
 
-        val result = repo.autocomplete("zzzz", token, "es")
+        val result = repo.autocomplete("zzzz", token)
 
         assertThat(result, instanceOf(Result.Error::class.java))
         assertThat((result as Result.Error).error, `is`(DataError.Places.NOT_FOUND))
@@ -89,7 +89,7 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.fetchPlace(any<FetchPlaceRequest>()))
             .thenReturn(Tasks.forResult(fetchResponse))
 
-        val result = repo.placeCoordinates("somePlaceId", token, "es")
+        val result = repo.placeCoordinates("somePlaceId", token)
 
         assertThat(result, instanceOf(Result.Success::class.java))
         val geo = (result as Result.Success).data
@@ -104,7 +104,7 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.fetchPlace(any<FetchPlaceRequest>()))
             .thenReturn(Tasks.forException(ex))
 
-        val result = repo.placeCoordinates("somePlaceId", token, "es")
+        val result = repo.placeCoordinates("somePlaceId", token)
 
         assertThat(result, instanceOf(Result.Error::class.java))
         assertThat((result as Result.Error).error, `is`(DataError.Places.OVER_QUERY_LIMIT))
@@ -116,7 +116,7 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.findAutocompletePredictions(any<FindAutocompletePredictionsRequest>()))
             .thenReturn(Tasks.forException(ex))
 
-        val result = repo.autocomplete("Paris", token, "es")
+        val result = repo.autocomplete("Paris", token)
 
         assertThat(result, instanceOf(Result.Error::class.java))
         assertThat((result as Result.Error).error, `is`(DataError.Places.NO_INTERNET))
@@ -128,7 +128,7 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.fetchPlace(any<FetchPlaceRequest>()))
             .thenReturn(Tasks.forException(ex))
 
-        val result = repo.placeCoordinates("somePlaceId", token, "es")
+        val result = repo.placeCoordinates("somePlaceId", token)
 
         assertThat(result, instanceOf(Result.Error::class.java))
         assertThat((result as Result.Error).error, `is`(DataError.Places.NO_INTERNET))

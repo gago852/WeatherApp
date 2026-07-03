@@ -64,7 +64,7 @@ class SearchCityViewModel @Inject constructor(
                     return@launch
                 }
 
-                val result = placesRepository.autocomplete(query, token, "es")
+                val result = placesRepository.autocomplete(query, token)
                 when (result) {
                     is Result.Success -> {
                         _uiState.value = _uiState.value.copy(
@@ -111,8 +111,7 @@ class SearchCityViewModel @Inject constructor(
 
                 val geoResult = placesRepository.placeCoordinates(
                     result.placeId,
-                    token,
-                    "es"
+                    token
                 )
 
                 when (geoResult) {

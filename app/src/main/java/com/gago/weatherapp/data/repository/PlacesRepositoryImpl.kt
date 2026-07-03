@@ -23,8 +23,7 @@ class PlacesRepositoryImpl @Inject constructor(
 
     override suspend fun autocomplete(
         query: String,
-        sessionToken: AutocompleteSessionToken,
-        language: String
+        sessionToken: AutocompleteSessionToken
     ): Result<List<AutocompletePrediction>, DataError.Places> {
         return try {
             val request = FindAutocompletePredictionsRequest.builder()
@@ -44,8 +43,7 @@ class PlacesRepositoryImpl @Inject constructor(
 
     override suspend fun placeCoordinates(
         placeId: String,
-        sessionToken: AutocompleteSessionToken,
-        language: String
+        sessionToken: AutocompleteSessionToken
     ): Result<GeoCoordinate, DataError.Places> {
         return try {
             val request = FetchPlaceRequest.builder(
