@@ -129,7 +129,6 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     implementation(libs.hilt)
-//    implementation(libs.hilt.navigation.compose)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     ksp(libs.hilt.compiler)
 
@@ -137,7 +136,8 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
-    implementation(libs.moshi.kotlin)
+    implementation(libs.moshi)
+    ksp(libs.moshi.kotlin.codegen)
 
     implementation(libs.gms.location)
     implementation(libs.google.places)

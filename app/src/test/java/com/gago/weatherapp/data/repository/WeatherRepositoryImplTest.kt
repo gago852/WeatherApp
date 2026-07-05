@@ -15,7 +15,6 @@ import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.mockito.MockedStatic
 import org.mockito.Mockito
@@ -33,9 +32,7 @@ class WeatherRepositoryImplTest {
         server.start()
 
         val client = OkHttpClient.Builder().build()
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
+        val moshi = Moshi.Builder().build()
         val retrofit = Retrofit.Builder()
             .baseUrl(server.url("/"))
             .addConverterFactory(MoshiConverterFactory.create(moshi))

@@ -10,7 +10,9 @@ import com.gago.weatherapp.data.remote.dto.common.toWeatherCondition
 import com.gago.weatherapp.domain.model.WeatherForecast
 import com.gago.weatherapp.domain.utils.convertDateWithoutTimeFromUnixLocatedTimeZoneToDayOfWeek
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class WeatherForecastDto(
     val dt: Int,
     @Json(name = "dt_txt")

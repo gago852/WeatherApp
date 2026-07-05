@@ -29,7 +29,6 @@ import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.net.PlacesClient
 import com.gago.weatherapp.BuildConfig
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -47,9 +46,7 @@ object AppModule {
             .retryOnConnectionFailure(true)
             .build()
 
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
+        val moshi = Moshi.Builder().build()
 
         return Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/")
