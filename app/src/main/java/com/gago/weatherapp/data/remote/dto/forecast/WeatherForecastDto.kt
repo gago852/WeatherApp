@@ -6,6 +6,7 @@ import com.gago.weatherapp.data.remote.dto.common.Snow
 import com.gago.weatherapp.data.remote.dto.common.WeatherConditionDto
 import com.gago.weatherapp.data.remote.dto.common.WeatherData
 import com.gago.weatherapp.data.remote.dto.common.Wind
+import com.gago.weatherapp.data.remote.dto.common.toDomain
 import com.gago.weatherapp.data.remote.dto.common.toWeatherCondition
 import com.gago.weatherapp.domain.model.WeatherForecast
 import com.gago.weatherapp.domain.utils.convertDateWithoutTimeFromUnixLocatedTimeZoneToDayOfWeek
@@ -36,13 +37,13 @@ fun WeatherForecastDto.toWeatherForecast(timeZoneOffset: Long): WeatherForecast 
             timeZoneOffset = timeZoneOffset
         ),
         calculatedTimeFromServer = dtTxt,
-        mainData = main,
+        mainData = main.toDomain(),
         probabilityOfPrecipitation = pop,
-        partOfTheDay = partOfTheDay,
+        partOfTheDay = partOfTheDay.toDomain(),
         visibility = visibility,
-        wind = wind,
+        wind = wind.toDomain(),
         weatherCondition = weather.first().toWeatherCondition(),
-        rain = rain,
-        snow = snow
+        rain = rain?.toDomain(),
+        snow = snow?.toDomain()
     )
 }

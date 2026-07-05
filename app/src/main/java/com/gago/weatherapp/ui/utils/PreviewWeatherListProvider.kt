@@ -1,20 +1,20 @@
 package com.gago.weatherapp.ui.utils
 
 import androidx.compose.ui.tooling.preview.PreviewParameterProvider
-import com.gago.weatherapp.data.remote.dto.common.Coord
-import com.gago.weatherapp.data.remote.dto.common.Rain
-import com.gago.weatherapp.data.remote.dto.common.Snow
-import com.gago.weatherapp.data.remote.dto.common.WeatherData
-import com.gago.weatherapp.data.remote.dto.common.Wind
-import com.gago.weatherapp.data.remote.dto.forecast.City
-import com.gago.weatherapp.data.remote.dto.forecast.PartOfTheDay
+import com.gago.weatherapp.domain.model.City
 import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.model.DayData
 import com.gago.weatherapp.domain.model.Forecast
+import com.gago.weatherapp.domain.model.GeoCoordinate
+import com.gago.weatherapp.domain.model.PartOfTheDay
+import com.gago.weatherapp.domain.model.Rain
+import com.gago.weatherapp.domain.model.Snow
 import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.domain.model.WeatherCondition
+import com.gago.weatherapp.domain.model.WeatherData
 import com.gago.weatherapp.domain.model.WeatherForecast
 import com.gago.weatherapp.domain.model.WeatherTypeIcon
+import com.gago.weatherapp.domain.model.Wind
 
 
 class PreviewWeatherListProvider : PreviewParameterProvider<Weather> {
@@ -60,9 +60,10 @@ class PreviewWeatherListProvider : PreviewParameterProvider<Weather> {
                         sunrise = 123123,
                         sunset = 123123,
                         timezone = 123123,
-                        coord = Coord(
-                            lat = 123123.2,
-                            lon = 1231232.2
+                        coord = GeoCoordinate(
+                            latitude = 123123.2,
+                            longitude = 1231232.2,
+                            name = null
                         )
                     ),
                     forecastCount = 5,

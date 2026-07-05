@@ -3,7 +3,8 @@ package com.gago.weatherapp.domain.model
 import androidx.compose.runtime.Immutable
 
 @Immutable
-data class Weather(
-    val currentWeather: CurrentWeather,
-    val forecast: Forecast
+data class Wind(
+    val deg: Int,
+    val gust: Double? = 0.0,
+    val speed: Double? = 0.0
 )

@@ -1,10 +1,8 @@
 package com.gago.weatherapp.domain.model
 
-import com.gago.weatherapp.data.remote.dto.common.Rain
-import com.gago.weatherapp.data.remote.dto.common.Snow
-import com.gago.weatherapp.data.remote.dto.common.WeatherData
-import com.gago.weatherapp.data.remote.dto.common.Wind
+import androidx.compose.runtime.Immutable
 
+@Immutable
 data class CurrentWeather(
     val id: Int,
     val name: String,

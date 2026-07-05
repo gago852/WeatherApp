@@ -2,6 +2,7 @@ package com.gago.weatherapp.data.remote.dto.common
 
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
+import com.gago.weatherapp.domain.model.WeatherData as DomainWeatherData
 
 @JsonClass(generateAdapter = true)
 data class WeatherData(
@@ -14,4 +15,13 @@ data class WeatherData(
     val tempMax: Double,
     @Json(name = "temp_min")
     val tempMin: Double
+)
+
+fun WeatherData.toDomain(): DomainWeatherData = DomainWeatherData(
+    feelsLike = feelsLike,
+    humidity = humidity,
+    pressure = pressure,
+    temp = temp,
+    tempMax = tempMax,
+    tempMin = tempMin
 )

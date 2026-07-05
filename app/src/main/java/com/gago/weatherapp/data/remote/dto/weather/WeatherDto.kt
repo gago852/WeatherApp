@@ -7,6 +7,7 @@ import com.gago.weatherapp.data.remote.dto.common.Snow
 import com.gago.weatherapp.data.remote.dto.common.WeatherConditionDto
 import com.gago.weatherapp.data.remote.dto.common.WeatherData
 import com.gago.weatherapp.data.remote.dto.common.Wind
+import com.gago.weatherapp.data.remote.dto.common.toDomain
 import com.gago.weatherapp.data.remote.dto.common.toWeatherCondition
 import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.utils.convertDateFromUnixLocalTimeZoneToFullDate
@@ -41,10 +42,10 @@ fun WeatherDto.toWeather(): CurrentWeather {
             unixTime = dt.toLong()
         ),
         weatherConditions = weather.first().toWeatherCondition(),
-        weatherData = main,
-        wind = wind,
-        rain = rain,
-        snow = snow,
+        weatherData = main.toDomain(),
+        wind = wind.toDomain(),
+        rain = rain?.toDomain(),
+        snow = snow?.toDomain(),
         visibility = visibility,
         clouds = clouds.all
 

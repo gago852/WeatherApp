@@ -24,7 +24,7 @@ data class ForecastDto(
 
 fun ForecastDto.toForecastFiveDays(): Forecast {
     return Forecast(
-        city = city,
+        city = city.toDomain(),
         forecastCount = count,
         listForecastWeather = listWeatherForecast.map {
             val forecastTimeLocal =

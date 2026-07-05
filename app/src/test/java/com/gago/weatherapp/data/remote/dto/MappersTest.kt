@@ -7,11 +7,13 @@ import com.gago.weatherapp.data.remote.dto.common.Snow
 import com.gago.weatherapp.data.remote.dto.common.WeatherConditionDto
 import com.gago.weatherapp.data.remote.dto.common.WeatherData
 import com.gago.weatherapp.data.remote.dto.common.Wind
+import com.gago.weatherapp.data.remote.dto.common.toDomain
 import com.gago.weatherapp.data.remote.dto.common.toWeatherCondition
 import com.gago.weatherapp.data.remote.dto.forecast.City
 import com.gago.weatherapp.data.remote.dto.forecast.ForecastDto
 import com.gago.weatherapp.data.remote.dto.forecast.PartOfTheDay
 import com.gago.weatherapp.data.remote.dto.forecast.WeatherForecastDto
+import com.gago.weatherapp.data.remote.dto.forecast.toDomain
 import com.gago.weatherapp.data.remote.dto.forecast.toForecastFiveDays
 import com.gago.weatherapp.data.remote.dto.forecast.toWeatherForecast
 import com.gago.weatherapp.data.remote.dto.weather.SysDto
@@ -155,10 +157,10 @@ class MappersTest {
         assertThat(result.id, `is`(6077243))
         assertThat(result.name, `is`("Montreal"))
         assertThat(result.timezone, `is`(0))
-        assertThat(result.weatherData, `is`(weatherData))
-        assertThat(result.wind, `is`(dto.wind))
-        assertThat(result.rain, `is`(dto.rain))
-        assertThat(result.snow, `is`(dto.snow))
+        assertThat(result.weatherData, `is`(weatherData.toDomain()))
+        assertThat(result.wind, `is`(dto.wind.toDomain()))
+        assertThat(result.rain, `is`(dto.rain?.toDomain()))
+        assertThat(result.snow, `is`(dto.snow?.toDomain()))
         assertThat(result.visibility, `is`(10000))
         assertThat(result.clouds, `is`(25))
         assertThat(result.weatherConditions.icon, `is`<WeatherTypeIcon>(WeatherTypeIcon.ClearSkyDay))
@@ -179,13 +181,13 @@ class MappersTest {
 
         assertThat(result.calculatedTime, `is`("Monday"))
         assertThat(result.calculatedTimeFromServer, `is`("1970-01-05 00:00:00"))
-        assertThat(result.mainData, `is`(weatherData))
+        assertThat(result.mainData, `is`(weatherData.toDomain()))
         assertThat(result.probabilityOfPrecipitation, `is`(0.35))
         assertThat(result.partOfTheDay.pod, `is`("d"))
         assertThat(result.visibility, `is`(10000))
-        assertThat(result.wind, `is`(dto.wind))
-        assertThat(result.rain, `is`(dto.rain))
-        assertThat(result.snow, `is`(dto.snow))
+        assertThat(result.wind, `is`(dto.wind.toDomain()))
+        assertThat(result.rain, `is`(dto.rain?.toDomain()))
+        assertThat(result.snow, `is`(dto.snow?.toDomain()))
         assertThat(result.weatherCondition.id, `is`(800))
     }
 
@@ -223,7 +225,7 @@ class MappersTest {
 
         val result = dto.toForecastFiveDays()
 
-        assertThat(result.city, `is`(city))
+        assertThat(result.city, `is`(city.toDomain()))
         assertThat(result.forecastCount, `is`(entries.size))
         // only the first five days survive, one entry per day
         assertThat(result.listForecastWeather.size, `is`(5))
