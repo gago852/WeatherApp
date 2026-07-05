@@ -282,11 +282,11 @@ class WeatherViewModelTest {
 
     @Test
     fun `refreshWeather on api error currently falls back to the generic refresh error`() = runTest {
-        // Pins current behavior: in refreshWeather the active-city branch is
-        // `weather?.let { getWeatherFromApi(...) } ?: run { ... }`, and since
-        // getWeatherFromApi returns null on failure, the elvis branch also runs
-        // and overwrites the mapped error with refresh_error. If a future
-        // refactor (#9 / #13) makes the mapped error win, update this test.
+        // Pins current behavior (tracked in #30): in refreshWeather the
+        // active-city branch is `weather?.let { getWeatherFromApi(...) } ?: run { ... }`,
+        // and since getWeatherFromApi returns null on failure, the elvis branch
+        // also runs and overwrites the mapped error with refresh_error. When #30
+        // is fixed, update this test to expect the mapped error instead.
         val repository = FakeWeatherRepository().apply {
             weatherResult = Result.Error(DataError.Network.NO_INTERNET)
         }
