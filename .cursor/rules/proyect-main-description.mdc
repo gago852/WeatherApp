@@ -15,20 +15,21 @@ WeatherApp es una aplicación móvil desarrollada en Kotlin para Android que pro
 - **Framework:** Android SDK
 - **Arquitectura:** MVVM (Model-View-ViewModel)
 - **Gestión de dependencias:** Gradle
-- **API de datos:** OpenWeatherMap API
-- **Persistencia local:** Room Database
+- **API de datos:** OpenWeatherMap API, Google Places API (Autocomplete + Details)
+- **Persistencia local:** Proto DataStore (ajustes + clima cacheado)
 - **Inyección de dependencias:** Hilt
-- **Networking:** Retrofit
-- **Manejo de imágenes:** Glide
-- **Testing:** JUnit, Espresso, Mockito, Hamcrest
+- **Networking:** Retrofit + OkHttp + Moshi (JSON)
+- **UI:** Jetpack Compose (Material 3), sin librería de carga de imágenes (íconos como recursos vectoriales)
+- **Monitoreo:** Firebase Crashlytics + Analytics
+- **Testing:** JUnit, Mockito, MockWebServer (solo unit tests)
 
 ## Librerías Principales
 
 - [Retrofit](mdc:https:/square.github.io/retrofit) - HTTP client for Android
-- [Room](mdc:https:/developer.android.com/jetpack/androidx/releases/room) - Persistence library
+- [Moshi](mdc:https:/github.com/square/moshi) - JSON serialization
+- [DataStore](mdc:https:/developer.android.com/topic/libraries/architecture/datastore) - Persistence library (Proto DataStore)
 - [Hilt](mdc:https:/dagger.dev/hilt) - Dependency injection
-- [Glide](mdc:https:/bumptech.github.io/glide) - Image loading
-- [LiveData & ViewModel](mdc:https:/developer.android.com/topic/libraries/architecture/viewmodel) - Lifecycle-aware components
+- [Jetpack Compose](mdc:https:/developer.android.com/jetpack/compose) - Declarative UI (Material 3) with ViewModel + StateFlow
 - [Coroutines](mdc:https:/kotlinlang.org/docs/coroutines-overview.html) - Asynchronous programming
 
 ## Casos de Uso

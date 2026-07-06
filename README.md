@@ -5,7 +5,7 @@
 <!-- Badges row -->
 [![CI](https://img.shields.io/github/actions/workflow/status/gago852/WeatherApp/gradle-test.yml?branch=main)](https://github.com/gago852/WeatherApp/actions/workflows/gradle-test.yml)
 [![License](https://img.shields.io/github/license/gago852/WeatherApp)](https://github.com/gago852/WeatherApp/blob/main/LICENSE)
-[![Kotlin](https://img.shields.io/badge/Kotlin-2.0.21-blue?logo=kotlin)](https://kotlinlang.org/)
+[![Kotlin](https://img.shields.io/badge/Kotlin-2.4.0-blue?logo=kotlin)](https://kotlinlang.org/)
 [![Compose](https://img.shields.io/badge/Jetpack%20Compose-enabled-brightgreen)](https://developer.android.com/jetpack/compose)
 [![Pull Requests](https://img.shields.io/github/issues-pr/gago852/WeatherApp)](https://github.com/gago852/WeatherApp/pulls)
 [![Issues](https://img.shields.io/github/issues/gago852/WeatherApp)](https://github.com/gago852/WeatherApp/issues)
@@ -33,11 +33,11 @@ Android weather application built with Kotlin, Jetpack Compose, MVVM, and modern
 - UI: Jetpack Compose (Material 3)
 - Architecture: MVVM, unidirectional data flow, state hoisting
 - DI: Hilt
-- Networking: Retrofit + OkHttp
+- Networking: Retrofit + OkHttp + Moshi (JSON)
 - Concurrency: Kotlin Coroutines & Flow
-- Local persistence: Room
-- Image loading: Glide (or Coil, depending on module usage)
-- Testing: JUnit, Espresso/Compose Testing, Mockito, Hamcrest
+- Local persistence: Proto DataStore (settings + cached weather)
+- Monitoring: Firebase Crashlytics + Analytics
+- Testing: JUnit, Mockito, MockWebServer (unit tests)
 - APIs: OpenWeatherMap API, Google Places API (Autocomplete + Details)
 
 ## Architecture Overview
@@ -45,7 +45,7 @@ Android weather application built with Kotlin, Jetpack Compose, MVVM, and modern
 The project follows Clean Architecture with clear separation of concerns:
 
 - `domain/`: business models, use cases, and interfaces
-- `data/`: repositories, remote sources (OpenWeather/Places), local sources (Room)
+- `data/`: repositories, remote sources (OpenWeather/Places), local sources (Proto DataStore)
 - `ui/`: Compose screens, navigation, and theming
 - `di/`: Hilt modules
 
@@ -156,7 +156,7 @@ API_KEY=YOUR_PRODUCTION_OPENWEATHER_API_KEY
    - In code (Kotlin):
 
 ```kotlin
-val openWeatherKey = BuildConfig.OPENWEATHER_API_KEY
+val openWeatherKey = BuildConfig.API_KEY
 ```
 
 Notes:
@@ -172,11 +172,10 @@ Notes:
 
 ### Testing
 
-- Unit tests for ViewModels/UseCases (coroutines test dispatchers)
-- UI tests with Compose Testing
-- Use fakes for repositories and API layers
+- Unit tests with JUnit + Mockito + MockWebServer (ViewModels, repositories; coroutines test dispatchers and fakes)
+- No UI/instrumented tests yet (Compose Testing dependencies are declared, but `androidTest` has no real tests and CI runs unit tests only)
 
-From Android Studio: Run the `test` and `androidTest` configurations, or via Gradle tasks.
+From Android Studio: run the `test` configuration, or via Gradle: `./gradlew testDebugUnitTest`.
 
 ## Screenshots
 
