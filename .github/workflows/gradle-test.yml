@@ -4,6 +4,7 @@ on:
   push:
     branches: [main, dev]
     paths: &android-paths
+      - ".github/workflows/gradle-test.yml"
       - "app/**"
       - "buildSrc/**"
       - "gradle/**"
@@ -17,7 +18,7 @@ on:
     paths: *android-paths
 
 permissions:
-  contents: write
+  contents: read
 
 concurrency:
   group: ci-${{ github.workflow }}-${{ github.ref }}
@@ -53,6 +54,18 @@ jobs:
 
       - name: Run unit tests
         run: ./gradlew testDebugUnitTest
+
+      - name: Run Android Lint
+        run: ./gradlew lintDebug
+
+      - name: Upload lint report
+        if: ${{ !cancelled() }}
+        uses: actions/upload-artifact@v6
+        with:
+          name: lint-report
+          path: app/build/reports/lint-results-debug.html
+          if-no-files-found: ignore
+          retention-days: 7
 
       - name: Upload JUnit XML results
         if: ${{ !cancelled() }}
