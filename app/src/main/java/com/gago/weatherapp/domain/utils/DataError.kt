@@ -24,6 +24,7 @@ sealed interface DataError : Error {
         OVER_QUERY_LIMIT,
         INVALID_REQUEST,
         NOT_FOUND,
+        NO_INTERNET,
         UNKNOWN
     }
 

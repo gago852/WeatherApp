@@ -5,6 +5,7 @@ import com.gago.weatherapp.domain.repository.PlacesRepository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.model.Place
@@ -34,16 +35,7 @@ class PlacesRepositoryImpl @Inject constructor(
             val response = placesClient.findAutocompletePredictions(request).await()
             Result.Success(response.autocompletePredictions)
         } catch (e: ApiException) {
-            val error = when (e.statusCode) {
-                PlacesStatusCodes.OVER_QUERY_LIMIT -> DataError.Places.OVER_QUERY_LIMIT
-                PlacesStatusCodes.INVALID_REQUEST -> DataError.Places.INVALID_REQUEST
-                PlacesStatusCodes.NOT_FOUND -> DataError.Places.NOT_FOUND
-                else -> {
-                    FirebaseCrashlytics.getInstance().recordException(e)
-                    DataError.Places.UNKNOWN
-                }
-            }
-            Result.Error(error)
+            Result.Error(mapApiException(e))
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
             Result.Error(DataError.Places.UNKNOWN)
@@ -78,19 +70,23 @@ class PlacesRepositoryImpl @Inject constructor(
                 Result.Error(DataError.Places.NOT_FOUND)
             }
         } catch (e: ApiException) {
-            val error = when (e.statusCode) {
-                PlacesStatusCodes.OVER_QUERY_LIMIT -> DataError.Places.OVER_QUERY_LIMIT
-                PlacesStatusCodes.INVALID_REQUEST -> DataError.Places.INVALID_REQUEST
-                PlacesStatusCodes.NOT_FOUND -> DataError.Places.NOT_FOUND
-                else -> {
-                    FirebaseCrashlytics.getInstance().recordException(e)
-                    DataError.Places.UNKNOWN
-                }
-            }
-            Result.Error(error)
+            Result.Error(mapApiException(e))
         } catch (e: Exception) {
             FirebaseCrashlytics.getInstance().recordException(e)
             Result.Error(DataError.Places.UNKNOWN)
+        }
+    }
+
+    private fun mapApiException(e: ApiException): DataError.Places {
+        return when (e.statusCode) {
+            CommonStatusCodes.NETWORK_ERROR, CommonStatusCodes.TIMEOUT -> DataError.Places.NO_INTERNET
+            PlacesStatusCodes.OVER_QUERY_LIMIT -> DataError.Places.OVER_QUERY_LIMIT
+            PlacesStatusCodes.INVALID_REQUEST -> DataError.Places.INVALID_REQUEST
+            PlacesStatusCodes.NOT_FOUND -> DataError.Places.NOT_FOUND
+            else -> {
+                FirebaseCrashlytics.getInstance().recordException(e)
+                DataError.Places.UNKNOWN
+            }
         }
     }
 }

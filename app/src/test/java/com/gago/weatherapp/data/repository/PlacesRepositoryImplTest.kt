@@ -3,6 +3,7 @@ package com.gago.weatherapp.data.repository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Tasks
@@ -107,5 +108,29 @@ class PlacesRepositoryImplTest {
 
         assertThat(result, instanceOf(Result.Error::class.java))
         assertThat((result as Result.Error).error, `is`(DataError.Places.OVER_QUERY_LIMIT))
+    }
+
+    @Test
+    fun autocomplete_networkError_mapsToNoInternet() = runTest {
+        val ex = ApiException(Status(CommonStatusCodes.NETWORK_ERROR))
+        whenever(placesClient.findAutocompletePredictions(any<FindAutocompletePredictionsRequest>()))
+            .thenReturn(Tasks.forException(ex))
+
+        val result = repo.autocomplete("Paris", token, "es")
+
+        assertThat(result, instanceOf(Result.Error::class.java))
+        assertThat((result as Result.Error).error, `is`(DataError.Places.NO_INTERNET))
+    }
+
+    @Test
+    fun placeCoordinates_timeout_mapsToNoInternet() = runTest {
+        val ex = ApiException(Status(CommonStatusCodes.TIMEOUT))
+        whenever(placesClient.fetchPlace(any<FetchPlaceRequest>()))
+            .thenReturn(Tasks.forException(ex))
+
+        val result = repo.placeCoordinates("somePlaceId", token, "es")
+
+        assertThat(result, instanceOf(Result.Error::class.java))
+        assertThat((result as Result.Error).error, `is`(DataError.Places.NO_INTERNET))
     }
 }
