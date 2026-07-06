@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.os.StrictMode
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
+import androidx.activity.enableEdgeToEdge
 import androidx.activity.viewModels
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.material3.MaterialTheme
@@ -21,6 +22,7 @@ class MainActivity : ComponentActivity() {
         // Instala el SplashScreen lo antes posible
         val splash = installSplashScreen()
         super.onCreate(savedInstanceState)
+        enableEdgeToEdge()
 
         // VM de arranque para controlar la condición del Splash
         val startupViewModel: AppStartupViewModel by viewModels()

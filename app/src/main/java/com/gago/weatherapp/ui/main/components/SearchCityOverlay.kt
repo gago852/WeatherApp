@@ -109,7 +109,7 @@ fun SearchCityOverlay(
                             }) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(R.drawable.clear_icon),
-                                    contentDescription = "Limpiar búsqueda"
+                                    contentDescription = stringResource(R.string.clear_search)
                                 )
                             }
                         }
@@ -208,11 +208,11 @@ fun GoogleMapsAttribution(modifier: Modifier = Modifier) {
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
-            Text("Powered by", color = Color.White)
+            Text(stringResource(R.string.powered_by), color = Color.White)
             Spacer(Modifier.width(4.dp))
             Icon(
                 painter = painterResource(id = R.drawable.google_on_non_white),
-                contentDescription = "Google logo",
+                contentDescription = stringResource(R.string.google_logo),
                 tint = Color.Unspecified,
                 modifier = Modifier
             )

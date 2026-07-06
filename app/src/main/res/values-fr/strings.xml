@@ -65,4 +65,16 @@
     <!--Search Errors-->
     <string name="error_search_session">Erreur de session de recherche</string>
     <string name="error_connection">Erreur de connexion</string>
+    <!--Network Errors-->
+    <string name="error_payload_too_large">Requête trop volumineuse</string>
+    <string name="error_unauthorized">Clé API non autorisée</string>
+    <string name="error_forbidden">Accès refusé</string>
+    <string name="error_not_found">Ressource introuvable</string>
+    <string name="error_bad_request">Requête incorrecte</string>
+    <string name="ok_button_text">OK</string>
+
+    <!--Misc UI-->
+    <string name="search_city">Rechercher une ville</string>
+    <string name="clear_search">Effacer la recherche</string>
+    <string name="google_logo">Logo Google</string>
 </resources>

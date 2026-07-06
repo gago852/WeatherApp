@@ -50,7 +50,7 @@ private fun DrawerHeader(onSettingsClick: () -> Unit, onSearchClick: () -> Unit)
         ) {
             Icon(
                 imageVector = ImageVector.vectorResource(R.drawable.search_icon),
-                contentDescription = "Buscar ciudad"
+                contentDescription = stringResource(R.string.search_city)
             )
         }
         IconButton(
