@@ -17,6 +17,17 @@ fun getCurrentLanguage(context: Context): String {
     }
 }
 
+/** OWM AQI levels: 1 good … 5 very poor. */
+fun getAqiText(aqi: Int): Int {
+    return when (aqi) {
+        1 -> R.string.aqi_good
+        2 -> R.string.aqi_fair
+        3 -> R.string.aqi_moderate
+        4 -> R.string.aqi_poor
+        else -> R.string.aqi_very_poor
+    }
+}
+
 fun getErrorText(error: DataError): Int {
     return when (error) {
         DataError.Network.REQUEST_TIMEOUT -> R.string.error_request_timeout

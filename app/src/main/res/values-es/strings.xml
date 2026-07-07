@@ -81,4 +81,11 @@
     <string name="temperature_trend_text">Tendencia de temperatura</string>
     <string name="temperature_chart_hint">Toca un punto para ver el detalle</string>
     <string name="temperature_chart_content_description">Gráfico de tendencia de temperatura.</string>
+    <string name="air_quality_text">Calidad del aire:</string>
+    <string name="aqi_good">Buena</string>
+    <string name="aqi_fair">Aceptable</string>
+    <string name="aqi_moderate">Moderada</string>
+    <string name="aqi_poor">Mala</string>
+    <string name="aqi_very_poor">Muy mala</string>
+    <string name="precipitation_probability_text">Precipitación: %1$d%%</string>
 </resources>

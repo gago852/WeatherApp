@@ -96,4 +96,11 @@
     <string name="temperature_trend_text">Temperature trend</string>
     <string name="temperature_chart_hint">Tap a point to see details</string>
     <string name="temperature_chart_content_description">Temperature trend chart.</string>
+    <string name="air_quality_text">Air quality:</string>
+    <string name="aqi_good">Good</string>
+    <string name="aqi_fair">Fair</string>
+    <string name="aqi_moderate">Moderate</string>
+    <string name="aqi_poor">Poor</string>
+    <string name="aqi_very_poor">Very poor</string>
+    <string name="precipitation_probability_text">Precipitation: %1$d%%</string>
 </resources>
