@@ -92,4 +92,8 @@
     <string name="clear_search">Clear search</string>
     <string name="google_logo">Google logo</string>
     <string name="powered_by" translatable="false">Powered by</string>
+
+    <string name="temperature_trend_text">Temperature trend</string>
+    <string name="temperature_chart_hint">Tap a point to see details</string>
+    <string name="temperature_chart_content_description">Temperature trend chart.</string>
 </resources>

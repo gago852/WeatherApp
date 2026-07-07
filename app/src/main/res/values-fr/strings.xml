@@ -77,4 +77,8 @@
     <string name="search_city">Rechercher une ville</string>
     <string name="clear_search">Effacer la recherche</string>
     <string name="google_logo">Logo Google</string>
+
+    <string name="temperature_trend_text">Tendance de température</string>
+    <string name="temperature_chart_hint">Touchez un point pour voir le détail</string>
+    <string name="temperature_chart_content_description">Graphique de tendance de température.</string>
 </resources>
