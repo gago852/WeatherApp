@@ -95,4 +95,6 @@
     <string name="daily_notification_title">Notificación diaria del clima</string>
     <string name="notification_channel_name">Resumen del clima</string>
     <string name="notification_summary_title">Clima en %1$s</string>
+    <string name="widget_description">Temperatura y condición actuales de tu ciudad activa</string>
+    <string name="widget_no_city">Abre Weather App para elegir una ciudad</string>
 </resources>

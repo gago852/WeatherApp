@@ -16,6 +16,8 @@ import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.domain.usecase.SyncActiveCityUseCase
 import com.gago.weatherapp.ui.utils.capitalizeWords
 import com.gago.weatherapp.ui.utils.getCurrentLanguage
+import com.gago.weatherapp.widget.WeatherWidget
+import androidx.glance.appwidget.updateAll
 import dagger.assisted.Assisted
 import dagger.assisted.AssistedInject
 import kotlin.math.roundToInt
@@ -40,6 +42,7 @@ class WeatherSyncWorker @AssistedInject constructor(
 
             is SyncActiveCityUseCase.Outcome.Refreshed -> {
                 if (outcome.notify) postSummaryNotification(outcome.weather)
+                WeatherWidget().updateAll(applicationContext)
                 Result.success()
             }
 
