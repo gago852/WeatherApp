@@ -200,6 +200,63 @@ class WeatherViewModelTest {
         assertThat(repository.getWeatherCallCount, `is`(2))
     }
 
+    // --- auto refresh interval ---
+
+    @Test
+    fun `autoRefreshOnResume refreshes when data is older than the configured interval`() =
+        runTest {
+            val repository = FakeWeatherRepository()
+            val dataStore = FakeDataStore(
+                Settings(listWeather = persistentListOf(madrid), refreshIntervalMinutes = 15)
+            )
+            val viewModel = buildViewModel(repository = repository, dataStore = dataStore)
+            viewModel.loadWeatherFromCurrent(madrid)
+            advanceUntilIdle()
+            assertThat(repository.getWeatherCallCount, `is`(1))
+
+            // data on screen is now older than the 15 minute interval
+            dataStore.updateData {
+                it.copy(lastUpdate = System.currentTimeMillis() - 16 * 60_000L)
+            }
+            viewModel.autoRefreshOnResume()
+            advanceUntilIdle()
+
+            assertThat(repository.getWeatherCallCount, `is`(2))
+        }
+
+    @Test
+    fun `autoRefreshOnResume does nothing while data is fresher than the interval`() = runTest {
+        val repository = FakeWeatherRepository()
+        val dataStore = FakeDataStore(
+            Settings(listWeather = persistentListOf(madrid), refreshIntervalMinutes = 15)
+        )
+        val viewModel = buildViewModel(repository = repository, dataStore = dataStore)
+        viewModel.loadWeatherFromCurrent(madrid)
+        advanceUntilIdle()
+
+        viewModel.autoRefreshOnResume()
+        advanceUntilIdle()
+
+        assertThat(repository.getWeatherCallCount, `is`(1))
+    }
+
+    @Test
+    fun `autoRefreshOnResume does nothing when the interval is manual`() = runTest {
+        val repository = FakeWeatherRepository()
+        val dataStore = FakeDataStore(
+            Settings(listWeather = persistentListOf(madrid), refreshIntervalMinutes = 0)
+        )
+        val viewModel = buildViewModel(repository = repository, dataStore = dataStore)
+        viewModel.loadWeatherFromCurrent(madrid)
+        advanceUntilIdle()
+
+        dataStore.updateData { it.copy(lastUpdate = 0L) }
+        viewModel.autoRefreshOnResume()
+        advanceUntilIdle()
+
+        assertThat(repository.getWeatherCallCount, `is`(1))
+    }
+
     // --- active city change ---
 
     @Test
