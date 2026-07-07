@@ -35,7 +35,9 @@ class PlacesRepositoryImplTest {
     @Before
     fun setUp() {
         placesClient = mock()
-        repo = PlacesRepositoryImpl(placesClient)
+        val provider = mock<PlacesClientProvider>()
+        whenever(provider.get()).thenReturn(placesClient)
+        repo = PlacesRepositoryImpl(provider)
         token = AutocompleteSessionToken.newInstance()
     }
 

@@ -25,9 +25,6 @@ import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.net.PlacesClient
-import com.gago.weatherapp.BuildConfig
 import com.squareup.moshi.Moshi
 
 @Module
@@ -76,18 +73,5 @@ object AppModule {
     @Singleton
     fun provideNetworkMonitor(app: Application): NetworkMonitor {
         return LiveNetworkMonitor(app)
-    }
-
-    @Provides
-    @Singleton
-    fun providePlacesClient(app: Application): PlacesClient {
-        if (!Places.isInitialized()) {
-            Places.initializeWithNewPlacesApiEnabled(
-                app,
-                BuildConfig.PLACES_API_KEY,
-                app.resources.configuration.locales[0]
-            )
-        }
-        return Places.createClient(app)
     }
 }
