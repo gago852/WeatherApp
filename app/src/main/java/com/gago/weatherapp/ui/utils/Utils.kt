@@ -44,17 +44,6 @@ fun getPlacesErrorMessage(error: DataError.Places): Int {
     }
 }
 
-fun getWeatherErrorMessage(error: DataError.Weather): Int {
-    return when (error) {
-        DataError.Weather.API_KEY_INVALID -> R.string.error_weather_api_key_invalid
-        DataError.Weather.API_KEY_EXPIRED -> R.string.error_weather_api_key_expired
-        DataError.Weather.QUOTA_EXCEEDED -> R.string.error_weather_quota_exceeded
-        DataError.Weather.CITY_NOT_FOUND -> R.string.error_weather_city_not_found
-        DataError.Weather.INVALID_COORDINATES -> R.string.error_weather_invalid_coordinates
-        DataError.Weather.UNKNOWN -> R.string.error_weather_unknown
-    }
-}
-
 fun String.capitalizeWords(delimiter: String = " ") =
     split(delimiter).joinToString(delimiter) { word ->
 

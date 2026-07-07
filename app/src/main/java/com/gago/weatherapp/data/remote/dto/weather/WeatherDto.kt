@@ -10,7 +10,9 @@ import com.gago.weatherapp.data.remote.dto.common.Wind
 import com.gago.weatherapp.data.remote.dto.common.toWeatherCondition
 import com.gago.weatherapp.domain.model.CurrentWeather
 import com.gago.weatherapp.domain.utils.convertDateFromUnixLocalTimeZoneToFullDate
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class WeatherDto(
     val base: String,
     val clouds: Clouds,

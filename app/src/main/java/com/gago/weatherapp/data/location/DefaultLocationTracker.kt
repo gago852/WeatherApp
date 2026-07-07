@@ -58,26 +58,6 @@ class DefaultLocationTracker @Inject constructor(
                     cont.cancel()
                 }
             }
-            /*locationClient.lastLocation.apply {
-                if (isComplete) {
-                    if (isSuccessful) {
-                        cont.resume(result)
-                    } else {
-                        cont.resume(null)
-                    }
-                    return@suspendCancellableCoroutine
-                }
-
-                addOnSuccessListener {
-                    cont.resume(it)
-                }
-                addOnFailureListener {
-                    cont.resume(null)
-                }
-                addOnCanceledListener {
-                    cont.cancel()
-                }
-            }*/
         }
     }
 }

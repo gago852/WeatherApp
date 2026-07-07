@@ -27,13 +27,4 @@ sealed interface DataError : Error {
         NO_INTERNET,
         UNKNOWN
     }
-
-    enum class Weather : DataError {
-        API_KEY_INVALID,
-        API_KEY_EXPIRED,
-        QUOTA_EXCEEDED,
-        CITY_NOT_FOUND,
-        INVALID_COORDINATES,
-        UNKNOWN
-    }
 }

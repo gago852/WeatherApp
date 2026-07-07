@@ -2,6 +2,7 @@ package com.gago.weatherapp.data.remote.dto.forecast
 
 import com.gago.weatherapp.domain.model.Forecast
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 import java.time.Instant
 import java.time.LocalDateTime
 import java.time.LocalTime
@@ -10,6 +11,7 @@ import java.time.ZonedDateTime
 import java.time.temporal.ChronoUnit
 import kotlin.math.abs
 
+@JsonClass(generateAdapter = true)
 data class ForecastDto(
     val cod: String,
     val message: Int,

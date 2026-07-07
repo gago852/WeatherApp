@@ -3,7 +3,9 @@ package com.gago.weatherapp.data.remote.dto.common
 import com.gago.weatherapp.domain.model.WeatherCondition
 import com.gago.weatherapp.domain.model.WeatherTypeIcon
 import com.squareup.moshi.Json
+import com.squareup.moshi.JsonClass
 
+@JsonClass(generateAdapter = true)
 data class WeatherConditionDto(
     val id: Int,
     @Json(name = "main")
