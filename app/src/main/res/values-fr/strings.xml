@@ -92,4 +92,7 @@
     <string name="follow_system">Selon le système</string>
     <string name="refresh_interval_title">Intervalle d\'actualisation automatique</string>
     <string name="refresh_interval_manual">Manuel</string>
+    <string name="daily_notification_title">Notification météo quotidienne</string>
+    <string name="notification_channel_name">Résumé météo</string>
+    <string name="notification_summary_title">Météo à %1$s</string>
 </resources>

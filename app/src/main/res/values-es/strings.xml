@@ -92,4 +92,7 @@
     <string name="follow_system">Según el sistema</string>
     <string name="refresh_interval_title">Intervalo de refresco automático</string>
     <string name="refresh_interval_manual">Manual</string>
+    <string name="daily_notification_title">Notificación diaria del clima</string>
+    <string name="notification_channel_name">Resumen del clima</string>
+    <string name="notification_summary_title">Clima en %1$s</string>
 </resources>

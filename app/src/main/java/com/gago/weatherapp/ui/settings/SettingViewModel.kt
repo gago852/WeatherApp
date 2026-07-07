@@ -6,8 +6,10 @@ import androidx.core.os.LocaleListCompat
 import androidx.datastore.core.DataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import android.app.Application
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.repository.PlacesClientProvider
+import com.gago.weatherapp.worker.WeatherSyncScheduler
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.launch
@@ -17,7 +19,8 @@ import javax.inject.Inject
 @HiltViewModel
 class SettingViewModel @Inject constructor(
     private val dataStore: DataStore<Settings>,
-    private val placesClientProvider: PlacesClientProvider
+    private val placesClientProvider: PlacesClientProvider,
+    private val application: Application
 ) : ViewModel() {
 
     val settings = dataStore.data.catch {
@@ -33,9 +36,11 @@ class SettingViewModel @Inject constructor(
                     themeMode = settings.themeMode,
                     dynamicColor = settings.dynamicColor,
                     refreshIntervalMinutes = settings.refreshIntervalMinutes,
+                    notificationsEnabled = settings.notificationsEnabled,
                     lastUpdate = 0L
                 )
             }
+            WeatherSyncScheduler.schedule(application, settings.refreshIntervalMinutes)
         }
     }
 
