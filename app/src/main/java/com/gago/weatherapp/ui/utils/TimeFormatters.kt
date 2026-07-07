@@ -37,6 +37,15 @@ fun formatDayOfWeek(epochSeconds: Long, timeZoneOffset: Long, locale: Locale): S
     return DateTimeFormatter.ofPattern("EEEE", locale).format(dateTime)
 }
 
+/** Compact hour ("2 PM") at the remote UTC offset, for the hourly forecast row. */
+fun formatShortHour(epochSeconds: Long, timeZoneOffset: Long, locale: Locale): String {
+    val dateTime = ZonedDateTime.ofInstant(
+        Instant.ofEpochSecond(epochSeconds),
+        ZoneOffset.ofTotalSeconds(timeZoneOffset.toInt())
+    )
+    return DateTimeFormatter.ofPattern("h a", locale).format(dateTime)
+}
+
 /** Twelve-hour time ("hh:mm a") at the remote UTC offset, in seconds. */
 fun formatTwelveHourTime(epochSeconds: Long, timeZoneOffset: Long, locale: Locale): String {
     val dateTime = ZonedDateTime.ofInstant(
