@@ -96,4 +96,8 @@
     <string name="temperature_trend_text">Temperature trend</string>
     <string name="temperature_chart_hint">Tap a point to see details</string>
     <string name="temperature_chart_content_description">Temperature trend chart.</string>
+    <string name="recent_searches">Recent searches</string>
+    <string name="remove_city">Remove</string>
+    <string name="city_removed">%1$s removed</string>
+    <string name="undo_action">Undo</string>
 </resources>

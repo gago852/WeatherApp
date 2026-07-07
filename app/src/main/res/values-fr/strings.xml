@@ -81,4 +81,8 @@
     <string name="temperature_trend_text">Tendance de température</string>
     <string name="temperature_chart_hint">Touchez un point pour voir le détail</string>
     <string name="temperature_chart_content_description">Graphique de tendance de température.</string>
+    <string name="recent_searches">Recherches récentes</string>
+    <string name="remove_city">Supprimer</string>
+    <string name="city_removed">%1$s supprimée</string>
+    <string name="undo_action">Annuler</string>
 </resources>

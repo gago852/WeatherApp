@@ -48,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.gago.weatherapp.R
+import com.gago.weatherapp.data.datastore.SearchHistoryEntry
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 
@@ -64,7 +65,9 @@ fun SearchCityOverlay(
     error: Int? = null,
     onClear: () -> Unit = {},
     showAddGpsButton: Boolean = false,
-    onAddGpsCity: () -> Unit = {}
+    onAddGpsCity: () -> Unit = {},
+    searchHistory: List<SearchHistoryEntry> = emptyList(),
+    onHistoryClick: (SearchHistoryEntry) -> Unit = {}
 ) {
     if (!isVisible) return
     Dialog(onDismissRequest = onDismiss) {
@@ -159,6 +162,55 @@ fun SearchCityOverlay(
                     SearchResultsList(
                         results = searchResults,
                         onResultClick = onResultClick
+                    )
+                }
+                // Quick suggestions: the last successful searches, shown while idle
+                AnimatedVisibility(
+                    visible = text.text.isEmpty() && searchResults.isEmpty() &&
+                            searchHistory.isNotEmpty()
+                ) {
+                    SearchHistoryList(
+                        history = searchHistory,
+                        onHistoryClick = onHistoryClick
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SearchHistoryList(
+    history: List<SearchHistoryEntry>,
+    onHistoryClick: (SearchHistoryEntry) -> Unit
+) {
+    Column {
+        Text(
+            text = stringResource(R.string.recent_searches),
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+        )
+        Surface(
+            tonalElevation = 2.dp,
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 300.dp)
+                .testTag("search_history_list")
+        ) {
+            LazyColumn {
+                items(history, key = { it.name }) { entry ->
+                    ListItem(
+                        headlineContent = { Text(entry.name) },
+                        leadingContent = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.search_icon),
+                                contentDescription = null
+                            )
+                        },
+                        modifier = Modifier
+                            .clickable { onHistoryClick(entry) }
+                            .testTag("search_history_item")
                     )
                 }
             }

@@ -182,13 +182,54 @@ class WeatherViewModel @Inject constructor(
             state = state.copy(isLoading = true, error = null)
             try {
                 manageCitiesUseCase.addOrActivateCity(latitude, longitude, cityName)
-                getWeatherFromApi(latitude, longitude, settings.first())
+                val name = getWeatherFromApi(latitude, longitude, settings.first())
+                if (name != null) {
+                    manageCitiesUseCase.recordSearch(cityName, latitude, longitude)
+                }
             } catch (e: Exception) {
                 FirebaseCrashlytics.getInstance().recordException(e)
                 Log.e("WeatherViewModel", "Error loading weather from search: ${e.message}")
                 settleAfterDelay(getErrorText(DataError.Local.UNKNOWN))
             }
         }
+    }
+
+    private var lastRemovedCity: Pair<WeatherLocal, Int>? = null
+
+    /** Removes a city from the drawer, remembering it so the snackbar can undo. */
+    fun removeCity(city: WeatherLocal) {
+        viewModelScope.launch {
+            val index = settings.firstOrNull()?.listWeather?.indexOf(city) ?: return@launch
+            if (index == -1) return@launch
+            lastRemovedCity = city to index
+            val newActive = manageCitiesUseCase.removeCity(city)
+            when {
+                newActive != null -> {
+                    state = state.copy(isLoading = true, error = null)
+                    getWeatherFromApi(newActive.lat, newActive.lon, settings.first())
+                }
+
+                city.isActive -> state = state.copy(weather = null, isLoading = false)
+            }
+        }
+    }
+
+    /** Restores the last removed city at its original position. */
+    fun undoRemoveCity() {
+        val (city, index) = lastRemovedCity ?: return
+        lastRemovedCity = null
+        viewModelScope.launch {
+            manageCitiesUseCase.restoreCity(city, index)
+            if (city.isActive) {
+                state = state.copy(isLoading = true, error = null)
+                getWeatherFromApi(city.lat, city.lon, settings.first())
+            }
+        }
+    }
+
+    /** Persists the drag-and-drop order of the drawer cities. */
+    fun reorderCities(orderedCities: List<WeatherLocal>) {
+        viewModelScope.launch { manageCitiesUseCase.reorderCities(orderedCities) }
     }
 
     private suspend fun getWeatherFromApi(

@@ -8,6 +8,7 @@ import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.test.runTest
 import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.`is`
+import org.hamcrest.Matchers.nullValue
 import org.junit.Test
 
 class ManageCitiesUseCaseTest {
@@ -123,5 +124,140 @@ class ManageCitiesUseCaseTest {
         useCase.applySettings(newSettings)
 
         assertThat(dataStore.data.first(), `is`(newSettings))
+    }
+
+    // --- removeCity ---
+
+    @Test
+    fun removeCity_inactiveCity_justDisappears() = runTest {
+        val other = storedCity.copy(name = "Cartagena", lat = 10.39, isActive = false)
+        val dataStore =
+            FakeDataStore(Settings(listWeather = persistentListOf(storedCity, other)))
+        val useCase = ManageCitiesUseCase(dataStore)
+
+        val newActive = useCase.removeCity(other)
+
+        assertThat(newActive, `is`(nullValue()))
+        val listWeather = dataStore.data.first().listWeather
+        assertThat(listWeather.size, `is`(1))
+        assertThat(listWeather.first().isActive, `is`(true))
+    }
+
+    @Test
+    fun removeCity_activeCity_promotesTheFirstRemainingOne() = runTest {
+        val other = storedCity.copy(name = "Cartagena", lat = 10.39, isActive = false)
+        val dataStore =
+            FakeDataStore(Settings(listWeather = persistentListOf(storedCity, other)))
+        val useCase = ManageCitiesUseCase(dataStore)
+
+        val newActive = useCase.removeCity(storedCity)
+
+        assertThat(newActive?.name, `is`("Cartagena"))
+        val settings = dataStore.data.first()
+        assertThat(settings.listWeather.size, `is`(1))
+        assertThat(settings.listWeather.first().isActive, `is`(true))
+        // forces the next refresh for the promoted city
+        assertThat(settings.lastUpdate, `is`(0L))
+    }
+
+    @Test
+    fun removeCity_lastCity_leavesTheListEmpty() = runTest {
+        val dataStore = FakeDataStore(Settings(listWeather = persistentListOf(storedCity)))
+        val useCase = ManageCitiesUseCase(dataStore)
+
+        val newActive = useCase.removeCity(storedCity)
+
+        assertThat(newActive, `is`(nullValue()))
+        assertThat(dataStore.data.first().listWeather.isEmpty(), `is`(true))
+    }
+
+    @Test
+    fun removeCity_gpsCity_isANoOp() = runTest {
+        val dataStore =
+            FakeDataStore(Settings(listWeather = persistentListOf(storedCity, gpsCity)))
+        val useCase = ManageCitiesUseCase(dataStore)
+
+        val newActive = useCase.removeCity(gpsCity)
+
+        assertThat(newActive, `is`(nullValue()))
+        assertThat(dataStore.data.first().listWeather.size, `is`(2))
+    }
+
+    // --- restoreCity ---
+
+    @Test
+    fun restoreCity_reinsertsAtTheOriginalPositionAndReactivates() = runTest {
+        val other = storedCity.copy(name = "Cartagena", lat = 10.39, isActive = true)
+        val dataStore = FakeDataStore(Settings(listWeather = persistentListOf(other)))
+        val useCase = ManageCitiesUseCase(dataStore)
+
+        useCase.restoreCity(storedCity, index = 0)
+
+        val listWeather = dataStore.data.first().listWeather
+        assertThat(listWeather.size, `is`(2))
+        assertThat(listWeather[0], `is`(storedCity))
+        // the restored active city deactivates the others
+        assertThat(listWeather.count { it.isActive }, `is`(1))
+        assertThat(listWeather.first { it.isActive }.name, `is`("Barranquilla"))
+    }
+
+    @Test
+    fun restoreCity_indexBeyondTheEndAppends() = runTest {
+        val dataStore = FakeDataStore(Settings())
+        val useCase = ManageCitiesUseCase(dataStore)
+
+        useCase.restoreCity(storedCity.copy(isActive = false), index = 7)
+
+        assertThat(dataStore.data.first().listWeather.size, `is`(1))
+    }
+
+    // --- reorderCities ---
+
+    @Test
+    fun reorderCities_appliesTheNewOrder() = runTest {
+        val other = storedCity.copy(name = "Cartagena", lat = 10.39, isActive = false)
+        val dataStore =
+            FakeDataStore(Settings(listWeather = persistentListOf(storedCity, other, gpsCity)))
+        val useCase = ManageCitiesUseCase(dataStore)
+
+        useCase.reorderCities(listOf(gpsCity, storedCity, other))
+
+        val listWeather = dataStore.data.first().listWeather
+        assertThat(listWeather[0], `is`(gpsCity))
+        assertThat(listWeather[1], `is`(storedCity))
+        assertThat(listWeather[2], `is`(other))
+    }
+
+    @Test
+    fun reorderCities_withMismatchedElements_isIgnored() = runTest {
+        val dataStore =
+            FakeDataStore(Settings(listWeather = persistentListOf(storedCity, gpsCity)))
+        val useCase = ManageCitiesUseCase(dataStore)
+
+        useCase.reorderCities(listOf(storedCity))
+
+        assertThat(dataStore.data.first().listWeather.size, `is`(2))
+        assertThat(dataStore.data.first().listWeather[0], `is`(storedCity))
+    }
+
+    // --- recordSearch ---
+
+    @Test
+    fun recordSearch_keepsMostRecentFirstDedupedAndCappedAtFive() = runTest {
+        val dataStore = FakeDataStore(Settings())
+        val useCase = ManageCitiesUseCase(dataStore)
+
+        repeat(6) { index ->
+            useCase.recordSearch("City$index", index.toDouble(), 0.0)
+        }
+        // repeating an existing name moves it to the front without duplicating
+        useCase.recordSearch("City3", 3.0, 0.0)
+
+        val history = dataStore.data.first().searchHistory
+        assertThat(history.size, `is`(Settings.MAX_SEARCH_HISTORY))
+        assertThat(history.first().name, `is`("City3"))
+        assertThat(history.count { it.name == "City3" }, `is`(1))
+        // the oldest entries fell off
+        assertThat(history.none { it.name == "City0" }, `is`(true))
     }
 }

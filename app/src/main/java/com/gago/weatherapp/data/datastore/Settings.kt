@@ -15,5 +15,12 @@ data class Settings(
     val lastLangUsed: String = "",
 
     @Serializable(with = MyPersistentListSerializer::class)
-    val listWeather: PersistentList<WeatherLocal> = persistentListOf()
-)
+    val listWeather: PersistentList<WeatherLocal> = persistentListOf(),
+
+    /** Last successful searches, most recent first (max [MAX_SEARCH_HISTORY]). */
+    val searchHistory: List<SearchHistoryEntry> = emptyList()
+) {
+    companion object {
+        const val MAX_SEARCH_HISTORY = 5
+    }
+}
