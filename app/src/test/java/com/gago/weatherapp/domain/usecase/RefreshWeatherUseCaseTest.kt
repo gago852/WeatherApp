@@ -39,6 +39,15 @@ class RefreshWeatherUseCaseTest {
     }
 
     @Test
+    fun freshDataButLanguageChanged_refreshesAnyway() {
+        val settings = Settings(lastUpdate = now - 30_000L, listWeather = persistentListOf(city()))
+
+        val decision = useCase(settings, hasWeatherLoaded = true, languageChanged = true, now = now)
+
+        assertThat(decision, `is`(instanceOf(RefreshDecision.FromCoordinates::class.java)))
+    }
+
+    @Test
     fun freshDataButNoWeatherOnScreen_refreshesAnyway() {
         val settings = Settings(lastUpdate = now - 30_000L, listWeather = persistentListOf(city()))
 

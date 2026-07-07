@@ -39,6 +39,7 @@ import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.MeasureUnit
 import com.gago.weatherapp.ui.utils.MockData
 import com.gago.weatherapp.ui.utils.capitalizeWords
+import com.gago.weatherapp.ui.utils.currentLocale
 import kotlin.math.roundToInt
 
 @Composable
@@ -47,7 +48,8 @@ fun TemperatureChart(
     measureUnit: MeasureUnit,
     modifier: Modifier = Modifier
 ) {
-    val points = remember(forecast) { forecast.toTemperatureChartPoints() }
+    val locale = currentLocale()
+    val points = remember(forecast, locale) { forecast.toTemperatureChartPoints(locale) }
     if (points.size < 2) return
 
     var selectedIndex by rememberSaveable(forecast) { mutableIntStateOf(-1) }
@@ -204,9 +206,14 @@ fun TemperatureChart(
 
 private fun previewForecast(): List<WeatherForecast> {
     val base = MockData.getWeatherForecast()
-    return listOf("Lunes" to 22.4, "Martes" to 26.1, "Miércoles" to 24.0, "Jueves" to 28.7, "Viernes" to 25.3)
-        .map { (day, temp) ->
-            base.copy(calculatedTime = day, mainData = base.mainData.copy(temp = temp))
+    // 1970-01-05 was a Monday: consecutive epochs render Monday..Friday labels
+    return listOf(22.4, 26.1, 24.0, 28.7, 25.3)
+        .mapIndexed { index, temp ->
+            base.copy(
+                forecastTime = (4 + index) * 86_400L,
+                timeZoneOffset = 0L,
+                mainData = base.mainData.copy(temp = temp)
+            )
         }
 }
 

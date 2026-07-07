@@ -9,7 +9,6 @@ import com.gago.weatherapp.data.remote.dto.common.Wind
 import com.gago.weatherapp.data.remote.dto.common.toDomain
 import com.gago.weatherapp.data.remote.dto.common.toWeatherCondition
 import com.gago.weatherapp.domain.model.WeatherForecast
-import com.gago.weatherapp.domain.utils.convertDateWithoutTimeFromUnixLocatedTimeZoneToDayOfWeek
 import com.squareup.moshi.Json
 import com.squareup.moshi.JsonClass
 
@@ -32,10 +31,8 @@ data class WeatherForecastDto(
 
 fun WeatherForecastDto.toWeatherForecast(timeZoneOffset: Long): WeatherForecast {
     return WeatherForecast(
-        calculatedTime = convertDateWithoutTimeFromUnixLocatedTimeZoneToDayOfWeek(
-            unixTime = dt.toLong(),
-            timeZoneOffset = timeZoneOffset
-        ),
+        forecastTime = dt.toLong(),
+        timeZoneOffset = timeZoneOffset,
         calculatedTimeFromServer = dtTxt,
         mainData = main.toDomain(),
         probabilityOfPrecipitation = pop,

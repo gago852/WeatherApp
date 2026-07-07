@@ -42,6 +42,9 @@ import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.MeasureUnit
 import com.gago.weatherapp.ui.utils.PreviewWeatherListProvider
 import com.gago.weatherapp.ui.utils.capitalizeWords
+import com.gago.weatherapp.ui.utils.currentLocale
+import com.gago.weatherapp.ui.utils.formatFullDateTime
+import com.gago.weatherapp.ui.utils.formatTwelveHourTime
 import kotlin.math.roundToInt
 
 @Composable
@@ -50,6 +53,7 @@ fun WeatherPresentation(
     fiveDaysForecast: Forecast,
     measureUnit: MeasureUnit
 ) {
+    val locale = currentLocale()
     val screenClass = currentWindowAdaptiveInfo().windowSizeClass
     val isCompactSize =
         screenClass.isWidthAtLeastBreakpoint(WindowSizeClass.WIDTH_DP_MEDIUM_LOWER_BOUND)
@@ -244,7 +248,13 @@ fun WeatherPresentation(
                             text = stringResource(R.string.sunrise_text),
                             style = MaterialTheme.typography.titleMedium
                         )
-                        Text(text = currentWeather.dayData.sunrise)
+                        Text(
+                            text = formatTwelveHourTime(
+                                epochSeconds = currentWeather.dayData.sunrise,
+                                timeZoneOffset = currentWeather.timezone.toLong(),
+                                locale = locale
+                            )
+                        )
                     }
                     HorizontalDivider(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp),
@@ -260,7 +270,13 @@ fun WeatherPresentation(
                             text = stringResource(R.string.sunset_text),
                             style = MaterialTheme.typography.titleMedium
                         )
-                        Text(text = currentWeather.dayData.sunset)
+                        Text(
+                            text = formatTwelveHourTime(
+                                epochSeconds = currentWeather.dayData.sunset,
+                                timeZoneOffset = currentWeather.timezone.toLong(),
+                                locale = locale
+                            )
+                        )
                     }
                     currentWeather.rain?.let { rain ->
                         HorizontalDivider(
@@ -337,7 +353,9 @@ fun WeatherPresentation(
             }
         }
         Text(
-            text = "${stringResource(R.string.last_updated_text)} ${currentWeather.calculatedTime}",
+            text = "${stringResource(R.string.last_updated_text)} ${
+                formatFullDateTime(currentWeather.calculatedTime, locale)
+            }",
             modifier = Modifier
                 .align(Alignment.End)
                 .padding(end = 8.dp, top = 8.dp)

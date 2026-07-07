@@ -1,7 +1,6 @@
 package com.gago.weatherapp.data.remote.dto.weather
 
 import com.gago.weatherapp.domain.model.DayData
-import com.gago.weatherapp.domain.utils.getTwelveHourFromUnixLocatedTimeZone
 import com.squareup.moshi.JsonClass
 
 @JsonClass(generateAdapter = true)
@@ -13,15 +12,9 @@ data class SysDto(
     val type: Int? = null
 )
 
-fun SysDto.toDayData(timeZoneOffset: Long): DayData {
+fun SysDto.toDayData(): DayData {
     return DayData(
-        sunrise = getTwelveHourFromUnixLocatedTimeZone(
-            unixTime = sunrise,
-            timeZoneOffset = timeZoneOffset
-        ),
-        sunset = getTwelveHourFromUnixLocatedTimeZone(
-            unixTime = sunset,
-            timeZoneOffset = timeZoneOffset
-        )
+        sunrise = sunrise,
+        sunset = sunset
     )
 }

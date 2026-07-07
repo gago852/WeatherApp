@@ -8,7 +8,7 @@ data class CurrentWeather(
     val name: String,
     val timezone: Int,
     val dayData: DayData,
-    val calculatedTime: String,
+    val calculatedTime: Long,
     val weatherConditions: WeatherCondition,
     val weatherData: WeatherData,
     val wind: Wind,
