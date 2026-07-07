@@ -6,6 +6,8 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.SettingsSerializer
+import com.gago.weatherapp.data.datastore.WeatherCache
+import com.gago.weatherapp.data.datastore.WeatherCacheSerializer
 import com.gago.weatherapp.data.remote.OpenWeatherMapApi
 import com.gago.weatherapp.data.remote.interceptor.LiveNetworkMonitor
 import com.gago.weatherapp.data.remote.interceptor.NetworkMonitor
@@ -68,6 +70,16 @@ object AppModule {
         return DataStoreFactory.create(
             serializer = SettingsSerializer,
             produceFile = { app.dataStoreFile("app-settings.json") },
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        )
+    }
+
+    @Provides
+    @Singleton
+    fun provideWeatherCacheDataStore(app: Application): DataStore<WeatherCache> {
+        return DataStoreFactory.create(
+            serializer = WeatherCacheSerializer,
+            produceFile = { app.dataStoreFile("weather-cache.json") },
             scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
         )
     }
