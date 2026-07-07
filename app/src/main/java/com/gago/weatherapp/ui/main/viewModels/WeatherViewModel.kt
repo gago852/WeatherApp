@@ -77,7 +77,7 @@ class WeatherViewModel @Inject constructor(
 
     }
 
-    val isStartup = savedStateHandle.getStateFlow("statup", true)
+    val isStartup = savedStateHandle.getStateFlow("startup", true)
 
     fun setReasonForRefresh(reason: ReasonsForRefresh) {
         reasonForRefresh = reason
@@ -93,7 +93,7 @@ class WeatherViewModel @Inject constructor(
 
     suspend fun getInitialSetUp(): Settings? = dataStore.data.firstOrNull()
     fun initialStartUp(isFirstTime: Boolean) {
-        savedStateHandle["statup"] = false
+        savedStateHandle["startup"] = false
         reasonForRefresh = ReasonsForRefresh.PULL
         if (isFirstTime) {
             state = state.copy(

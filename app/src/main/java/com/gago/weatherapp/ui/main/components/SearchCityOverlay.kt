@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -179,7 +180,7 @@ fun SearchResultsList(
             .testTag("search_results_list")
     ) {
         LazyColumn {
-            items(results.take(5)) { result ->
+            items(results.take(5), key = { it.placeId }) { result ->
                 ListItem(
                     headlineContent = { Text(result.getPrimaryText(null).toString()) },
                     supportingContent = { Text(result.getSecondaryText(null).toString()) },
@@ -195,13 +196,14 @@ fun SearchResultsList(
 
 @Composable
 fun GoogleMapsAttribution(modifier: Modifier = Modifier) {
+    val uriHandler = LocalUriHandler.current
     Surface(
         color = Color.Black.copy(alpha = 0.5f),
         shape = MaterialTheme.shapes.small,
         modifier = modifier
             .testTag("google_maps_attribution")
             .clickable {
-                // TODO: Open Google Maps TOS
+                uriHandler.openUri("https://maps.google.com/help/terms_maps/")
             }
     ) {
         Row(

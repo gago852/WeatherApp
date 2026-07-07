@@ -9,7 +9,11 @@ class WeatherApp : Application() {
     override fun onCreate() {
         super.onCreate()
         if (!Places.isInitialized()) {
-            Places.initializeWithNewPlacesApiEnabled(applicationContext, BuildConfig.PLACES_API_KEY)
+            Places.initializeWithNewPlacesApiEnabled(
+                applicationContext,
+                BuildConfig.PLACES_API_KEY,
+                resources.configuration.locales[0]
+            )
         }
     }
 }

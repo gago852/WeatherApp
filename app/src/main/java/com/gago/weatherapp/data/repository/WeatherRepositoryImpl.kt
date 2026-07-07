@@ -79,6 +79,7 @@ class WeatherRepositoryImpl @Inject constructor(
                     }
 
                     is NoNetworkException -> Result.Error(DataError.Network.NO_INTERNET)
+                    is CancellationException -> throw e
                     else -> {
                         FirebaseCrashlytics.getInstance().recordException(e)
                         Result.Error(DataError.Network.UNKNOWN)

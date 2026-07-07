@@ -85,7 +85,11 @@ object AppModule {
     @Singleton
     fun providePlacesClient(app: Application): PlacesClient {
         if (!Places.isInitialized()) {
-            Places.initializeWithNewPlacesApiEnabled(app, BuildConfig.PLACES_API_KEY)
+            Places.initializeWithNewPlacesApiEnabled(
+                app,
+                BuildConfig.PLACES_API_KEY,
+                app.resources.configuration.locales[0]
+            )
         }
         return Places.createClient(app)
     }
