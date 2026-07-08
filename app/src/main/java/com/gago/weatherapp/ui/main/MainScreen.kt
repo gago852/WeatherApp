@@ -31,7 +31,7 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.platform.LocalContext
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
@@ -227,7 +227,10 @@ fun WeatherNavDrawer(
     onHistoryClick: (SearchHistoryEntry) -> Unit = {}
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
-    val context = LocalContext.current
+    // resolved at composition time so they follow configuration/locale changes (lint:
+    // LocalContextGetResourceValueCall forbids LocalContext.getString in callbacks)
+    val cityRemovedTemplate = stringResource(R.string.city_removed)
+    val undoLabel = stringResource(R.string.undo_action)
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val pullState = rememberPullToRefreshState()
     val navScope = rememberCoroutineScope()
@@ -255,8 +258,8 @@ fun WeatherNavDrawer(
                     onRemoveCity(city)
                     navScope.launch {
                         val result = snackBarHostState.showSnackbar(
-                            message = context.getString(R.string.city_removed, city.name),
-                            actionLabel = context.getString(R.string.undo_action),
+                            message = cityRemovedTemplate.format(city.name),
+                            actionLabel = undoLabel,
                             duration = SnackbarDuration.Short
                         )
                         if (result == SnackbarResult.ActionPerformed) onUndoRemoveCity()
