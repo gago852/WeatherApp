@@ -34,7 +34,7 @@ class WeatherSyncWorker @AssistedInject constructor(
     override suspend fun doWork(): Result {
         return when (val outcome = syncActiveCity(
             apiKey = BuildConfig.API_KEY,
-            lang = getCurrentLanguage(applicationContext)
+            fallbackLang = getCurrentLanguage(applicationContext)
         )) {
             is SyncActiveCityUseCase.Outcome.NoActiveCity -> Result.success()
 

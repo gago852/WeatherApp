@@ -21,7 +21,9 @@ import org.hamcrest.Matchers.`is`
 import org.junit.Before
 import org.junit.Test
 import org.mockito.kotlin.any
+import org.mockito.kotlin.eq
 import org.mockito.kotlin.mock
+import org.mockito.kotlin.verify
 import org.mockito.kotlin.whenever
 
 class SyncActiveCityUseCaseTest {
@@ -93,6 +95,26 @@ class SyncActiveCityUseCaseTest {
         outcome as SyncActiveCityUseCase.Outcome.Refreshed
         assertThat(outcome.notify, `is`(true))
         assertThat(dataStore.data.first().lastNotificationTime, `is`(now))
+    }
+
+    @Test
+    fun `stored in-app language wins over the fallback language`() = runTest {
+        stubSuccess()
+        build(Settings(listWeather = persistentListOf(activeCity), language = "es"))
+
+        useCase("key", "en")
+
+        verify(repository).getWeather(any(), any(), any(), eq("es"), any())
+    }
+
+    @Test
+    fun `empty in-app language uses the fallback language`() = runTest {
+        stubSuccess()
+        build(Settings(listWeather = persistentListOf(activeCity)))
+
+        useCase("key", "fr")
+
+        verify(repository).getWeather(any(), any(), any(), eq("fr"), any())
     }
 
     @Test

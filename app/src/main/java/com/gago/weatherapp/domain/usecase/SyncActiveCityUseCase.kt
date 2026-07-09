@@ -30,12 +30,17 @@ class SyncActiveCityUseCase @Inject constructor(
 
     suspend operator fun invoke(
         apiKey: String,
-        lang: String,
+        fallbackLang: String,
         now: Long = System.currentTimeMillis()
     ): Outcome {
         val settings = dataStore.data.firstOrNull() ?: return Outcome.NoActiveCity
         val activeCity = settings.listWeather.firstOrNull { it.isActive }
             ?: return Outcome.NoActiveCity
+
+        // The stored in-app language is the source of truth: in a background-started
+        // process (no activity) AppCompatDelegate may not have loaded the per-app locale
+        // yet, so the caller's language is only trusted when following the system.
+        val lang = settings.language.ifBlank { fallbackLang }
 
         return when (val result = getWeatherUseCase(
             activeCity.lat, activeCity.lon, apiKey, lang, settings.unitOfMeasurement.unit
