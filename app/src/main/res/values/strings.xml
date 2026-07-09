@@ -98,4 +98,15 @@
     <string name="temperature_chart_content_description">Temperature trend chart.</string>
     <string name="hourly_forecast_text">Next 24 hours</string>
     <string name="hourly_slot_content_description">%1$s: %2$s, %3$s, precipitation %4$s</string>
+    <string name="standard_unit">Standard (K)</string>
+    <string name="theme_title">Theme</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="dynamic_color_title">Dynamic color (Material You)</string>
+    <string name="language_title">Language</string>
+    <string name="follow_system">Follow system</string>
+    <string name="refresh_interval_title">Auto-refresh interval</string>
+    <string name="refresh_interval_manual">Manual</string>
+    <string name="offline_data_banner">Offline — showing saved data from %1$s</string>
 </resources>

@@ -138,6 +138,8 @@ fun MainScreen(
             weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
             weatherViewModel.refreshWeather()
             weatherViewModel.setWentToSettings(false)
+        } else if (!isSetup) {
+            weatherViewModel.autoRefreshOnResume()
         }
         onPauseOrDispose {}
     }
