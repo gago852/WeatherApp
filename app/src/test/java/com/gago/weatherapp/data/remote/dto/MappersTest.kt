@@ -1,5 +1,9 @@
 package com.gago.weatherapp.data.remote.dto
 
+import com.gago.weatherapp.data.remote.dto.airpollution.AirPollutionDto
+import com.gago.weatherapp.data.remote.dto.airpollution.AirPollutionEntryDto
+import com.gago.weatherapp.data.remote.dto.airpollution.AqiMainDto
+import com.gago.weatherapp.data.remote.dto.airpollution.toAqi
 import com.gago.weatherapp.data.remote.dto.common.Clouds
 import com.gago.weatherapp.data.remote.dto.common.Coord
 import com.gago.weatherapp.data.remote.dto.common.Rain
@@ -22,6 +26,7 @@ import com.gago.weatherapp.data.remote.dto.weather.toDayData
 import com.gago.weatherapp.data.remote.dto.weather.toWeather
 import com.gago.weatherapp.domain.model.WeatherTypeIcon
 import org.hamcrest.CoreMatchers.`is`
+import org.hamcrest.CoreMatchers.nullValue
 import org.hamcrest.MatcherAssert.assertThat
 import org.junit.Test
 
@@ -79,6 +84,22 @@ class MappersTest {
             condition.copy(icon = "not-a-code").toWeatherCondition().icon,
             `is`<WeatherTypeIcon>(WeatherTypeIcon.ClearSkyDay)
         )
+    }
+
+    // --- AirPollutionDto.toAqi ---
+
+    @Test
+    fun `toAqi returns the index of the first entry`() {
+        val dto = AirPollutionDto(
+            entries = listOf(AirPollutionEntryDto(main = AqiMainDto(aqi = 3), dt = 123L))
+        )
+
+        assertThat(dto.toAqi(), `is`(3))
+    }
+
+    @Test
+    fun `toAqi returns null when the response has no entries`() {
+        assertThat(AirPollutionDto(entries = emptyList()).toAqi(), `is`(nullValue()))
     }
 
     // --- SysDto.toDayData ---
