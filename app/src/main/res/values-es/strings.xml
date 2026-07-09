@@ -88,6 +88,7 @@
     <string name="aqi_poor">Mala</string>
     <string name="aqi_very_poor">Muy mala</string>
     <string name="precipitation_probability_text">Precipitación: %1$d%%</string>
+    <string name="offline_data_banner">Sin conexión — mostrando datos guardados de %1$s</string>
     <string name="standard_unit">Estándar (K)</string>
     <string name="theme_title">Tema</string>
     <string name="theme_system">Según el sistema</string>
@@ -98,5 +99,11 @@
     <string name="follow_system">Según el sistema</string>
     <string name="refresh_interval_title">Intervalo de refresco automático</string>
     <string name="refresh_interval_manual">Manual</string>
-    <string name="offline_data_banner">Sin conexión — mostrando datos guardados de %1$s</string>
+    <string name="daily_notification_title">Notificación diaria del clima</string>
+    <string name="notification_channel_name">Resumen del clima</string>
+    <string name="notification_summary_title">Clima en %1$s</string>
+    <string name="notifications_revoked_title">Notificaciones desactivadas</string>
+    <string name="notifications_revoked_message">La notificación diaria del clima está activada, pero las notificaciones se desactivaron en los ajustes del sistema. ¿Quieres permitirlas de nuevo?</string>
+    <string name="notifications_revoked_reenable">Permitir</string>
+    <string name="notifications_revoked_turn_off">Desactivar</string>
 </resources>

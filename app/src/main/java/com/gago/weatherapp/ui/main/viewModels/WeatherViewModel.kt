@@ -100,6 +100,11 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch { dataStore.updateData { it.copy(lastUpdate = 0L) } }
     }
 
+    /** Turns the daily notification off (revoked-permission dialog); the sync is unaffected. */
+    fun disableNotifications() {
+        viewModelScope.launch { dataStore.updateData { it.copy(notificationsEnabled = false) } }
+    }
+
     /**
      * Refetches from the API when the UI language no longer matches the language of the data
      * on screen (API-provided texts like the weather condition are fixed at fetch time).
