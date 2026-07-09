@@ -85,6 +85,8 @@
     <string name="remove_city">Supprimer</string>
     <string name="city_removed">%1$s supprimée</string>
     <string name="undo_action">Annuler</string>
+    <string name="hourly_forecast_text">Prochaines 24 heures</string>
+    <string name="hourly_slot_content_description">%1$s : %2$s, %3$s, précipitations %4$s</string>
     <string name="offline_data_banner">Hors ligne — données enregistrées du %1$s</string>
     <string name="standard_unit">Standard (K)</string>
     <string name="theme_title">Thème</string>
