@@ -6,13 +6,16 @@ import org.hamcrest.MatcherAssert.assertThat
 import org.hamcrest.Matchers.empty
 import org.hamcrest.Matchers.`is`
 import org.junit.Test
+import java.util.Locale
 
 class TemperatureChartDataTest {
 
-    private fun forecast(day: String, temp: Double, description: String = "cielo claro"): WeatherForecast {
+    // 1970-01-05 00:00 UTC was a Monday
+    private fun forecast(daysSinceEpoch: Int, temp: Double, description: String = "cielo claro"): WeatherForecast {
         val base = MockData.getWeatherForecast()
         return base.copy(
-            calculatedTime = day,
+            forecastTime = daysSinceEpoch * 86_400L,
+            timeZoneOffset = 0L,
             mainData = base.mainData.copy(temp = temp),
             weatherCondition = base.weatherCondition.copy(description = description)
         )
@@ -21,11 +24,11 @@ class TemperatureChartDataTest {
     @Test
     fun toTemperatureChartPoints_mapsDayTemperatureAndDescription() {
         val forecasts = listOf(
-            forecast("Monday", 22.4, "clear sky"),
-            forecast("Tuesday", 26.1, "light rain")
+            forecast(4, 22.4, "clear sky"),
+            forecast(5, 26.1, "light rain")
         )
 
-        val points = forecasts.toTemperatureChartPoints()
+        val points = forecasts.toTemperatureChartPoints(Locale.US)
 
         assertThat(points.size, `is`(2))
         assertThat(points[0].label, `is`("Monday"))
@@ -38,8 +41,15 @@ class TemperatureChartDataTest {
     }
 
     @Test
+    fun toTemperatureChartPoints_labelsFollowTheGivenLocale() {
+        val points = listOf(forecast(4, 22.4)).toTemperatureChartPoints(Locale.forLanguageTag("es"))
+
+        assertThat(points[0].label, `is`("lunes"))
+    }
+
+    @Test
     fun toTemperatureChartPoints_emptyForecast_returnsEmptyList() {
-        assertThat(emptyList<WeatherForecast>().toTemperatureChartPoints(), `is`(empty()))
+        assertThat(emptyList<WeatherForecast>().toTemperatureChartPoints(Locale.US), `is`(empty()))
     }
 
     @Test

@@ -4,7 +4,8 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class WeatherForecast(
-    val calculatedTime: String,
+    val forecastTime: Long,
+    val timeZoneOffset: Long,
     val calculatedTimeFromServer: String,
     val mainData: WeatherData,
     val probabilityOfPrecipitation: Double,

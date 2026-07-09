@@ -48,6 +48,7 @@ import com.gago.weatherapp.ui.main.viewModels.WeatherViewModel
 import com.gago.weatherapp.ui.navigation.AppScreens
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
+import com.gago.weatherapp.ui.utils.currentLocale
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import kotlinx.coroutines.launch
 
@@ -110,6 +111,13 @@ fun MainScreen(
                 locationPermissionResultLauncher = locationPermissionResultLauncher
             )
         }
+    }
+
+    // A locale change recreates the activity; on the new composition refetch API-provided
+    // texts if their language no longer matches the UI language.
+    val currentLanguage = currentLocale().language
+    LaunchedEffect(currentLanguage) {
+        if (!isSetup) weatherViewModel.refreshOnLanguageChange()
     }
 
     HandlePermissionDialogs(

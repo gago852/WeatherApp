@@ -53,6 +53,7 @@ class GetWeatherUseCaseTest {
         assertThat(result.data.currentWeather, `is`(currentWeather))
         assertThat(result.data.forecast, `is`(forecast))
         assertThat(dataStore.data.first().lastUpdate, `is`(greaterThan(123L)))
+        assertThat(dataStore.data.first().lastLangUsed, `is`("en"))
     }
 
     @Test

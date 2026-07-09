@@ -22,10 +22,10 @@ object MockData {
             timezone = -14400,
             dayData =
                 DayData(
-                    sunrise = "01:02 AM",
-                    sunset = "05:58 PM",
+                    sunrise = 1_717_666_920L,
+                    sunset = 1_717_727_880L,
                 ),
-            calculatedTime = "2024-06-06 01:29:58",
+            calculatedTime = 1_717_651_798L,
             weatherConditions = WeatherCondition(
                 description = "cielo claro",
                 icon = WeatherTypeIcon.ClearSkyNight,
@@ -67,7 +67,8 @@ object MockData {
             forecastCount = 5,
             listForecastWeather = listOf(
                 WeatherForecast(
-                    calculatedTime = "Martes",
+                    forecastTime = 1_717_651_798L,
+                    timeZoneOffset = -14_400L,
                     calculatedTimeFromServer = "2024-06-06 01:29:58",
                     mainData = WeatherData(
                         feelsLike = 23.42,
@@ -95,7 +96,8 @@ object MockData {
     )
 
     fun getWeatherForecast() = WeatherForecast(
-        calculatedTime = "Martes",
+        forecastTime = 1_717_651_798L,
+        timeZoneOffset = -14_400L,
         calculatedTimeFromServer = "2024-06-06 01:29:58",
         mainData = WeatherData(
             feelsLike = 23.42,

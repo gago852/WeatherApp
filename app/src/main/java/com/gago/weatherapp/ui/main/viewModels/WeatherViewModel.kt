@@ -100,10 +100,30 @@ class WeatherViewModel @Inject constructor(
         viewModelScope.launch { dataStore.updateData { it.copy(lastUpdate = 0L) } }
     }
 
+    /**
+     * Refetches from the API when the UI language no longer matches the language of the data
+     * on screen (API-provided texts like the weather condition are fixed at fetch time).
+     */
+    fun refreshOnLanguageChange() {
+        viewModelScope.launch {
+            val setting = settings.firstOrNull() ?: return@launch
+            if (state.weather != null && languageChanged(setting)) refreshWeather()
+        }
+    }
+
+    private fun languageChanged(setting: Settings): Boolean =
+        setting.lastLangUsed.isNotEmpty() && setting.lastLangUsed != getCurrentLanguage(context)
+
     fun refreshWeather() {
         viewModelScope.launch {
             state = state.copy(isLoading = true, error = null)
-            when (val decision = refreshWeatherUseCase(settings.firstOrNull(), state.weather != null)) {
+            val setting = settings.firstOrNull()
+            val decision = refreshWeatherUseCase(
+                setting,
+                state.weather != null,
+                languageChanged = setting?.let(::languageChanged) ?: false
+            )
+            when (decision) {
                 is RefreshDecision.NoSettings -> settleAfterDelay(R.string.refresh_error)
                 is RefreshDecision.NotNeeded -> settleAfterDelay(error = null)
                 is RefreshDecision.FromGps -> loadWeatherFromGpsAsync()

@@ -39,7 +39,10 @@ class GetWeatherUseCase @Inject constructor(
                 is Result.Success -> {
                     val weather = Weather(currentWeather = currentWeather, forecast = forecast.data)
                     dataStore.updateData { currentSettings ->
-                        currentSettings.copy(lastUpdate = System.currentTimeMillis())
+                        currentSettings.copy(
+                            lastUpdate = System.currentTimeMillis(),
+                            lastLangUsed = lang
+                        )
                     }
                     Result.Success(weather)
                 }

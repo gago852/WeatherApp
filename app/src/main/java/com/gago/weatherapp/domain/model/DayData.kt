@@ -4,6 +4,6 @@ import androidx.compose.runtime.Immutable
 
 @Immutable
 data class DayData(
-    val sunset: String,
-    val sunrise: String
+    val sunset: Long,
+    val sunrise: Long
 )

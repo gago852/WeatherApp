@@ -23,31 +23,9 @@ import com.gago.weatherapp.data.remote.dto.weather.toWeather
 import com.gago.weatherapp.domain.model.WeatherTypeIcon
 import org.hamcrest.CoreMatchers.`is`
 import org.hamcrest.MatcherAssert.assertThat
-import org.junit.After
-import org.junit.Before
 import org.junit.Test
-import java.util.Locale
-import java.util.TimeZone
 
 class MappersTest {
-
-    private lateinit var defaultLocale: Locale
-    private lateinit var defaultTimeZone: TimeZone
-
-    @Before
-    fun setUp() {
-        defaultLocale = Locale.getDefault()
-        defaultTimeZone = TimeZone.getDefault()
-        // the date helpers format with the system locale and time zone
-        Locale.setDefault(Locale.US)
-        TimeZone.setDefault(TimeZone.getTimeZone("UTC"))
-    }
-
-    @After
-    fun tearDown() {
-        Locale.setDefault(defaultLocale)
-        TimeZone.setDefault(defaultTimeZone)
-    }
 
     private val weatherData = WeatherData(
         feelsLike = 23.42,
@@ -106,28 +84,17 @@ class MappersTest {
     // --- SysDto.toDayData ---
 
     @Test
-    fun `toDayData formats sunrise and sunset as twelve hour time at the given offset`() {
+    fun `toDayData keeps sunrise and sunset as raw epochs`() {
         val sys = SysDto(
             country = "CA",
-            sunrise = 0L,          // 1970-01-01 00:00 UTC
-            sunset = 43_200L       // 1970-01-01 12:00 UTC
+            sunrise = 1_717_666_920L,
+            sunset = 1_717_727_880L
         )
 
-        val dayData = sys.toDayData(timeZoneOffset = 0L)
+        val dayData = sys.toDayData()
 
-        assertThat(dayData.sunrise, `is`("12:00 AM"))
-        assertThat(dayData.sunset, `is`("12:00 PM"))
-    }
-
-    @Test
-    fun `toDayData respects the remote time zone offset`() {
-        val sys = SysDto(country = "CA", sunrise = 0L, sunset = 43_200L)
-
-        // UTC-4: midnight UTC is 8:00 PM the previous day
-        val dayData = sys.toDayData(timeZoneOffset = -14_400L)
-
-        assertThat(dayData.sunrise, `is`("08:00 PM"))
-        assertThat(dayData.sunset, `is`("08:00 AM"))
+        assertThat(dayData.sunrise, `is`(1_717_666_920L))
+        assertThat(dayData.sunset, `is`(1_717_727_880L))
     }
 
     // --- WeatherDto.toWeather ---
@@ -164,22 +131,22 @@ class MappersTest {
         assertThat(result.visibility, `is`(10000))
         assertThat(result.clouds, `is`(25))
         assertThat(result.weatherConditions.icon, `is`<WeatherTypeIcon>(WeatherTypeIcon.ClearSkyDay))
-        // dt=0 in UTC with the default (system) time zone fixed to UTC
-        assertThat(result.calculatedTime, `is`("1970-01-01 00:00:00"))
-        assertThat(result.dayData.sunrise, `is`("12:00 AM"))
-        assertThat(result.dayData.sunset, `is`("12:00 PM"))
+        // raw epochs: the UI formats them with the locale active at render time
+        assertThat(result.calculatedTime, `is`(0L))
+        assertThat(result.dayData.sunrise, `is`(0L))
+        assertThat(result.dayData.sunset, `is`(43_200L))
     }
 
     // --- WeatherForecastDto.toWeatherForecast ---
 
     @Test
-    fun `toWeatherForecast maps fields and formats the day of week at the offset`() {
-        // 1970-01-05 00:00 UTC was a Monday
+    fun `toWeatherForecast maps fields and keeps the forecast time and offset raw`() {
         val dto = forecastEntry(dt = 4 * 86_400, dtTxt = "1970-01-05 00:00:00")
 
-        val result = dto.toWeatherForecast(timeZoneOffset = 0L)
+        val result = dto.toWeatherForecast(timeZoneOffset = -14_400L)
 
-        assertThat(result.calculatedTime, `is`("Monday"))
+        assertThat(result.forecastTime, `is`(4 * 86_400L))
+        assertThat(result.timeZoneOffset, `is`(-14_400L))
         assertThat(result.calculatedTimeFromServer, `is`("1970-01-05 00:00:00"))
         assertThat(result.mainData, `is`(weatherData.toDomain()))
         assertThat(result.probabilityOfPrecipitation, `is`(0.35))

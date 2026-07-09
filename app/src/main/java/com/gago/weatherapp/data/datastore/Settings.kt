@@ -11,6 +11,9 @@ data class Settings(
     val permissionAccepted: Boolean = false,
     val lastUpdate: Long = 0,
 
+    /** API language of the last successful fetch; empty until the first fetch. */
+    val lastLangUsed: String = "",
+
     @Serializable(with = MyPersistentListSerializer::class)
     val listWeather: PersistentList<WeatherLocal> = persistentListOf()
 )

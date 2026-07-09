@@ -21,6 +21,8 @@ import com.gago.weatherapp.domain.model.WeatherForecast
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.MockData
 import com.gago.weatherapp.ui.utils.capitalizeWords
+import com.gago.weatherapp.ui.utils.currentLocale
+import com.gago.weatherapp.ui.utils.formatDayOfWeek
 import kotlin.math.roundToInt
 
 @Composable
@@ -31,7 +33,13 @@ fun ForecastItem(weatherForecast: WeatherForecast) {
             modifier = Modifier.padding(8.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
-            Text(text = weatherForecast.calculatedTime)
+            Text(
+                text = formatDayOfWeek(
+                    epochSeconds = weatherForecast.forecastTime,
+                    timeZoneOffset = weatherForecast.timeZoneOffset,
+                    locale = currentLocale()
+                )
+            )
             Row(
                 modifier = Modifier,
                 verticalAlignment = Alignment.CenterVertically

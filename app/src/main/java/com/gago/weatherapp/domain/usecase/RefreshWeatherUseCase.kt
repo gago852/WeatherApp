@@ -6,7 +6,8 @@ import javax.inject.Inject
 
 /**
  * Decides how a refresh should be performed: throttling (skip if the last update is recent
- * and weather is already on screen) and GPS vs stored-coordinates resolution.
+ * and weather is already on screen, unless the language changed since that update) and
+ * GPS vs stored-coordinates resolution.
  */
 class RefreshWeatherUseCase @Inject constructor() {
 
@@ -31,11 +32,14 @@ class RefreshWeatherUseCase @Inject constructor() {
     operator fun invoke(
         settings: Settings?,
         hasWeatherLoaded: Boolean,
+        languageChanged: Boolean = false,
         now: Long = System.currentTimeMillis()
     ): RefreshDecision {
         val setting = settings ?: return RefreshDecision.NoSettings
 
-        if ((now - setting.lastUpdate) <= REFRESH_THROTTLE_MS && hasWeatherLoaded) {
+        if ((now - setting.lastUpdate) <= REFRESH_THROTTLE_MS && hasWeatherLoaded &&
+            !languageChanged
+        ) {
             return RefreshDecision.NotNeeded
         }
 

@@ -1,6 +1,8 @@
 package com.gago.weatherapp.ui.main.components
 
 import com.gago.weatherapp.domain.model.WeatherForecast
+import com.gago.weatherapp.ui.utils.formatDayOfWeek
+import java.util.Locale
 import kotlin.math.roundToInt
 
 /** One tappable point of the temperature trend chart. */
@@ -12,11 +14,12 @@ data class TemperatureChartPoint(
 )
 
 /** Maps the daily forecast list to chart points (X label = day, Y = temperature). */
-fun List<WeatherForecast>.toTemperatureChartPoints(): List<TemperatureChartPoint> {
+fun List<WeatherForecast>.toTemperatureChartPoints(locale: Locale): List<TemperatureChartPoint> {
     return map { forecast ->
+        val day = formatDayOfWeek(forecast.forecastTime, forecast.timeZoneOffset, locale)
         TemperatureChartPoint(
-            label = forecast.calculatedTime,
-            shortLabel = forecast.calculatedTime.take(3),
+            label = day,
+            shortLabel = day.take(3),
             temperature = forecast.mainData.temp,
             description = forecast.weatherCondition.description
         )
