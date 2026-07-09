@@ -26,6 +26,8 @@ import com.gago.weatherapp.ui.main.states.WeatherState
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
 import com.gago.weatherapp.ui.utils.getCurrentLanguage
 import com.gago.weatherapp.ui.utils.getErrorText
+import com.gago.weatherapp.widget.WeatherWidget
+import androidx.glance.appwidget.updateAll
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.delay
@@ -269,6 +271,8 @@ class WeatherViewModel @Inject constructor(
                     error = null,
                     isLoading = false
                 )
+                // the home-screen widget reads the cache this fetch just refreshed
+                runCatching { WeatherWidget().updateAll(context) }
                 result.data.weather.currentWeather.name
             }
             is Result.Error -> {
