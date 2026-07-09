@@ -95,6 +95,8 @@
     <string name="daily_notification_title">Notification météo quotidienne</string>
     <string name="notification_channel_name">Résumé météo</string>
     <string name="notification_summary_title">Météo à %1$s</string>
+    <string name="widget_description">Température et conditions actuelles de votre ville active</string>
+    <string name="widget_no_city">Ouvrez Weather App pour choisir une ville</string>
     <string name="notifications_revoked_title">Notifications désactivées</string>
     <string name="notifications_revoked_message">La notification météo quotidienne est activée, mais les notifications ont été désactivées dans les paramètres du système. Voulez-vous les autoriser à nouveau ?</string>
     <string name="notifications_revoked_reenable">Autoriser</string>

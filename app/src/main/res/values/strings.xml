@@ -110,6 +110,8 @@
     <string name="daily_notification_title">Daily weather notification</string>
     <string name="notification_channel_name">Weather summary</string>
     <string name="notification_summary_title">Weather in %1$s</string>
+    <string name="widget_description">Current temperature and condition of your active city</string>
+    <string name="widget_no_city">Open Weather App to pick a city</string>
     <string name="notifications_revoked_title">Notifications are off</string>
     <string name="notifications_revoked_message">The daily weather notification is enabled, but notifications were turned off in the system settings. Do you want to allow them again?</string>
     <string name="notifications_revoked_reenable">Allow</string>
