@@ -85,6 +85,7 @@
     <string name="remove_city">Supprimer</string>
     <string name="city_removed">%1$s supprimée</string>
     <string name="undo_action">Annuler</string>
+    <string name="offline_data_banner">Hors ligne — données enregistrées du %1$s</string>
     <string name="standard_unit">Standard (K)</string>
     <string name="theme_title">Thème</string>
     <string name="theme_system">Selon le système</string>
@@ -95,5 +96,11 @@
     <string name="follow_system">Selon le système</string>
     <string name="refresh_interval_title">Intervalle d\'actualisation automatique</string>
     <string name="refresh_interval_manual">Manuel</string>
-    <string name="offline_data_banner">Hors ligne — données enregistrées du %1$s</string>
+    <string name="daily_notification_title">Notification météo quotidienne</string>
+    <string name="notification_channel_name">Résumé météo</string>
+    <string name="notification_summary_title">Météo à %1$s</string>
+    <string name="notifications_revoked_title">Notifications désactivées</string>
+    <string name="notifications_revoked_message">La notification météo quotidienne est activée, mais les notifications ont été désactivées dans les paramètres du système. Voulez-vous les autoriser à nouveau ?</string>
+    <string name="notifications_revoked_reenable">Autoriser</string>
+    <string name="notifications_revoked_turn_off">Désactiver</string>
 </resources>

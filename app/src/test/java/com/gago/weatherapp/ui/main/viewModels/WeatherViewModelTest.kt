@@ -480,4 +480,20 @@ class WeatherViewModelTest {
 
         assertThat(dataStore.data.first().permissionAccepted, `is`(true))
     }
+
+    @Test
+    fun `disableNotifications turns the daily notification off without touching the interval`() =
+        runTest {
+            val dataStore = FakeDataStore(
+                Settings(notificationsEnabled = true, refreshIntervalMinutes = 30)
+            )
+            val viewModel = buildViewModel(dataStore = dataStore)
+
+            viewModel.disableNotifications()
+            advanceUntilIdle()
+
+            assertThat(dataStore.data.first().notificationsEnabled, `is`(false))
+            // the background sync must keep running: only the notification feature is off
+            assertThat(dataStore.data.first().refreshIntervalMinutes, `is`(30))
+        }
 }

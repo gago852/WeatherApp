@@ -26,6 +26,12 @@ data class Settings(
     /** Auto-refresh staleness threshold in minutes; 0 means manual refresh only. */
     val refreshIntervalMinutes: Int = 0,
 
+    /** Daily weather summary notification from the background sync. */
+    val notificationsEnabled: Boolean = false,
+
+    /** Epoch millis of the last summary notification posted. */
+    val lastNotificationTime: Long = 0L,
+
     @Serializable(with = MyPersistentListSerializer::class)
     val listWeather: PersistentList<WeatherLocal> = persistentListOf(),
 
