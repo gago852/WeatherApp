@@ -10,5 +10,6 @@ enum class MeasureUnit(
     val tempUnitText: String
 ) {
     METRIC("metric", R.string.metric_unit, "m/s", "°C"),
-    IMPERIAL("imperial", R.string.imperial_unit, "mph", "°F")
+    IMPERIAL("imperial", R.string.imperial_unit, "mph", "°F"),
+    STANDARD("standard", R.string.standard_unit, "m/s", "K")
 }

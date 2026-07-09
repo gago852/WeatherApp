@@ -15,9 +15,15 @@ import com.gago.weatherapp.domain.usecase.ManageCitiesUseCase
 import com.gago.weatherapp.domain.usecase.RefreshWeatherUseCase
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
+import com.gago.weatherapp.data.datastore.CachedWeather
+import com.gago.weatherapp.data.datastore.WeatherCache
+import com.gago.weatherapp.data.datastore.weatherCacheKey
+import com.gago.weatherapp.domain.model.Weather
 import com.gago.weatherapp.fakes.FakeDataStore
 import com.gago.weatherapp.fakes.FakeLocationTracker
+import com.gago.weatherapp.fakes.FakeWeatherCacheDataStore
 import com.gago.weatherapp.fakes.FakeWeatherRepository
+import com.gago.weatherapp.ui.utils.MockData
 import com.gago.weatherapp.rules.MainDispatcherRule
 import kotlinx.collections.immutable.persistentListOf
 import kotlinx.coroutines.ExperimentalCoroutinesApi
@@ -70,9 +76,10 @@ class WeatherViewModelTest {
     private fun buildViewModel(
         repository: FakeWeatherRepository = FakeWeatherRepository(),
         locationTracker: LocationTracker = FakeLocationTracker(),
-        dataStore: FakeDataStore = FakeDataStore()
+        dataStore: FakeDataStore = FakeDataStore(),
+        weatherCache: FakeWeatherCacheDataStore = FakeWeatherCacheDataStore()
     ) = WeatherViewModel(
-        getWeatherUseCase = GetWeatherUseCase(repository, dataStore),
+        getWeatherUseCase = GetWeatherUseCase(repository, dataStore, weatherCache),
         refreshWeatherUseCase = RefreshWeatherUseCase(),
         manageCitiesUseCase = ManageCitiesUseCase(dataStore),
         locationTracker = locationTracker,
@@ -193,6 +200,63 @@ class WeatherViewModelTest {
         assertThat(repository.getWeatherCallCount, `is`(2))
     }
 
+    // --- auto refresh interval ---
+
+    @Test
+    fun `autoRefreshOnResume refreshes when data is older than the configured interval`() =
+        runTest {
+            val repository = FakeWeatherRepository()
+            val dataStore = FakeDataStore(
+                Settings(listWeather = persistentListOf(madrid), refreshIntervalMinutes = 15)
+            )
+            val viewModel = buildViewModel(repository = repository, dataStore = dataStore)
+            viewModel.loadWeatherFromCurrent(madrid)
+            advanceUntilIdle()
+            assertThat(repository.getWeatherCallCount, `is`(1))
+
+            // data on screen is now older than the 15 minute interval
+            dataStore.updateData {
+                it.copy(lastUpdate = System.currentTimeMillis() - 16 * 60_000L)
+            }
+            viewModel.autoRefreshOnResume()
+            advanceUntilIdle()
+
+            assertThat(repository.getWeatherCallCount, `is`(2))
+        }
+
+    @Test
+    fun `autoRefreshOnResume does nothing while data is fresher than the interval`() = runTest {
+        val repository = FakeWeatherRepository()
+        val dataStore = FakeDataStore(
+            Settings(listWeather = persistentListOf(madrid), refreshIntervalMinutes = 15)
+        )
+        val viewModel = buildViewModel(repository = repository, dataStore = dataStore)
+        viewModel.loadWeatherFromCurrent(madrid)
+        advanceUntilIdle()
+
+        viewModel.autoRefreshOnResume()
+        advanceUntilIdle()
+
+        assertThat(repository.getWeatherCallCount, `is`(1))
+    }
+
+    @Test
+    fun `autoRefreshOnResume does nothing when the interval is manual`() = runTest {
+        val repository = FakeWeatherRepository()
+        val dataStore = FakeDataStore(
+            Settings(listWeather = persistentListOf(madrid), refreshIntervalMinutes = 0)
+        )
+        val viewModel = buildViewModel(repository = repository, dataStore = dataStore)
+        viewModel.loadWeatherFromCurrent(madrid)
+        advanceUntilIdle()
+
+        dataStore.updateData { it.copy(lastUpdate = 0L) }
+        viewModel.autoRefreshOnResume()
+        advanceUntilIdle()
+
+        assertThat(repository.getWeatherCallCount, `is`(1))
+    }
+
     // --- active city change ---
 
     @Test
@@ -303,6 +367,52 @@ class WeatherViewModelTest {
         assertThat(viewModel.state.isLoading, `is`(false))
         assertThat(viewModel.state.error, `is`(R.string.error_no_internet))
         assertThat(dataStore.data.first().lastUpdate, `is`(0L))
+    }
+
+    // --- offline cache ---
+
+    @Test
+    fun `network error with cached city shows cached weather flagged offline`() = runTest {
+        val repository = FakeWeatherRepository().apply {
+            weatherResult = Result.Error(DataError.Network.NO_INTERNET)
+        }
+        val cachedWeather = Weather(
+            currentWeather = MockData.getCurrentWeatherList().first(),
+            forecast = MockData.getForecastWeatherList().first()
+        )
+        val weatherCache = FakeWeatherCacheDataStore(
+            WeatherCache().put(
+                weatherCacheKey(madrid.lat, madrid.lon),
+                CachedWeather(weather = cachedWeather, fetchedAt = 999L, lang = "en")
+            )
+        )
+        val dataStore = FakeDataStore(Settings(listWeather = persistentListOf(madrid)))
+        val viewModel = buildViewModel(
+            repository = repository,
+            dataStore = dataStore,
+            weatherCache = weatherCache
+        )
+
+        viewModel.loadWeatherFromCurrent(madrid)
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.weather, notNullValue())
+        assertThat(viewModel.state.isFromCache, `is`(true))
+        assertThat(viewModel.state.lastFetchTime, `is`(999L))
+        assertThat(viewModel.state.error, nullValue())
+    }
+
+    @Test
+    fun `successful load flags the state as fresh data`() = runTest {
+        val dataStore = FakeDataStore(Settings(listWeather = persistentListOf(madrid)))
+        val viewModel = buildViewModel(dataStore = dataStore)
+
+        viewModel.loadWeatherFromCurrent(madrid)
+        advanceUntilIdle()
+
+        assertThat(viewModel.state.weather, notNullValue())
+        assertThat(viewModel.state.isFromCache, `is`(false))
+        assertThat(viewModel.state.lastFetchTime, notNullValue())
     }
 
     // --- permission dialog queue ---
