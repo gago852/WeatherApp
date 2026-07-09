@@ -1,5 +1,6 @@
 package com.gago.weatherapp.ui
 
+import android.app.Application
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.fakes.FakeDataStore
 import com.gago.weatherapp.rules.MainDispatcherRule
@@ -12,6 +13,7 @@ import org.junit.Assert.assertFalse
 import org.junit.Assert.assertTrue
 import org.junit.Rule
 import org.junit.Test
+import org.mockito.kotlin.mock
 
 @OptIn(ExperimentalCoroutinesApi::class)
 class AppStartupViewModelTest {
@@ -22,7 +24,7 @@ class AppStartupViewModelTest {
     @Test
     fun `when initialized, isReady becomes true after datastore emits and delay`() = runTest {
         val dataStore = FakeDataStore(Settings())
-        val vm = AppStartupViewModel(dataStore)
+        val vm = AppStartupViewModel(dataStore, mock<Application>())
 
         // Initially false
         assertFalse(vm.isReady.first())
