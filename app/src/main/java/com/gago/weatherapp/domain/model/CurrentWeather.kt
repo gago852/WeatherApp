@@ -17,5 +17,7 @@ data class CurrentWeather(
     val visibility: Int?,
     val clouds: Int,
     val rain: Rain?,
-    val snow: Snow?
+    val snow: Snow?,
+    /** OWM Air Quality Index, 1 (good) to 5 (very poor); null when unavailable. */
+    val aqi: Int? = null
 )

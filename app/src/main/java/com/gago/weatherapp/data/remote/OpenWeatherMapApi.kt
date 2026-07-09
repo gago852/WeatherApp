@@ -1,5 +1,6 @@
 package com.gago.weatherapp.data.remote
 
+import com.gago.weatherapp.data.remote.dto.airpollution.AirPollutionDto
 import com.gago.weatherapp.data.remote.dto.forecast.ForecastDto
 import com.gago.weatherapp.data.remote.dto.weather.WeatherDto
 import retrofit2.http.GET
@@ -25,4 +26,11 @@ interface OpenWeatherMapApi {
         @Query("units") units: String,
         @Query("cnt") cnt: Int
     ): ForecastDto
+
+    @GET("data/2.5/air_pollution")
+    suspend fun getAirPollution(
+        @Query("lat") latitude: Double,
+        @Query("lon") longitude: Double,
+        @Query("appid") apiKey: String
+    ): AirPollutionDto
 }

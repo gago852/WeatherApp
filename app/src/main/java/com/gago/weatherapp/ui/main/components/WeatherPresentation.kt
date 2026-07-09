@@ -44,6 +44,7 @@ import com.gago.weatherapp.ui.utils.PreviewWeatherListProvider
 import com.gago.weatherapp.ui.utils.capitalizeWords
 import com.gago.weatherapp.ui.utils.currentLocale
 import com.gago.weatherapp.ui.utils.formatFullDateTime
+import com.gago.weatherapp.ui.utils.getAqiText
 import com.gago.weatherapp.ui.utils.formatTwelveHourTime
 import kotlin.math.roundToInt
 
@@ -245,6 +246,24 @@ fun WeatherPresentation(
                             style = MaterialTheme.typography.titleMedium
                         )
                         Text(text = currentWeather.clouds.toString().plus("%"))
+                    }
+                    currentWeather.aqi?.let { aqi ->
+                        HorizontalDivider(
+                            modifier = Modifier.padding(start = 16.dp, end = 16.dp),
+                            color = Color.Gray
+                        )
+                        Row(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .padding(16.dp),
+                            horizontalArrangement = Arrangement.SpaceBetween
+                        ) {
+                            Text(
+                                text = stringResource(R.string.air_quality_text),
+                                style = MaterialTheme.typography.titleMedium
+                            )
+                            Text(text = stringResource(getAqiText(aqi)))
+                        }
                     }
                     HorizontalDivider(
                         modifier = Modifier.padding(start = 16.dp, end = 16.dp),
