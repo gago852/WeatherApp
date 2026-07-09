@@ -1,6 +1,9 @@
 package com.gago.weatherapp.ui.settings
 
+import android.Manifest
 import android.os.Build
+import androidx.activity.compose.rememberLauncherForActivityResult
+import androidx.activity.result.contract.ActivityResultContracts
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -156,6 +159,37 @@ private fun ScaffoldSetting(
                 optionText = { intervalText(it) },
                 onSelected = { onSettingsChanged(settings.copy(refreshIntervalMinutes = it)) }
             )
+
+            val notificationPermissionLauncher = rememberLauncherForActivityResult(
+                contract = ActivityResultContracts.RequestPermission(),
+                onResult = { granted ->
+                    onSettingsChanged(settings.copy(notificationsEnabled = granted))
+                }
+            )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(start = 24.dp, end = 24.dp, top = 18.dp),
+                horizontalArrangement = Arrangement.SpaceBetween,
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Text(
+                    text = stringResource(id = R.string.daily_notification_title),
+                    modifier = Modifier.weight(1f)
+                )
+                Switch(
+                    checked = settings.notificationsEnabled,
+                    onCheckedChange = { enabled ->
+                        if (enabled && Build.VERSION.SDK_INT >= Build.VERSION_CODES.TIRAMISU) {
+                            notificationPermissionLauncher.launch(
+                                Manifest.permission.POST_NOTIFICATIONS
+                            )
+                        } else {
+                            onSettingsChanged(settings.copy(notificationsEnabled = enabled))
+                        }
+                    }
+                )
+            }
 
             Spacer(modifier = Modifier.height(18.dp))
             TextButton(
