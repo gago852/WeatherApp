@@ -1,13 +1,17 @@
 package com.gago.weatherapp.ui.utils
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import com.gago.weatherapp.R
 import com.gago.weatherapp.domain.utils.DataError
 
 const val ONE_MINUTE_IN_MILLIS = 60000
 fun getCurrentLanguage(context: Context): String {
 
-    val language = context.resources.configuration.locales.get(0).language
+    // The in-app language must be read from AppCompatDelegate: below API 33 it is only
+    // applied to activity contexts, so an application context still has the device locale.
+    val language = AppCompatDelegate.getApplicationLocales()[0]?.language
+        ?: context.resources.configuration.locales.get(0).language
 
     return when (language) {
         "en" -> "en"
