@@ -81,4 +81,5 @@
     <string name="temperature_trend_text">Tendance de température</string>
     <string name="temperature_chart_hint">Touchez un point pour voir le détail</string>
     <string name="temperature_chart_content_description">Graphique de tendance de température.</string>
+    <string name="offline_data_banner">Hors ligne — données enregistrées du %1$s</string>
 </resources>

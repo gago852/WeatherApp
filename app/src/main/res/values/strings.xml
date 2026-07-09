@@ -96,4 +96,5 @@
     <string name="temperature_trend_text">Temperature trend</string>
     <string name="temperature_chart_hint">Tap a point to see details</string>
     <string name="temperature_chart_content_description">Temperature trend chart.</string>
+    <string name="offline_data_banner">Offline — showing saved data from %1$s</string>
 </resources>
