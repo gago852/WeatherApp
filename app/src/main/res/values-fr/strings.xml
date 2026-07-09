@@ -81,6 +81,8 @@
     <string name="temperature_trend_text">Tendance de température</string>
     <string name="temperature_chart_hint">Touchez un point pour voir le détail</string>
     <string name="temperature_chart_content_description">Graphique de tendance de température.</string>
+    <string name="hourly_forecast_text">Prochaines 24 heures</string>
+    <string name="hourly_slot_content_description">%1$s : %2$s, %3$s, précipitations %4$s</string>
     <string name="offline_data_banner">Hors ligne — données enregistrées du %1$s</string>
     <string name="standard_unit">Standard (K)</string>
     <string name="theme_title">Thème</string>

@@ -96,6 +96,8 @@
     <string name="temperature_trend_text">Temperature trend</string>
     <string name="temperature_chart_hint">Tap a point to see details</string>
     <string name="temperature_chart_content_description">Temperature trend chart.</string>
+    <string name="hourly_forecast_text">Next 24 hours</string>
+    <string name="hourly_slot_content_description">%1$s: %2$s, %3$s, precipitation %4$s</string>
     <string name="offline_data_banner">Offline — showing saved data from %1$s</string>
     <string name="standard_unit">Standard (K)</string>
     <string name="theme_title">Theme</string>
