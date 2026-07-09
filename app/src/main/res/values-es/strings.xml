@@ -88,4 +88,15 @@
     <string name="aqi_poor">Mala</string>
     <string name="aqi_very_poor">Muy mala</string>
     <string name="precipitation_probability_text">Precipitación: %1$d%%</string>
+    <string name="standard_unit">Estándar (K)</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_system">Según el sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="dynamic_color_title">Color dinámico (Material You)</string>
+    <string name="language_title">Idioma</string>
+    <string name="follow_system">Según el sistema</string>
+    <string name="refresh_interval_title">Intervalo de refresco automático</string>
+    <string name="refresh_interval_manual">Manual</string>
+    <string name="offline_data_banner">Sin conexión — mostrando datos guardados de %1$s</string>
 </resources>
