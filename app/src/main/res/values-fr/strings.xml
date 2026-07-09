@@ -91,4 +91,5 @@
     <string name="follow_system">Selon le système</string>
     <string name="refresh_interval_title">Intervalle d\'actualisation automatique</string>
     <string name="refresh_interval_manual">Manuel</string>
+    <string name="offline_data_banner">Hors ligne — données enregistrées du %1$s</string>
 </resources>

@@ -216,8 +216,14 @@ class WeatherViewModel @Inject constructor(
             getCurrentLanguage(context), settings.unitOfMeasurement.unit
         )) {
             is Result.Success -> {
-                state = state.copy(weather = result.data, error = null, isLoading = false)
-                result.data.currentWeather.name
+                state = state.copy(
+                    weather = result.data.weather,
+                    isFromCache = result.data.isFromCache,
+                    lastFetchTime = result.data.fetchedAt,
+                    error = null,
+                    isLoading = false
+                )
+                result.data.weather.currentWeather.name
             }
             is Result.Error -> {
                 settleAfterDelay(getErrorText(result.error))

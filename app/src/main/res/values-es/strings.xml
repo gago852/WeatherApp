@@ -91,4 +91,5 @@
     <string name="follow_system">Según el sistema</string>
     <string name="refresh_interval_title">Intervalo de refresco automático</string>
     <string name="refresh_interval_manual">Manual</string>
+    <string name="offline_data_banner">Sin conexión — mostrando datos guardados de %1$s</string>
 </resources>

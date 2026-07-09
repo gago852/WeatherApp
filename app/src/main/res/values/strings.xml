@@ -106,4 +106,5 @@
     <string name="follow_system">Follow system</string>
     <string name="refresh_interval_title">Auto-refresh interval</string>
     <string name="refresh_interval_manual">Manual</string>
+    <string name="offline_data_banner">Offline — showing saved data from %1$s</string>
 </resources>
