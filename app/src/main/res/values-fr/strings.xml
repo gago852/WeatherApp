@@ -95,4 +95,8 @@
     <string name="daily_notification_title">Notification météo quotidienne</string>
     <string name="notification_channel_name">Résumé météo</string>
     <string name="notification_summary_title">Météo à %1$s</string>
+    <string name="notifications_revoked_title">Notifications désactivées</string>
+    <string name="notifications_revoked_message">La notification météo quotidienne est activée, mais les notifications ont été désactivées dans les paramètres du système. Voulez-vous les autoriser à nouveau ?</string>
+    <string name="notifications_revoked_reenable">Autoriser</string>
+    <string name="notifications_revoked_turn_off">Désactiver</string>
 </resources>
