@@ -37,6 +37,7 @@ import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.domain.model.GeoCoordinate
 import com.gago.weatherapp.ui.main.components.HandlePermissionDialogs
 import com.gago.weatherapp.ui.main.components.NavigationDrawerContent
+import com.gago.weatherapp.ui.main.components.NotificationsRevokedDialog
 import com.gago.weatherapp.ui.main.components.SearchCityOverlay
 import com.gago.weatherapp.ui.main.components.WeatherContent
 import com.gago.weatherapp.ui.main.components.WeatherTopBar
@@ -131,6 +132,11 @@ fun MainScreen(
             weatherViewModel.dismissDialog()
             openAppSettings(context)
         }
+    )
+
+    NotificationsRevokedDialog(
+        notificationsEnabled = settingValue.notificationsEnabled,
+        onTurnOff = weatherViewModel::disableNotifications
     )
 
     LifecycleResumeEffect(true) {

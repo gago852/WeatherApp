@@ -1,6 +1,7 @@
 package com.gago.weatherapp.worker
 
 import android.Manifest
+import android.app.PendingIntent
 import android.content.Context
 import android.content.pm.PackageManager
 import androidx.core.app.NotificationChannelCompat
@@ -66,6 +67,15 @@ class WeatherSyncWorker @AssistedInject constructor(
                 .build()
         )
 
+        val launchIntent = applicationContext.packageManager
+            .getLaunchIntentForPackage(applicationContext.packageName)
+        val contentIntent = launchIntent?.let {
+            PendingIntent.getActivity(
+                applicationContext, 0, it,
+                PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+            )
+        }
+
         val current = weather.currentWeather
         val notification = NotificationCompat.Builder(applicationContext, CHANNEL_ID)
             .setSmallIcon(R.drawable.ic_launcher_foreground)
@@ -78,6 +88,7 @@ class WeatherSyncWorker @AssistedInject constructor(
                 "${current.weatherData.temp.roundToInt()}° · " +
                         current.weatherConditions.description.capitalizeWords()
             )
+            .setContentIntent(contentIntent)
             .setAutoCancel(true)
             .build()
         manager.notify(NOTIFICATION_ID, notification)

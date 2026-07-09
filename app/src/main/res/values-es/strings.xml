@@ -97,4 +97,8 @@
     <string name="notification_summary_title">Clima en %1$s</string>
     <string name="widget_description">Temperatura y condición actuales de tu ciudad activa</string>
     <string name="widget_no_city">Abre Weather App para elegir una ciudad</string>
+    <string name="notifications_revoked_title">Notificaciones desactivadas</string>
+    <string name="notifications_revoked_message">La notificación diaria del clima está activada, pero las notificaciones se desactivaron en los ajustes del sistema. ¿Quieres permitirlas de nuevo?</string>
+    <string name="notifications_revoked_reenable">Permitir</string>
+    <string name="notifications_revoked_turn_off">Desactivar</string>
 </resources>
