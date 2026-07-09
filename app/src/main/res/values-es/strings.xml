@@ -81,5 +81,15 @@
     <string name="temperature_trend_text">Tendencia de temperatura</string>
     <string name="temperature_chart_hint">Toca un punto para ver el detalle</string>
     <string name="temperature_chart_content_description">Gráfico de tendencia de temperatura.</string>
+    <string name="standard_unit">Estándar (K)</string>
+    <string name="theme_title">Tema</string>
+    <string name="theme_system">Según el sistema</string>
+    <string name="theme_light">Claro</string>
+    <string name="theme_dark">Oscuro</string>
+    <string name="dynamic_color_title">Color dinámico (Material You)</string>
+    <string name="language_title">Idioma</string>
+    <string name="follow_system">Según el sistema</string>
+    <string name="refresh_interval_title">Intervalo de refresco automático</string>
+    <string name="refresh_interval_manual">Manual</string>
     <string name="offline_data_banner">Sin conexión — mostrando datos guardados de %1$s</string>
 </resources>

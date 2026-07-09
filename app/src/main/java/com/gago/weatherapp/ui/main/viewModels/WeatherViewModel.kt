@@ -114,6 +114,21 @@ class WeatherViewModel @Inject constructor(
     private fun languageChanged(setting: Settings): Boolean =
         setting.lastLangUsed.isNotEmpty() && setting.lastLangUsed != getCurrentLanguage(context)
 
+    /**
+     * Refreshes on app resume when the data on screen is older than the interval configured
+     * in Settings. Interval 0 means manual only: the user refreshes by pulling.
+     */
+    fun autoRefreshOnResume() {
+        viewModelScope.launch {
+            val setting = settings.firstOrNull() ?: return@launch
+            if (setting.refreshIntervalMinutes <= 0 || state.weather == null) return@launch
+            val staleAfterMs = setting.refreshIntervalMinutes * 60_000L
+            if (System.currentTimeMillis() - setting.lastUpdate >= staleAfterMs) {
+                refreshWeather()
+            }
+        }
+    }
+
     fun refreshWeather() {
         viewModelScope.launch {
             state = state.copy(isLoading = true, error = null)

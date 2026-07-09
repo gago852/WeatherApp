@@ -18,8 +18,11 @@ import kotlinx.coroutines.tasks.await
 import javax.inject.Inject
 
 class PlacesRepositoryImpl @Inject constructor(
-    private val placesClient: PlacesClient
+    private val placesClientProvider: PlacesClientProvider
 ) : PlacesRepository {
+
+    private val placesClient: PlacesClient
+        get() = placesClientProvider.get()
 
     override suspend fun autocomplete(
         query: String,

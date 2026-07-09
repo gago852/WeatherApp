@@ -1,7 +1,10 @@
 package com.gago.weatherapp.ui.settings
 
+import android.os.Build
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,6 +12,8 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.ExperimentalMaterial3Api
@@ -20,6 +25,7 @@ import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.Surface
+import androidx.compose.material3.Switch
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.TextField
@@ -30,6 +36,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.ColorFilter
 import androidx.compose.ui.graphics.vector.ImageVector
@@ -47,6 +54,7 @@ import com.gago.weatherapp.R
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.MeasureUnit
+import com.gago.weatherapp.ui.utils.ThemeMode
 
 @Composable
 fun SettingsScreen(
@@ -56,7 +64,11 @@ fun SettingsScreen(
 
     val settingValue = settingsViewModel.settings.collectAsState(initial = Settings()).value
 //    Log.d("SettingsOnSettingScreen", settingValue.toString())
-    ScaffoldSetting(settings = settingValue, navController = navController) {
+    ScaffoldSetting(
+        settings = settingValue,
+        navController = navController,
+        onLanguageSelected = { settingsViewModel.changeLanguage(it) }
+    ) {
         settingsViewModel.saveChangeSettings(it)
     }
 }
@@ -66,6 +78,7 @@ fun SettingsScreen(
 private fun ScaffoldSetting(
     navController: NavController,
     settings: Settings,
+    onLanguageSelected: (String) -> Unit = {},
     onSettingsChanged: (Settings) -> Unit
 ) {
     Scaffold(
@@ -90,55 +103,60 @@ private fun ScaffoldSetting(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(innerPadding)
+                .verticalScroll(rememberScrollState())
         ) {
-            var isExpanded by remember { mutableStateOf(false) }
-
             var isDialogAboutOpen by remember { mutableStateOf(false) }
 
-            val selectedTextFromResources =
-                stringResource(id = settings.unitOfMeasurement.stringRes)
+            SettingsDropdown(
+                label = stringResource(id = R.string.unit_of_measurement),
+                selectedText = stringResource(id = settings.unitOfMeasurement.stringRes),
+                options = MeasureUnit.entries,
+                optionText = { stringResource(id = it.stringRes) },
+                onSelected = { onSettingsChanged(settings.copy(unitOfMeasurement = it)) }
+            )
 
-            var selectedText by remember { mutableStateOf("") }
-            selectedText = selectedTextFromResources
+            SettingsDropdown(
+                label = stringResource(id = R.string.theme_title),
+                selectedText = stringResource(id = settings.themeMode.stringRes),
+                options = ThemeMode.entries,
+                optionText = { stringResource(id = it.stringRes) },
+                onSelected = { onSettingsChanged(settings.copy(themeMode = it)) }
+            )
 
-            ExposedDropdownMenuBox(expanded = isExpanded, onExpandedChange = { isChanged ->
-                isExpanded = isChanged
-            }) {
-                TextField(
-                    value = selectedText, onValueChange = {},
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                Row(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .padding(start = 24.dp, end = 24.dp, top = 24.dp)
-                        .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
-                    readOnly = true,
-                    singleLine = true,
-                    label = { Text(text = stringResource(id = R.string.unit_of_measurement)) },
-                    trailingIcon = {
-                        ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
-                    },
-                    colors = ExposedDropdownMenuDefaults.textFieldColors()
-                )
-                ExposedDropdownMenu(
-                    expanded = isExpanded,
-                    onDismissRequest = { isExpanded = false }) {
-
-                    MeasureUnit.entries.forEach { measureUnit ->
-                        val menuText = stringResource(id = measureUnit.stringRes)
-                        DropdownMenuItem(
-                            text = { Text(text = menuText) },
-                            onClick = {
-                                selectedText = menuText
-                                isExpanded = false
-                                onSettingsChanged(
-                                    settings.copy(
-                                        unitOfMeasurement = measureUnit
-                                    )
-                                )
-                            }
-                        )
-                    }
+                        .padding(start = 24.dp, end = 24.dp, top = 18.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(text = stringResource(id = R.string.dynamic_color_title))
+                    Switch(
+                        checked = settings.dynamicColor,
+                        onCheckedChange = {
+                            onSettingsChanged(settings.copy(dynamicColor = it))
+                        }
+                    )
                 }
             }
+
+            SettingsDropdown(
+                label = stringResource(id = R.string.language_title),
+                selectedText = languageText(settings.language),
+                options = languageOptions,
+                optionText = { languageText(it) },
+                onSelected = { onLanguageSelected(it) }
+            )
+
+            SettingsDropdown(
+                label = stringResource(id = R.string.refresh_interval_title),
+                selectedText = intervalText(settings.refreshIntervalMinutes),
+                options = refreshIntervalOptions,
+                optionText = { intervalText(it) },
+                onSelected = { onSettingsChanged(settings.copy(refreshIntervalMinutes = it)) }
+            )
+
             Spacer(modifier = Modifier.height(18.dp))
             TextButton(
                 onClick = { isDialogAboutOpen = true },
@@ -157,6 +175,72 @@ private fun ScaffoldSetting(
                 AboutDialog {
                     isDialogAboutOpen = false
                 }
+            }
+        }
+    }
+}
+
+private val languageOptions = listOf("", "en", "es", "fr")
+
+/** Language names are shown in their own language on purpose. */
+@Composable
+private fun languageText(tag: String): String = when (tag) {
+    "en" -> "English"
+    "es" -> "Español"
+    "fr" -> "Français"
+    else -> stringResource(id = R.string.follow_system)
+}
+
+private val refreshIntervalOptions = listOf(0, 15, 30, 60)
+
+@Composable
+private fun intervalText(minutes: Int): String = when (minutes) {
+    0 -> stringResource(id = R.string.refresh_interval_manual)
+    60 -> "1 h"
+    else -> "$minutes min"
+}
+
+@OptIn(ExperimentalMaterial3Api::class)
+@Composable
+private fun <T> SettingsDropdown(
+    label: String,
+    selectedText: String,
+    options: List<T>,
+    optionText: @Composable (T) -> String,
+    onSelected: (T) -> Unit
+) {
+    var isExpanded by remember { mutableStateOf(false) }
+
+    ExposedDropdownMenuBox(
+        expanded = isExpanded,
+        onExpandedChange = { isExpanded = it }
+    ) {
+        TextField(
+            value = selectedText, onValueChange = {},
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(start = 24.dp, end = 24.dp, top = 24.dp)
+                .menuAnchor(ExposedDropdownMenuAnchorType.PrimaryNotEditable),
+            readOnly = true,
+            singleLine = true,
+            label = { Text(text = label) },
+            trailingIcon = {
+                ExposedDropdownMenuDefaults.TrailingIcon(expanded = isExpanded)
+            },
+            colors = ExposedDropdownMenuDefaults.textFieldColors()
+        )
+        ExposedDropdownMenu(
+            expanded = isExpanded,
+            onDismissRequest = { isExpanded = false }
+        ) {
+            options.forEach { option ->
+                DropdownMenuItem(
+                    text = { Text(text = optionText(option)) },
+                    onClick = {
+                        isExpanded = false
+                        onSelected(option)
+                    }
+                )
             }
         }
     }
