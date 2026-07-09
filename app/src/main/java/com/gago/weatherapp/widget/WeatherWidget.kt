@@ -2,6 +2,8 @@ package com.gago.weatherapp.widget
 
 import android.content.Context
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.datastore.core.DataStore
@@ -36,7 +38,6 @@ import dagger.hilt.EntryPoint
 import dagger.hilt.InstallIn
 import dagger.hilt.android.EntryPointAccessors
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.flow.firstOrNull
 
 /**
  * 4×1 home-screen widget: active city, temperature and condition, read from the offline
@@ -56,13 +57,16 @@ class WeatherWidget : GlanceAppWidget() {
         val entryPoint = EntryPointAccessors.fromApplication(
             context.applicationContext, WidgetEntryPoint::class.java
         )
-        val settings = entryPoint.settingsDataStore().data.firstOrNull() ?: Settings()
-        val cache = entryPoint.weatherCacheDataStore().data.firstOrNull() ?: WeatherCache()
-        val data = buildWidgetData(settings, cache)
 
         provideContent {
+            // Collected inside the composition: on updateAll() over a live session Glance only
+            // recomposes this lambda, so one-shot reads above provideContent would stay stale.
+            val settings by entryPoint.settingsDataStore().data
+                .collectAsState(initial = Settings())
+            val cache by entryPoint.weatherCacheDataStore().data
+                .collectAsState(initial = WeatherCache())
             GlanceTheme {
-                WidgetContent(data)
+                WidgetContent(buildWidgetData(settings, cache))
             }
         }
     }
