@@ -113,6 +113,18 @@ fun WeatherPresentation(
             }
         }
 
+        if (fiveDaysForecast.hourlyForecast.isNotEmpty()) {
+            Spacer(modifier = Modifier.height(8.dp))
+
+            //Next 24 hours in 3-hour slots
+            Text(
+                text = stringResource(R.string.hourly_forecast_text),
+                style = MaterialTheme.typography.headlineMedium,
+                modifier = Modifier.padding(start = 8.dp)
+            )
+            HourlyForecastRow(hourlyForecast = fiveDaysForecast.hourlyForecast)
+        }
+
         Spacer(modifier = Modifier.height(8.dp))
 
         //List of 5 days

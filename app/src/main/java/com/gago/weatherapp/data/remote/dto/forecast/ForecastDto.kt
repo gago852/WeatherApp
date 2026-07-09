@@ -46,8 +46,14 @@ fun ForecastDto.toForecastFiveDays(): Forecast {
             }!!.first
         }.entries.sortedBy { it.key }.take(5).map { it.value }.map {
             it.toWeatherForecast(city.timezone.toLong())
+        },
+        // the same response feeds the hourly row: first 8 slots = next 24 h
+        hourlyForecast = listWeatherForecast.take(HOURLY_SLOTS).map {
+            it.toWeatherForecast(city.timezone.toLong())
         }
     )
 }
+
+private const val HOURLY_SLOTS = 8
 
 fun Int.toLocalTime(): LocalTime = LocalDateTime.of(1970, 1, 1, this, 0).toLocalTime()

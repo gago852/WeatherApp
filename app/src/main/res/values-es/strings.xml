@@ -88,6 +88,8 @@
     <string name="aqi_poor">Mala</string>
     <string name="aqi_very_poor">Muy mala</string>
     <string name="precipitation_probability_text">Precipitación: %1$d%%</string>
+    <string name="hourly_forecast_text">Próximas 24 horas</string>
+    <string name="hourly_slot_content_description">%1$s: %2$s, %3$s, precipitación %4$s</string>
     <string name="offline_data_banner">Sin conexión — mostrando datos guardados de %1$s</string>
     <string name="standard_unit">Estándar (K)</string>
     <string name="theme_title">Tema</string>

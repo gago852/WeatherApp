@@ -223,6 +223,29 @@ class MappersTest {
     }
 
     @Test
+    fun `toForecastFiveDays exposes the first eight slots as the hourly forecast`() {
+        val entries = (0 until 12).map { slot ->
+            forecastEntry(dt = slot * 3 * 3_600, dtTxt = "slot$slot")
+        }
+        val dto = ForecastDto(
+            cod = "200",
+            message = 0,
+            city = city.copy(timezone = -14_400),
+            count = entries.size,
+            listWeatherForecast = entries
+        )
+
+        val result = dto.toForecastFiveDays()
+
+        assertThat(result.hourlyForecast.size, `is`(8))
+        result.hourlyForecast.forEachIndexed { index, slot ->
+            assertThat(slot.calculatedTimeFromServer, `is`("slot$index"))
+            assertThat(slot.forecastTime, `is`(index * 3 * 3_600L))
+            assertThat(slot.timeZoneOffset, `is`(-14_400L))
+        }
+    }
+
+    @Test
     fun `toForecastFiveDays picks the nearest entry when noon is missing`() {
         val entries = listOf(
             forecastEntry(dt = 0, dtTxt = "midnight"),          // 00:00, 12h from noon
