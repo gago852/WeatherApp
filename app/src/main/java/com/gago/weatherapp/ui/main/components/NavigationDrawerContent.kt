@@ -125,22 +125,25 @@ private fun DrawerItems(
                 },
                 onDrag = { change, dragAmount ->
                     change.consume()
-                    val current = draggedList ?: return@detectDragGesturesAfterLongPress
+                    // each swap must build on the previous one: rebuilding from a stale
+                    // snapshot when one event crosses several rows moves the wrong item
+                    var current = draggedList ?: return@detectDragGesturesAfterLongPress
                     dragOffset += dragAmount.y
                     while (dragOffset > itemHeightPx / 2f && draggedIndex < current.lastIndex) {
-                        draggedList = current.toMutableList().apply {
+                        current = current.toMutableList().apply {
                             add(draggedIndex + 1, removeAt(draggedIndex))
                         }
                         draggedIndex++
                         dragOffset -= itemHeightPx
                     }
                     while (dragOffset < -itemHeightPx / 2f && draggedIndex > 0) {
-                        draggedList = current.toMutableList().apply {
+                        current = current.toMutableList().apply {
                             add(draggedIndex - 1, removeAt(draggedIndex))
                         }
                         draggedIndex--
                         dragOffset += itemHeightPx
                     }
+                    draggedList = current
                 },
                 onDragEnd = {
                     draggedList?.let { onReorderCities(it) }
