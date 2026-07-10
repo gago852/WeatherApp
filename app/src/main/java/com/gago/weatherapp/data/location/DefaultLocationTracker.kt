@@ -6,12 +6,16 @@ import android.content.Context
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationManager
+import android.os.Looper
 import androidx.core.content.ContextCompat
 import com.gago.weatherapp.domain.location.LocationTracker
 import com.google.android.gms.location.FusedLocationProviderClient
+import com.google.android.gms.location.LocationCallback
+import com.google.android.gms.location.LocationRequest
+import com.google.android.gms.location.LocationResult
 import com.google.android.gms.location.Priority
-import com.google.android.gms.tasks.CancellationTokenSource
 import kotlinx.coroutines.suspendCancellableCoroutine
+import kotlinx.coroutines.withTimeoutOrNull
 import javax.inject.Inject
 import kotlin.coroutines.resume
 
@@ -34,30 +38,42 @@ class DefaultLocationTracker @Inject constructor(
             return null
         }
 
-        return suspendCancellableCoroutine { cont ->
+        return withTimeoutOrNull(LOCATION_TIMEOUT_MS) {
+            suspendCancellableCoroutine { cont ->
+                val locationRequest = LocationRequest.Builder(
+                    Priority.PRIORITY_BALANCED_POWER_ACCURACY,
+                    LOCATION_REQUEST_INTERVAL_MS
+                ).setMaxUpdates(1).build()
 
-            locationClient.getCurrentLocation(
-                Priority.PRIORITY_BALANCED_POWER_ACCURACY,
-                CancellationTokenSource().token
-            ).apply {
-                if (isComplete) {
-                    if (isSuccessful) {
-                        cont.resume(result)
-                    } else {
+                val callback = object : LocationCallback() {
+                    override fun onLocationResult(result: LocationResult) {
+                        locationClient.removeLocationUpdates(this)
+                        if (cont.isActive) {
+                            cont.resume(result.lastLocation)
+                        }
+                    }
+                }
+
+                cont.invokeOnCancellation {
+                    locationClient.removeLocationUpdates(callback)
+                }
+
+                locationClient.requestLocationUpdates(
+                    locationRequest,
+                    callback,
+                    Looper.getMainLooper()
+                ).addOnFailureListener {
+                    locationClient.removeLocationUpdates(callback)
+                    if (cont.isActive) {
                         cont.resume(null)
                     }
-                    return@suspendCancellableCoroutine
-                }
-                addOnSuccessListener {
-                    cont.resume(it)
-                }
-                addOnFailureListener {
-                    cont.resume(null)
-                }
-                addOnCanceledListener {
-                    cont.cancel()
                 }
             }
         }
+    }
+
+    private companion object {
+        private const val LOCATION_TIMEOUT_MS = 15_000L
+        private const val LOCATION_REQUEST_INTERVAL_MS = 1_000L
     }
 }
