@@ -222,6 +222,7 @@ private fun RemovableDrawerItem(
     }
     SwipeToDismissBox(
         state = dismissState,
+        enableDismissFromStartToEnd = false,
         // the drawer item has a transparent container, so the background must only be
         // drawn while the item is actually displaced by a swipe
         backgroundContent = {
@@ -235,11 +236,13 @@ private fun RemovableDrawerItem(
                         color = MaterialTheme.colorScheme.errorContainer,
                         shape = MaterialTheme.shapes.extraLarge
                     ),
-                contentAlignment = Alignment.Center
+                contentAlignment = Alignment.CenterEnd
             ) {
-                Text(
-                    text = stringResource(R.string.remove_city),
-                    color = MaterialTheme.colorScheme.onErrorContainer
+                Icon(
+                    imageVector = ImageVector.vectorResource(R.drawable.delete),
+                    contentDescription = stringResource(R.string.remove_city),
+                    tint = MaterialTheme.colorScheme.onErrorContainer,
+                    modifier = Modifier.padding(end = 24.dp)
                 )
             }
         }
