@@ -24,15 +24,7 @@ sealed interface DataError : Error {
         OVER_QUERY_LIMIT,
         INVALID_REQUEST,
         NOT_FOUND,
-        UNKNOWN
-    }
-
-    enum class Weather : DataError {
-        API_KEY_INVALID,
-        API_KEY_EXPIRED,
-        QUOTA_EXCEEDED,
-        CITY_NOT_FOUND,
-        INVALID_COORDINATES,
+        NO_INTERNET,
         UNKNOWN
     }
 }

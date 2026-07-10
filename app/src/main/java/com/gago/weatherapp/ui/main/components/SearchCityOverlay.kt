@@ -38,6 +38,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.platform.LocalUriHandler
 import androidx.compose.ui.platform.testTag
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.res.stringResource
@@ -47,6 +48,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
 import com.gago.weatherapp.R
+import com.gago.weatherapp.data.datastore.SearchHistoryEntry
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 
@@ -63,7 +65,9 @@ fun SearchCityOverlay(
     error: Int? = null,
     onClear: () -> Unit = {},
     showAddGpsButton: Boolean = false,
-    onAddGpsCity: () -> Unit = {}
+    onAddGpsCity: () -> Unit = {},
+    searchHistory: List<SearchHistoryEntry> = emptyList(),
+    onHistoryClick: (SearchHistoryEntry) -> Unit = {}
 ) {
     if (!isVisible) return
     Dialog(onDismissRequest = onDismiss) {
@@ -109,7 +113,7 @@ fun SearchCityOverlay(
                             }) {
                                 Icon(
                                     imageVector = ImageVector.vectorResource(R.drawable.clear_icon),
-                                    contentDescription = "Limpiar búsqueda"
+                                    contentDescription = stringResource(R.string.clear_search)
                                 )
                             }
                         }
@@ -160,6 +164,55 @@ fun SearchCityOverlay(
                         onResultClick = onResultClick
                     )
                 }
+                // Quick suggestions: the last successful searches, shown while idle
+                AnimatedVisibility(
+                    visible = text.text.isEmpty() && searchResults.isEmpty() &&
+                            searchHistory.isNotEmpty()
+                ) {
+                    SearchHistoryList(
+                        history = searchHistory,
+                        onHistoryClick = onHistoryClick
+                    )
+                }
+            }
+        }
+    }
+}
+
+@Composable
+fun SearchHistoryList(
+    history: List<SearchHistoryEntry>,
+    onHistoryClick: (SearchHistoryEntry) -> Unit
+) {
+    Column {
+        Text(
+            text = stringResource(R.string.recent_searches),
+            style = MaterialTheme.typography.labelLarge,
+            modifier = Modifier.padding(top = 8.dp, bottom = 4.dp)
+        )
+        Surface(
+            tonalElevation = 2.dp,
+            shape = MaterialTheme.shapes.medium,
+            modifier = Modifier
+                .fillMaxWidth()
+                .heightIn(max = 300.dp)
+                .testTag("search_history_list")
+        ) {
+            LazyColumn {
+                items(history, key = { it.name }) { entry ->
+                    ListItem(
+                        headlineContent = { Text(entry.name) },
+                        leadingContent = {
+                            Icon(
+                                imageVector = ImageVector.vectorResource(R.drawable.search_icon),
+                                contentDescription = null
+                            )
+                        },
+                        modifier = Modifier
+                            .clickable { onHistoryClick(entry) }
+                            .testTag("search_history_item")
+                    )
+                }
             }
         }
     }
@@ -179,7 +232,7 @@ fun SearchResultsList(
             .testTag("search_results_list")
     ) {
         LazyColumn {
-            items(results.take(5)) { result ->
+            items(results.take(5), key = { it.placeId }) { result ->
                 ListItem(
                     headlineContent = { Text(result.getPrimaryText(null).toString()) },
                     supportingContent = { Text(result.getSecondaryText(null).toString()) },
@@ -195,24 +248,25 @@ fun SearchResultsList(
 
 @Composable
 fun GoogleMapsAttribution(modifier: Modifier = Modifier) {
+    val uriHandler = LocalUriHandler.current
     Surface(
         color = Color.Black.copy(alpha = 0.5f),
         shape = MaterialTheme.shapes.small,
         modifier = modifier
             .testTag("google_maps_attribution")
             .clickable {
-                // TODO: Open Google Maps TOS
+                uriHandler.openUri("https://maps.google.com/help/terms_maps/")
             }
     ) {
         Row(
             verticalAlignment = Alignment.CenterVertically,
             modifier = Modifier.padding(horizontal = 8.dp, vertical = 4.dp)
         ) {
-            Text("Powered by", color = Color.White)
+            Text(stringResource(R.string.powered_by), color = Color.White)
             Spacer(Modifier.width(4.dp))
             Icon(
                 painter = painterResource(id = R.drawable.google_on_non_white),
-                contentDescription = "Google logo",
+                contentDescription = stringResource(R.string.google_logo),
                 tint = Color.Unspecified,
                 modifier = Modifier
             )

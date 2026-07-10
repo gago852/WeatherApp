@@ -6,12 +6,12 @@
     <string name="error_too_many_requests">You have made too many requests in a short period. Please wait a moment and try again. Thank you for your patience.</string>
     <string name="error_no_internet">It looks like you\'re not connected to the internet. Please check your connection and try again.</string>
     <string name="error_generic">An unexpected error has occurred. Please try again later. If the problem persists, contact support.</string>
-    <string name="error_payload_too_large" translatable="false">error payload too large</string>
+    <string name="error_payload_too_large">error payload too large</string>
     <string name="error_server_error">A server error has occurred. Please try again later. If the problem persists, contact support.</string>
-    <string name="error_unauthorized" translatable="false">error api key not authorized</string>
-    <string name="error_forbidden" translatable="false">error forbidden</string>
-    <string name="error_not_found" translatable="false">error not found</string>
-    <string name="error_bad_request" translatable="false">error bad request"</string>
+    <string name="error_unauthorized">error api key not authorized</string>
+    <string name="error_forbidden">error forbidden</string>
+    <string name="error_not_found">error not found</string>
+    <string name="error_bad_request">error bad request</string>
 
     <!--Places API Errors-->
     <string name="error_places_quota_exceeded">API quota exceeded</string>
@@ -33,7 +33,7 @@
     <string name="error_connection">Connection error</string>
 
     <!--Buttons-->
-    <string name="ok_button_text" translatable="false">OK</string>
+    <string name="ok_button_text">OK</string>
     <string name="button_get_gps">Look with GPS</string>
     <string name="menu_text_button">Menu</string>
     <string name="grant_permission_button_text">Grant permission</string>
@@ -87,4 +87,46 @@
     <string name="no_weather_text">No weather information available. Please grant location permission to see your local weather.</string>
     <string name="grant_permission">Grant Permission</string>
 
+    <!--Misc UI-->
+    <string name="search_city">Search city</string>
+    <string name="clear_search">Clear search</string>
+    <string name="google_logo">Google logo</string>
+    <string name="powered_by" translatable="false">Powered by</string>
+
+    <string name="temperature_trend_text">Temperature trend</string>
+    <string name="temperature_chart_hint">Tap a point to see details</string>
+    <string name="temperature_chart_content_description">Temperature trend chart.</string>
+    <string name="recent_searches">Recent searches</string>
+    <string name="remove_city">Remove</string>
+    <string name="city_removed">%1$s removed</string>
+    <string name="undo_action">Undo</string>
+    <string name="air_quality_text">Air quality:</string>
+    <string name="aqi_good">Good</string>
+    <string name="aqi_fair">Fair</string>
+    <string name="aqi_moderate">Moderate</string>
+    <string name="aqi_poor">Poor</string>
+    <string name="aqi_very_poor">Very poor</string>
+    <string name="precipitation_probability_text">Precipitation: %1$d%%</string>
+    <string name="hourly_forecast_text">Next 24 hours</string>
+    <string name="hourly_slot_content_description">%1$s: %2$s, %3$s, precipitation %4$s</string>
+    <string name="offline_data_banner">Offline — showing saved data from %1$s</string>
+    <string name="standard_unit">Standard (K)</string>
+    <string name="theme_title">Theme</string>
+    <string name="theme_system">Follow system</string>
+    <string name="theme_light">Light</string>
+    <string name="theme_dark">Dark</string>
+    <string name="dynamic_color_title">Dynamic color (Material You)</string>
+    <string name="language_title">Language</string>
+    <string name="follow_system">Follow system</string>
+    <string name="refresh_interval_title">Auto-refresh interval</string>
+    <string name="refresh_interval_manual">Manual</string>
+    <string name="daily_notification_title">Daily weather notification</string>
+    <string name="notification_channel_name">Weather summary</string>
+    <string name="notification_summary_title">Weather in %1$s</string>
+    <string name="widget_description">Current temperature and condition of your active city</string>
+    <string name="widget_no_city">Open Weather App to pick a city</string>
+    <string name="notifications_revoked_title">Notifications are off</string>
+    <string name="notifications_revoked_message">The daily weather notification is enabled, but notifications were turned off in the system settings. Do you want to allow them again?</string>
+    <string name="notifications_revoked_reenable">Allow</string>
+    <string name="notifications_revoked_turn_off">Turn off</string>
 </resources>

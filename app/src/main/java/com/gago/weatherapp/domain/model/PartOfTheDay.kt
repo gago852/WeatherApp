@@ -1,0 +1,10 @@
+package com.gago.weatherapp.domain.model
+
+import androidx.compose.runtime.Immutable
+import kotlinx.serialization.Serializable
+
+@Immutable
+@Serializable
+data class PartOfTheDay(
+    val pod: String
+)

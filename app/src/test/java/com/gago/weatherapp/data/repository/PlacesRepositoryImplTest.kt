@@ -3,6 +3,7 @@ package com.gago.weatherapp.data.repository
 import com.gago.weatherapp.domain.utils.DataError
 import com.gago.weatherapp.domain.utils.Result
 import com.google.android.gms.common.api.ApiException
+import com.google.android.gms.common.api.CommonStatusCodes
 import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.tasks.Tasks
@@ -34,7 +35,9 @@ class PlacesRepositoryImplTest {
     @Before
     fun setUp() {
         placesClient = mock()
-        repo = PlacesRepositoryImpl(placesClient)
+        val provider = mock<PlacesClientProvider>()
+        whenever(provider.get()).thenReturn(placesClient)
+        repo = PlacesRepositoryImpl(provider)
         token = AutocompleteSessionToken.newInstance()
     }
 
@@ -56,7 +59,7 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.findAutocompletePredictions(any<FindAutocompletePredictionsRequest>()))
             .thenReturn(Tasks.forResult(response))
 
-        val result = repo.autocomplete("Mo", token, "es")
+        val result = repo.autocomplete("Mo", token)
 
         assertThat(result, instanceOf(Result.Success::class.java))
         val list = (result as Result.Success).data
@@ -70,7 +73,7 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.findAutocompletePredictions(any<FindAutocompletePredictionsRequest>()))
             .thenReturn(Tasks.forException(ex))
 
-        val result = repo.autocomplete("zzzz", token, "es")
+        val result = repo.autocomplete("zzzz", token)
 
         assertThat(result, instanceOf(Result.Error::class.java))
         assertThat((result as Result.Error).error, `is`(DataError.Places.NOT_FOUND))
@@ -88,7 +91,7 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.fetchPlace(any<FetchPlaceRequest>()))
             .thenReturn(Tasks.forResult(fetchResponse))
 
-        val result = repo.placeCoordinates("somePlaceId", token, "es")
+        val result = repo.placeCoordinates("somePlaceId", token)
 
         assertThat(result, instanceOf(Result.Success::class.java))
         val geo = (result as Result.Success).data
@@ -103,9 +106,33 @@ class PlacesRepositoryImplTest {
         whenever(placesClient.fetchPlace(any<FetchPlaceRequest>()))
             .thenReturn(Tasks.forException(ex))
 
-        val result = repo.placeCoordinates("somePlaceId", token, "es")
+        val result = repo.placeCoordinates("somePlaceId", token)
 
         assertThat(result, instanceOf(Result.Error::class.java))
         assertThat((result as Result.Error).error, `is`(DataError.Places.OVER_QUERY_LIMIT))
+    }
+
+    @Test
+    fun autocomplete_networkError_mapsToNoInternet() = runTest {
+        val ex = ApiException(Status(CommonStatusCodes.NETWORK_ERROR))
+        whenever(placesClient.findAutocompletePredictions(any<FindAutocompletePredictionsRequest>()))
+            .thenReturn(Tasks.forException(ex))
+
+        val result = repo.autocomplete("Paris", token)
+
+        assertThat(result, instanceOf(Result.Error::class.java))
+        assertThat((result as Result.Error).error, `is`(DataError.Places.NO_INTERNET))
+    }
+
+    @Test
+    fun placeCoordinates_timeout_mapsToNoInternet() = runTest {
+        val ex = ApiException(Status(CommonStatusCodes.TIMEOUT))
+        whenever(placesClient.fetchPlace(any<FetchPlaceRequest>()))
+            .thenReturn(Tasks.forException(ex))
+
+        val result = repo.placeCoordinates("somePlaceId", token)
+
+        assertThat(result, instanceOf(Result.Error::class.java))
+        assertThat((result as Result.Error).error, `is`(DataError.Places.NO_INTERNET))
     }
 }

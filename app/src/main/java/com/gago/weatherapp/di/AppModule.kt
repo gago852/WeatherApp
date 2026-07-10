@@ -6,6 +6,8 @@ import androidx.datastore.core.DataStoreFactory
 import androidx.datastore.dataStoreFile
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.SettingsSerializer
+import com.gago.weatherapp.data.datastore.WeatherCache
+import com.gago.weatherapp.data.datastore.WeatherCacheSerializer
 import com.gago.weatherapp.data.remote.OpenWeatherMapApi
 import com.gago.weatherapp.data.remote.interceptor.LiveNetworkMonitor
 import com.gago.weatherapp.data.remote.interceptor.NetworkMonitor
@@ -23,12 +25,9 @@ import okhttp3.OkHttpClient
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import retrofit2.create
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
-import com.google.android.libraries.places.api.Places
-import com.google.android.libraries.places.api.net.PlacesClient
-import com.gago.weatherapp.BuildConfig
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 
 @Module
 @InstallIn(SingletonComponent::class)
@@ -40,11 +39,13 @@ object AppModule {
 
         val monitorClient = OkHttpClient.Builder()
             .addInterceptor(NetworkMonitorInterceptor(networkMonitor))
+            .connectTimeout(10, TimeUnit.SECONDS)
+            .readTimeout(15, TimeUnit.SECONDS)
+            .writeTimeout(15, TimeUnit.SECONDS)
+            .retryOnConnectionFailure(true)
             .build()
 
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
+        val moshi = Moshi.Builder().build()
 
         return Retrofit.Builder()
             .baseUrl("https://api.openweathermap.org/")
@@ -72,16 +73,17 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideNetworkMonitor(app: Application): NetworkMonitor {
-        return LiveNetworkMonitor(app)
+    fun provideWeatherCacheDataStore(app: Application): DataStore<WeatherCache> {
+        return DataStoreFactory.create(
+            serializer = WeatherCacheSerializer,
+            produceFile = { app.dataStoreFile("weather-cache.json") },
+            scope = CoroutineScope(Dispatchers.IO + SupervisorJob())
+        )
     }
 
     @Provides
     @Singleton
-    fun providePlacesClient(app: Application): PlacesClient {
-        if (!Places.isInitialized()) {
-            Places.initializeWithNewPlacesApiEnabled(app, BuildConfig.PLACES_API_KEY)
-        }
-        return Places.createClient(app)
+    fun provideNetworkMonitor(app: Application): NetworkMonitor {
+        return LiveNetworkMonitor(app)
     }
 }

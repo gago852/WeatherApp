@@ -15,7 +15,6 @@ import org.junit.Test
 import retrofit2.Retrofit
 import retrofit2.converter.moshi.MoshiConverterFactory
 import com.squareup.moshi.Moshi
-import com.squareup.moshi.kotlin.reflect.KotlinJsonAdapterFactory
 import com.google.firebase.crashlytics.FirebaseCrashlytics
 import org.mockito.MockedStatic
 import org.mockito.Mockito
@@ -33,9 +32,7 @@ class WeatherRepositoryImplTest {
         server.start()
 
         val client = OkHttpClient.Builder().build()
-        val moshi = Moshi.Builder()
-            .addLast(KotlinJsonAdapterFactory())
-            .build()
+        val moshi = Moshi.Builder().build()
         val retrofit = Retrofit.Builder()
             .baseUrl(server.url("/"))
             .addConverterFactory(MoshiConverterFactory.create(moshi))
@@ -69,14 +66,23 @@ class WeatherRepositoryImplTest {
         return stream.bufferedReader().use { it.readText() }
     }
 
+    private val airPollutionBody =
+        """{"coord":{"lon":-73.5673,"lat":45.5017},"list":[{"main":{"aqi":2},"components":{"co":201.9},"dt":1717651798}]}"""
+
     @Test
-    fun getWeather_success_returnsCurrentWeather() = runTest {
+    fun getWeather_success_returnsCurrentWeatherWithAqi() = runTest {
         val body = readResource("mock_weather_current.json")
         server.enqueue(
             MockResponse()
                 .setResponseCode(200)
                 .addHeader("Content-Type", "application/json")
                 .setBody(body)
+        )
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .addHeader("Content-Type", "application/json")
+                .setBody(airPollutionBody)
         )
 
         val result = repository.getWeather(
@@ -93,6 +99,29 @@ class WeatherRepositoryImplTest {
         assertEquals(6077243, weather.id)
         assertEquals(273.15, weather.weatherData.temp, 0.0)
         assertEquals(75, weather.clouds)
+        assertEquals(2, weather.aqi)
+    }
+
+    @Test
+    fun getWeather_aqiFailure_degradesToNullWithoutFailingTheWeather() = runTest {
+        val body = readResource("mock_weather_current.json")
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(200)
+                .addHeader("Content-Type", "application/json")
+                .setBody(body)
+        )
+        server.enqueue(
+            MockResponse()
+                .setResponseCode(500)
+                .addHeader("Content-Type", "application/json")
+                .setBody("{}")
+        )
+
+        val result = repository.getWeather(45.5017, -73.5673, "test", "en", "metric")
+
+        assertTrue(result is Result.Success)
+        assertEquals(null, (result as Result.Success).data.aqi)
     }
 
     @Test

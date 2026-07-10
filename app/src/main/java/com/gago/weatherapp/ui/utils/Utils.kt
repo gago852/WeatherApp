@@ -1,19 +1,34 @@
 package com.gago.weatherapp.ui.utils
 
 import android.content.Context
+import androidx.appcompat.app.AppCompatDelegate
 import com.gago.weatherapp.R
 import com.gago.weatherapp.domain.utils.DataError
 
 const val ONE_MINUTE_IN_MILLIS = 60000
 fun getCurrentLanguage(context: Context): String {
 
-    val language = context.resources.configuration.locales.get(0).language
+    // The in-app language must be read from AppCompatDelegate: below API 33 it is only
+    // applied to activity contexts, so an application context still has the device locale.
+    val language = AppCompatDelegate.getApplicationLocales()[0]?.language
+        ?: context.resources.configuration.locales.get(0).language
 
     return when (language) {
         "en" -> "en"
         "es" -> "es"
         "fr" -> "fr"
         else -> "en"
+    }
+}
+
+/** OWM AQI levels: 1 good … 5 very poor. */
+fun getAqiText(aqi: Int): Int {
+    return when (aqi) {
+        1 -> R.string.aqi_good
+        2 -> R.string.aqi_fair
+        3 -> R.string.aqi_moderate
+        4 -> R.string.aqi_poor
+        else -> R.string.aqi_very_poor
     }
 }
 
@@ -39,18 +54,8 @@ fun getPlacesErrorMessage(error: DataError.Places): Int {
         DataError.Places.OVER_QUERY_LIMIT -> R.string.error_places_over_query_limit
         DataError.Places.INVALID_REQUEST -> R.string.error_places_invalid_request
         DataError.Places.NOT_FOUND -> R.string.error_places_not_found
+        DataError.Places.NO_INTERNET -> R.string.error_no_internet
         DataError.Places.UNKNOWN -> R.string.error_generic
-    }
-}
-
-fun getWeatherErrorMessage(error: DataError.Weather): Int {
-    return when (error) {
-        DataError.Weather.API_KEY_INVALID -> R.string.error_weather_api_key_invalid
-        DataError.Weather.API_KEY_EXPIRED -> R.string.error_weather_api_key_expired
-        DataError.Weather.QUOTA_EXCEEDED -> R.string.error_weather_quota_exceeded
-        DataError.Weather.CITY_NOT_FOUND -> R.string.error_weather_city_not_found
-        DataError.Weather.INVALID_COORDINATES -> R.string.error_weather_invalid_coordinates
-        DataError.Weather.UNKNOWN -> R.string.error_weather_unknown
     }
 }
 

@@ -1,6 +1,7 @@
 package com.gago.weatherapp.data.repository
 
 import com.gago.weatherapp.data.remote.OpenWeatherMapApi
+import com.gago.weatherapp.data.remote.dto.airpollution.toAqi
 import com.gago.weatherapp.data.remote.dto.forecast.toForecastFiveDays
 import com.gago.weatherapp.data.remote.dto.weather.toWeather
 import com.gago.weatherapp.data.remote.interceptor.NoNetworkException
@@ -31,7 +32,9 @@ class WeatherRepositoryImpl @Inject constructor(
         return withContext(Dispatchers.IO) {
             try {
                 val response = weatherApi.getWeather(latitude, longitude, apiKey, lang, units)
-                Result.Success(response.toWeather())
+                Result.Success(
+                    response.toWeather().copy(aqi = fetchAqi(latitude, longitude, apiKey))
+                )
             } catch (e: Exception) {
 
                 when (e) {
@@ -52,6 +55,17 @@ class WeatherRepositoryImpl @Inject constructor(
                     }
                 }
             }
+        }
+    }
+
+    /** AQI is a nice-to-have: any failure degrades to null instead of failing the weather. */
+    private suspend fun fetchAqi(latitude: Double, longitude: Double, apiKey: String): Int? {
+        return try {
+            weatherApi.getAirPollution(latitude, longitude, apiKey).toAqi()
+        } catch (e: CancellationException) {
+            throw e
+        } catch (e: Exception) {
+            null
         }
     }
 
@@ -79,6 +93,7 @@ class WeatherRepositoryImpl @Inject constructor(
                     }
 
                     is NoNetworkException -> Result.Error(DataError.Network.NO_INTERNET)
+                    is CancellationException -> throw e
                     else -> {
                         FirebaseCrashlytics.getInstance().recordException(e)
                         Result.Error(DataError.Network.UNKNOWN)

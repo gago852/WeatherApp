@@ -17,8 +17,7 @@ class FakePlacesRepository : PlacesRepository {
 
     override suspend fun autocomplete(
         query: String,
-        sessionToken: AutocompleteSessionToken,
-        language: String
+        sessionToken: AutocompleteSessionToken
     ): Result<List<AutocompletePrediction>, DataError.Places> {
         lastQuery = query
         return autocompleteResult
@@ -26,7 +25,6 @@ class FakePlacesRepository : PlacesRepository {
 
     override suspend fun placeCoordinates(
         placeId: String,
-        sessionToken: AutocompleteSessionToken,
-        language: String
+        sessionToken: AutocompleteSessionToken
     ): Result<GeoCoordinate, DataError.Places> = placeCoordinatesResult
 }

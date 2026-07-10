@@ -1,4 +1,5 @@
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
+import org.jetbrains.kotlin.gradle.dsl.KotlinAndroidProjectExtension
 
 plugins {
     alias(libs.plugins.androidApplication)
@@ -20,8 +21,8 @@ android {
         applicationId = "com.gago.weatherapp"
         minSdk = 27
         targetSdk = 37
-        versionCode = 20
-        versionName = "0.2.3"
+        versionCode = 23
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
@@ -63,6 +64,7 @@ android {
                 debugSymbolLevel = "FULL"
             }
             isMinifyEnabled = true
+            isShrinkResources = true
             proguardFiles(
                 getDefaultProguardFile("proguard-android-optimize.txt"),
                 "proguard-rules.pro"
@@ -77,15 +79,13 @@ android {
 //        jvmTarget = "11"
 //    }
 
-    kotlin {
-        compilerOptions {
-            jvmTarget = JvmTarget.fromTarget("17")
-            freeCompilerArgs.add("-Xannotation-default-target=param-property")
-        }
-    }
+
 
     buildFeatures {
         compose = true
+    }
+    testOptions {
+        unitTests.isReturnDefaultValues = true
     }
     packaging {
         resources {
@@ -93,15 +93,24 @@ android {
         }
     }
 
-    secrets {
-        propertiesFileName = "secrets.properties"
-        defaultPropertiesFileName = "local.defaults.properties"
+
+}
+
+configure<KotlinAndroidProjectExtension> {
+    compilerOptions {
+        jvmTarget = JvmTarget.fromTarget("17")
     }
+}
+
+secrets {
+    propertiesFileName = "secrets.properties"
+    defaultPropertiesFileName = "local.defaults.properties"
 }
 
 dependencies {
 
     implementation(libs.androidx.core.ktx)
+    implementation(libs.androidx.appcompat)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.lifecycle.runtime.compose)
     implementation(libs.androidx.activity.compose)
@@ -121,7 +130,11 @@ dependencies {
     implementation(libs.firebase.analytics)
 
     implementation(libs.hilt)
-//    implementation(libs.hilt.navigation.compose)
+    implementation(libs.androidx.work.runtime)
+    implementation(libs.androidx.glance.appwidget)
+    implementation(libs.androidx.glance.material3)
+    implementation(libs.androidx.hilt.work)
+    ksp(libs.androidx.hilt.compiler)
     implementation(libs.hilt.lifecycle.viewmodel.compose)
     ksp(libs.hilt.compiler)
 
@@ -129,7 +142,8 @@ dependencies {
 
     implementation(libs.retrofit)
     implementation(libs.converter.moshi)
-    implementation(libs.moshi.kotlin)
+    implementation(libs.moshi)
+    ksp(libs.moshi.kotlin.codegen)
 
     implementation(libs.gms.location)
     implementation(libs.google.places)

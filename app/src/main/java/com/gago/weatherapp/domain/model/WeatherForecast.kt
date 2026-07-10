@@ -1,13 +1,13 @@
 package com.gago.weatherapp.domain.model
 
-import com.gago.weatherapp.data.remote.dto.common.Rain
-import com.gago.weatherapp.data.remote.dto.common.Snow
-import com.gago.weatherapp.data.remote.dto.common.WeatherData
-import com.gago.weatherapp.data.remote.dto.common.Wind
-import com.gago.weatherapp.data.remote.dto.forecast.PartOfTheDay
+import androidx.compose.runtime.Immutable
+import kotlinx.serialization.Serializable
 
+@Immutable
+@Serializable
 data class WeatherForecast(
-    val calculatedTime: String,
+    val forecastTime: Long,
+    val timeZoneOffset: Long,
     val calculatedTimeFromServer: String,
     val mainData: WeatherData,
     val probabilityOfPrecipitation: Double,

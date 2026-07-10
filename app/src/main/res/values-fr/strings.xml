@@ -65,4 +65,53 @@
     <!--Search Errors-->
     <string name="error_search_session">Erreur de session de recherche</string>
     <string name="error_connection">Erreur de connexion</string>
+    <!--Network Errors-->
+    <string name="error_payload_too_large">Requête trop volumineuse</string>
+    <string name="error_unauthorized">Clé API non autorisée</string>
+    <string name="error_forbidden">Accès refusé</string>
+    <string name="error_not_found">Ressource introuvable</string>
+    <string name="error_bad_request">Requête incorrecte</string>
+    <string name="ok_button_text">OK</string>
+
+    <!--Misc UI-->
+    <string name="search_city">Rechercher une ville</string>
+    <string name="clear_search">Effacer la recherche</string>
+    <string name="google_logo">Logo Google</string>
+
+    <string name="temperature_trend_text">Tendance de température</string>
+    <string name="temperature_chart_hint">Touchez un point pour voir le détail</string>
+    <string name="temperature_chart_content_description">Graphique de tendance de température.</string>
+    <string name="recent_searches">Recherches récentes</string>
+    <string name="remove_city">Supprimer</string>
+    <string name="city_removed">%1$s supprimée</string>
+    <string name="undo_action">Annuler</string>
+    <string name="air_quality_text">Qualité de l\'air :</string>
+    <string name="aqi_good">Bonne</string>
+    <string name="aqi_fair">Correcte</string>
+    <string name="aqi_moderate">Modérée</string>
+    <string name="aqi_poor">Mauvaise</string>
+    <string name="aqi_very_poor">Très mauvaise</string>
+    <string name="precipitation_probability_text">Précipitations : %1$d%%</string>
+    <string name="hourly_forecast_text">Prochaines 24 heures</string>
+    <string name="hourly_slot_content_description">%1$s : %2$s, %3$s, précipitations %4$s</string>
+    <string name="offline_data_banner">Hors ligne — données enregistrées du %1$s</string>
+    <string name="standard_unit">Standard (K)</string>
+    <string name="theme_title">Thème</string>
+    <string name="theme_system">Selon le système</string>
+    <string name="theme_light">Clair</string>
+    <string name="theme_dark">Sombre</string>
+    <string name="dynamic_color_title">Couleurs dynamiques (Material You)</string>
+    <string name="language_title">Langue</string>
+    <string name="follow_system">Selon le système</string>
+    <string name="refresh_interval_title">Intervalle d\'actualisation automatique</string>
+    <string name="refresh_interval_manual">Manuel</string>
+    <string name="daily_notification_title">Notification météo quotidienne</string>
+    <string name="notification_channel_name">Résumé météo</string>
+    <string name="notification_summary_title">Météo à %1$s</string>
+    <string name="widget_description">Température et conditions actuelles de votre ville active</string>
+    <string name="widget_no_city">Ouvrez Weather App pour choisir une ville</string>
+    <string name="notifications_revoked_title">Notifications désactivées</string>
+    <string name="notifications_revoked_message">La notification météo quotidienne est activée, mais les notifications ont été désactivées dans les paramètres du système. Voulez-vous les autoriser à nouveau ?</string>
+    <string name="notifications_revoked_reenable">Autoriser</string>
+    <string name="notifications_revoked_turn_off">Désactiver</string>
 </resources>

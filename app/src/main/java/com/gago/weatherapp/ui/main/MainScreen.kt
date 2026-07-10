@@ -17,8 +17,10 @@ import androidx.compose.material3.DrawerValue
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.ModalNavigationDrawer
 import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarDuration
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
+import androidx.compose.material3.SnackbarResult
 import androidx.compose.material3.Surface
 import androidx.compose.material3.pulltorefresh.rememberPullToRefreshState
 import androidx.compose.material3.rememberDrawerState
@@ -29,14 +31,19 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.hilt.lifecycle.viewmodel.compose.hiltViewModel
 import androidx.lifecycle.compose.LifecycleResumeEffect
 import androidx.navigation.NavController
+import com.gago.weatherapp.R
+import com.gago.weatherapp.data.datastore.SearchHistoryEntry
 import com.gago.weatherapp.data.datastore.Settings
+import com.gago.weatherapp.data.datastore.WeatherLocal
 import com.gago.weatherapp.domain.model.GeoCoordinate
 import com.gago.weatherapp.ui.main.components.HandlePermissionDialogs
 import com.gago.weatherapp.ui.main.components.NavigationDrawerContent
+import com.gago.weatherapp.ui.main.components.NotificationsRevokedDialog
 import com.gago.weatherapp.ui.main.components.SearchCityOverlay
 import com.gago.weatherapp.ui.main.components.WeatherContent
 import com.gago.weatherapp.ui.main.components.WeatherTopBar
@@ -48,6 +55,7 @@ import com.gago.weatherapp.ui.main.viewModels.WeatherViewModel
 import com.gago.weatherapp.ui.navigation.AppScreens
 import com.gago.weatherapp.ui.theme.WeatherAppTheme
 import com.gago.weatherapp.ui.utils.ReasonsForRefresh
+import com.gago.weatherapp.ui.utils.currentLocale
 import com.google.android.libraries.places.api.model.AutocompletePrediction
 import kotlinx.coroutines.launch
 
@@ -112,6 +120,13 @@ fun MainScreen(
         }
     }
 
+    // A locale change recreates the activity; on the new composition refetch API-provided
+    // texts if their language no longer matches the UI language.
+    val currentLanguage = currentLocale().language
+    LaunchedEffect(currentLanguage) {
+        if (!isSetup) weatherViewModel.refreshOnLanguageChange()
+    }
+
     HandlePermissionDialogs(
         dialogQueue = weatherViewModel.visiblePermissionDialogQueue,
         onDismiss = weatherViewModel::dismissDialog,
@@ -125,11 +140,18 @@ fun MainScreen(
         }
     )
 
+    NotificationsRevokedDialog(
+        notificationsEnabled = settingValue.notificationsEnabled,
+        onTurnOff = weatherViewModel::disableNotifications
+    )
+
     LifecycleResumeEffect(true) {
         if (weatherViewModel.wentToSettings) {
             weatherViewModel.setReasonForRefresh(ReasonsForRefresh.PULL)
             weatherViewModel.refreshWeather()
             weatherViewModel.setWentToSettings(false)
+        } else if (!isSetup) {
+            weatherViewModel.autoRefreshOnResume()
         }
         onPauseOrDispose {}
     }
@@ -170,6 +192,13 @@ fun MainScreen(
         onResultClick = { searchCityViewModel.onResultClick(it) },
         onClearSearch = { searchCityViewModel.onClear() },
         showAddGpsButton = settingValue.listWeather.none { it.isGps },
+        onRemoveCity = { weatherViewModel.removeCity(it) },
+        onUndoRemoveCity = { weatherViewModel.undoRemoveCity() },
+        onReorderCities = { weatherViewModel.reorderCities(it) },
+        onHistoryClick = { entry ->
+            weatherViewModel.loadWeatherFromSearch(entry.lat, entry.lon, entry.name)
+            searchCityViewModel.onDismiss()
+        },
         onAddGpsCity = {
             if (settingValue.permissionAccepted) {
                 mainScope.launch { weatherViewModel.loadLocationWeather() }
@@ -199,9 +228,17 @@ fun WeatherNavDrawer(
     onResultClick: (AutocompletePrediction) -> Unit,
     onClearSearch: () -> Unit,
     showAddGpsButton: Boolean,
-    onAddGpsCity: () -> Unit
+    onAddGpsCity: () -> Unit,
+    onRemoveCity: (WeatherLocal) -> Unit = {},
+    onUndoRemoveCity: () -> Unit = {},
+    onReorderCities: (List<WeatherLocal>) -> Unit = {},
+    onHistoryClick: (SearchHistoryEntry) -> Unit = {}
 ) {
     val snackBarHostState = remember { SnackbarHostState() }
+    // resolved at composition time so they follow configuration/locale changes (lint:
+    // LocalContextGetResourceValueCall forbids LocalContext.getString in callbacks)
+    val cityRemovedTemplate = stringResource(R.string.city_removed)
+    val undoLabel = stringResource(R.string.undo_action)
     val drawerState = rememberDrawerState(DrawerValue.Closed)
     val pullState = rememberPullToRefreshState()
     val navScope = rememberCoroutineScope()
@@ -224,7 +261,19 @@ fun WeatherNavDrawer(
                 onSearchClick = {
                     onShowSearchOverlay()
                     navScope.launch { drawerState.close() }
-                }
+                },
+                onRemoveCity = { city ->
+                    onRemoveCity(city)
+                    navScope.launch {
+                        val result = snackBarHostState.showSnackbar(
+                            message = cityRemovedTemplate.format(city.name),
+                            actionLabel = undoLabel,
+                            duration = SnackbarDuration.Short
+                        )
+                        if (result == SnackbarResult.ActionPerformed) onUndoRemoveCity()
+                    }
+                },
+                onReorderCities = onReorderCities
             )
         }
     ) {
@@ -268,7 +317,9 @@ fun WeatherNavDrawer(
                         error = searchUiState.error,
                         onClear = { onClearSearch() },
                         showAddGpsButton = showAddGpsButton,
-                        onAddGpsCity = onAddGpsCity
+                        onAddGpsCity = onAddGpsCity,
+                        searchHistory = settingValue.searchHistory,
+                        onHistoryClick = onHistoryClick
                     )
                 }
             }
