@@ -1,6 +1,7 @@
 package com.gago.weatherapp.domain.usecase
 
 import androidx.datastore.core.DataStore
+import com.gago.weatherapp.data.datastore.SearchHistoryEntry
 import com.gago.weatherapp.data.datastore.Settings
 import com.gago.weatherapp.data.datastore.WeatherLocal
 import kotlinx.collections.immutable.mutate
@@ -84,5 +85,73 @@ class ManageCitiesUseCase @Inject constructor(
     /** Persists a full settings snapshot (city activated or removed from the drawer). */
     suspend fun applySettings(settings: Settings) {
         dataStore.updateData { settings }
+    }
+
+    /**
+     * Removes a stored city. The GPS city cannot be removed (no-op). When the removed city
+     * was the active one, the first remaining city becomes active and is returned so the
+     * caller can load its weather; null means nothing else needs loading.
+     */
+    suspend fun removeCity(city: WeatherLocal): WeatherLocal? {
+        if (city.isGps) return null
+        var newActive: WeatherLocal? = null
+        dataStore.updateData { currentSettings ->
+            val remaining = currentSettings.listWeather.filterNot { it == city }
+            val updated = if (city.isActive && remaining.isNotEmpty()) {
+                newActive = remaining.first().copy(isActive = true)
+                remaining.mapIndexed { index, weatherLocal ->
+                    if (index == 0) newActive!! else weatherLocal.copy(isActive = false)
+                }
+            } else {
+                remaining
+            }
+            currentSettings.copy(
+                listWeather = updated.toPersistentList(),
+                lastUpdate = if (city.isActive) 0L else currentSettings.lastUpdate
+            )
+        }
+        return newActive
+    }
+
+    /**
+     * Reinserts a removed city at [index] (undo). If it was active it becomes active again,
+     * deactivating the rest.
+     */
+    suspend fun restoreCity(city: WeatherLocal, index: Int) {
+        dataStore.updateData { currentSettings ->
+            val base = if (city.isActive) {
+                currentSettings.listWeather.map { it.copy(isActive = false) }
+            } else {
+                currentSettings.listWeather
+            }
+            val position = index.coerceIn(0, base.size)
+            val updated = base.toMutableList().apply { add(position, city) }
+            currentSettings.copy(
+                listWeather = updated.toPersistentList(),
+                lastUpdate = if (city.isActive) 0L else currentSettings.lastUpdate
+            )
+        }
+    }
+
+    /** Applies a drag-and-drop reorder; ignored if the elements no longer match. */
+    suspend fun reorderCities(orderedCities: List<WeatherLocal>) {
+        dataStore.updateData { currentSettings ->
+            if (orderedCities.toSet() == currentSettings.listWeather.toSet()) {
+                currentSettings.copy(listWeather = orderedCities.toPersistentList())
+            } else {
+                currentSettings
+            }
+        }
+    }
+
+    /** Records a successful search, most recent first, deduplicated by name, capped at 5. */
+    suspend fun recordSearch(name: String, latitude: Double, longitude: Double) {
+        dataStore.updateData { currentSettings ->
+            val entry = SearchHistoryEntry(name = name, lat = latitude, lon = longitude)
+            val updated = listOf(entry) + currentSettings.searchHistory.filterNot {
+                it.name == name
+            }
+            currentSettings.copy(searchHistory = updated.take(Settings.MAX_SEARCH_HISTORY))
+        }
     }
 }

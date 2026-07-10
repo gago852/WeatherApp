@@ -81,6 +81,10 @@
     <string name="temperature_trend_text">Tendencia de temperatura</string>
     <string name="temperature_chart_hint">Toca un punto para ver el detalle</string>
     <string name="temperature_chart_content_description">Gráfico de tendencia de temperatura.</string>
+    <string name="recent_searches">Búsquedas recientes</string>
+    <string name="remove_city">Eliminar</string>
+    <string name="city_removed">%1$s eliminada</string>
+    <string name="undo_action">Deshacer</string>
     <string name="air_quality_text">Calidad del aire:</string>
     <string name="aqi_good">Buena</string>
     <string name="aqi_fair">Aceptable</string>
