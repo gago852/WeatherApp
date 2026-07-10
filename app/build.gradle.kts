@@ -21,8 +21,8 @@ android {
         applicationId = "com.gago.weatherapp"
         minSdk = 27
         targetSdk = 37
-        versionCode = 22
-        versionName = "0.2.5"
+        versionCode = 23
+        versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
         vectorDrawables {
