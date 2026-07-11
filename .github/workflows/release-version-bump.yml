@@ -29,10 +29,10 @@ jobs:
         id: bump
         run: |
           git fetch origin main --quiet
-          COMMITS=$(git log origin/main..HEAD --pretty=format:'%s%n%b')
+          COMMITS=$(git log origin/main..HEAD --pretty=format:'%s%n%b%n')
 
           LEVEL="patch"
-          if echo "$COMMITS" | grep -Eiq '^[a-z]+(\([^)]*\))?!:|BREAKING CHANGE:'; then
+          if echo "$COMMITS" | grep -Eiq '^[a-z]+(\([^)]*\))?!:|^BREAKING CHANGE:'; then
             LEVEL="major"
           elif echo "$COMMITS" | grep -Eiq '^feat(\([^)]*\))?:'; then
             LEVEL="minor"
