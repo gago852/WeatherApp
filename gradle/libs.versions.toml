@@ -20,7 +20,7 @@ stabilityAnalizer = "0.10.0"
 #retrofit
 retrofit = "3.0.0"
 moshi = "1.15.2"
-ksp = "2.3.4"
+ksp = "2.3.10"
 #gsm
 gmsLocation = "21.4.0"
 googleServices = "4.5.0"
