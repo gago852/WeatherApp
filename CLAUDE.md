@@ -78,6 +78,8 @@ Gabriel opens issues and asks for them to be fixed. Each task lives in its **own
 
    Scope is optional; suggested scopes (layer / feature): `data`, `domain`, `ui`, `di`, `weather`, `location`, `settings`.
 
+   **Breaking changes:** mark them with `!` right after the type/scope (e.g. `feat!:`, `fix(data)!:`) or a `BREAKING CHANGE:` footer. This is not just style — the release version-bump workflow (see below) parses commit messages to decide major/minor/patch, and the breaking-change marker always wins over the type, on any type (`fix!:` is major, not patch).
+
 6. **Draft PR** against `dev`:
 
    ```bash
@@ -87,3 +89,25 @@ Gabriel opens issues and asks for them to be fixed. Each task lives in its **own
    ```
 
    When done, clean up the worktree: `git worktree remove ../WeatherApp-<n>-<slug>`.
+
+## Release process: dev → release/x.y.z → main
+
+Releases are cut from the tip of `dev`, never directly from feature branches, and never pushed straight to `main` (protected).
+
+1. **Cut the release branch** from an updated `dev`:
+
+   ```bash
+   git fetch origin
+   git checkout -b release/x.y.z origin/dev
+   git push -u origin release/x.y.z
+   ```
+
+2. **Version bump is automatic.** Pushing a `release/**` branch triggers `.github/workflows/release-version-bump.yml`, which walks the Conventional Commits between `origin/main` and the branch tip, picks the bump level (major if any commit has a breaking-change marker, else minor if any `feat:`, else patch), updates `versionCode`/`versionName` in `app/build.gradle.kts`, and pushes a `chore(release): bump version to x.y.z` commit onto the release branch. No manual editing of `versionCode`/`versionName` needed.
+
+3. **Open the PR against `main`** once the bump commit lands:
+
+   ```bash
+   gh pr create --base main --title "chore(release): x.y.z" --body "..."
+   ```
+
+4. **Merging to `main` triggers the real deploy.** `gradle-test.yml` and `security.yml` run on the merge push, and `playstore-deploy.yml` fires automatically via `workflow_run` once `gradle-test` succeeds on `main` — building/signing the AAB & APK, uploading to Play Store (`internal` track by default), and creating a GitHub Release. This is why routine changes (including Dependabot bumps) must never land on `main` directly — see the Dependabot `target-branch: dev` setting in `.github/dependabot.yml`.
