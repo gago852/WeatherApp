@@ -1,0 +1,82 @@
+name: Release version bump
+
+on:
+  push:
+    branches:
+      - "release/**"
+
+permissions:
+  contents: write
+
+concurrency:
+  group: release-version-bump-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  bump:
+    name: Bump versionCode/versionName
+    runs-on: ubuntu-latest
+    if: ${{ !contains(github.event.head_commit.message, 'chore(release): bump version to') }}
+
+    steps:
+      - name: Checkout release branch
+        uses: actions/checkout@v6
+        with:
+          ref: ${{ github.ref_name }}
+          fetch-depth: 0
+
+      - name: Determine bump level from Conventional Commits
+        id: bump
+        run: |
+          git fetch origin main --quiet
+          COMMITS=$(git log origin/main..HEAD --pretty=format:'%s%n%b')
+
+          LEVEL="patch"
+          if echo "$COMMITS" | grep -Eiq '^[a-z]+(\([^)]*\))?!:|BREAKING CHANGE:'; then
+            LEVEL="major"
+          elif echo "$COMMITS" | grep -Eiq '^feat(\([^)]*\))?:'; then
+            LEVEL="minor"
+          fi
+
+          echo "level=$LEVEL" >> "$GITHUB_OUTPUT"
+          echo "Detected bump level: $LEVEL"
+
+      - name: Compute next version
+        id: version
+        run: |
+          CURRENT_NAME=$(grep 'versionName = ' app/build.gradle.kts | sed 's/.*versionName = "\(.*\)"/\1/')
+          CURRENT_CODE=$(grep 'versionCode = ' app/build.gradle.kts | sed 's/.*versionCode = \([0-9]*\).*/\1/')
+
+          IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_NAME"
+
+          case "${{ steps.bump.outputs.level }}" in
+            major)
+              MAJOR=$((MAJOR + 1)); MINOR=0; PATCH=0
+              ;;
+            minor)
+              MINOR=$((MINOR + 1)); PATCH=0
+              ;;
+            patch)
+              PATCH=$((PATCH + 1))
+              ;;
+          esac
+
+          NEW_NAME="$MAJOR.$MINOR.$PATCH"
+          NEW_CODE=$((CURRENT_CODE + 1))
+
+          echo "new_name=$NEW_NAME" >> "$GITHUB_OUTPUT"
+          echo "new_code=$NEW_CODE" >> "$GITHUB_OUTPUT"
+          echo "Bumping $CURRENT_NAME ($CURRENT_CODE) -> $NEW_NAME ($NEW_CODE)"
+
+      - name: Update app/build.gradle.kts
+        run: |
+          sed -i "s/versionCode = [0-9]\+/versionCode = ${{ steps.version.outputs.new_code }}/" app/build.gradle.kts
+          sed -i "s/versionName = \"[^\"]*\"/versionName = \"${{ steps.version.outputs.new_name }}\"/" app/build.gradle.kts
+
+      - name: Commit and push version bump
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add app/build.gradle.kts
+          git commit -m "chore(release): bump version to ${{ steps.version.outputs.new_name }}"
+          git push origin HEAD:${{ github.ref_name }}
