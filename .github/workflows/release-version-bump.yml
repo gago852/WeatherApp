@@ -16,7 +16,7 @@ jobs:
   bump:
     name: Bump versionCode/versionName
     runs-on: ubuntu-latest
-    if: ${{ !contains(github.event.head_commit.message, 'chore(release): bump version to') }}
+    if: "${{ !contains(github.event.head_commit.message, 'chore(release): bump version to') }}"
 
     steps:
       - name: Checkout release branch
