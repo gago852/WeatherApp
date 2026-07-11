@@ -60,7 +60,7 @@ jobs:
 
       - name: Upload lint report
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: lint-report
           path: app/build/reports/lint-results-debug.html
@@ -69,7 +69,7 @@ jobs:
 
       - name: Upload JUnit XML results
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: junit-xml
           path: |
@@ -80,7 +80,7 @@ jobs:
 
       - name: Upload HTML test report
         if: ${{ !cancelled() }}
-        uses: actions/upload-artifact@v6
+        uses: actions/upload-artifact@v7
         with:
           name: test-report-html
           path: |
