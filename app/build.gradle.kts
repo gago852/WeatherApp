@@ -21,7 +21,7 @@ android {
         applicationId = "com.gago.weatherapp"
         minSdk = 27
         targetSdk = 37
-        versionCode = 23
+        versionCode = 24
         versionName = "1.0.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
