@@ -173,3 +173,10 @@ gradle-daemon-jvm.properties
 
 .claude/*
 !.claude/skills/
+
+# Scratch output from the play-policy-insights skill
+.scratch/
+
+# Python artifacts from skill scripts
+__pycache__/
+*.pyc
