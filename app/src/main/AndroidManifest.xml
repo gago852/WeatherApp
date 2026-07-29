@@ -27,6 +27,18 @@
         android:name="com.google.android.gms.permission.AD_ID"
         tools:node="remove" />
 
+    <!--
+      Privacy Sandbox attribution permissions, merged in by
+      play-services-measurement-api. They back ad attribution measurement,
+      which this app has no use for now that the advertising ID is off.
+    -->
+    <uses-permission
+        android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_ADSERVICES_AD_ID"
+        tools:node="remove" />
+
     <application
         android:name=".WeatherApp"
         android:allowBackup="true"
@@ -39,6 +51,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherApp"
         tools:targetApi="33">
+
+        <!--
+          Turns off Advertising ID collection in the Analytics SDK itself, so
+          it isn't only the manifest permission being stripped. Analytics keeps
+          working; advertising features (remarketing, demographics, ad
+          attribution) are the ones that go away.
+        -->
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+
         <receiver
             android:name=".widget.WeatherWidgetReceiver"
             android:exported="true">
