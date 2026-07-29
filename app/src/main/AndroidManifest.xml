@@ -7,6 +7,38 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
     <uses-permission android:name="android.permission.POST_NOTIFICATIONS" />
 
+    <!--
+      Merged in by the Places SDK, but never granted: the app only requests
+      ACCESS_COARSE_LOCATION at runtime and sets no location bias on
+      autocomplete requests, so precise location is never available anyway.
+      Removed so the manifest doesn't declare precision the app can't use.
+    -->
+    <uses-permission
+        android:name="android.permission.ACCESS_FINE_LOCATION"
+        tools:node="remove" />
+
+    <!--
+      Merged in by firebase-analytics (play-services-measurement-impl). The app
+      has no ads and no Google Ads campaigns, so the advertising ID is unused.
+      Removing it keeps Analytics working and drops the Play Console
+      advertising ID declaration.
+    -->
+    <uses-permission
+        android:name="com.google.android.gms.permission.AD_ID"
+        tools:node="remove" />
+
+    <!--
+      Privacy Sandbox attribution permissions, merged in by
+      play-services-measurement-api. They back ad attribution measurement,
+      which this app has no use for now that the advertising ID is off.
+    -->
+    <uses-permission
+        android:name="android.permission.ACCESS_ADSERVICES_ATTRIBUTION"
+        tools:node="remove" />
+    <uses-permission
+        android:name="android.permission.ACCESS_ADSERVICES_AD_ID"
+        tools:node="remove" />
+
     <application
         android:name=".WeatherApp"
         android:allowBackup="true"
@@ -19,6 +51,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.WeatherApp"
         tools:targetApi="33">
+
+        <!--
+          Turns off Advertising ID collection in the Analytics SDK itself, so
+          it isn't only the manifest permission being stripped. Analytics keeps
+          working; advertising features (remarketing, demographics, ad
+          attribution) are the ones that go away.
+        -->
+        <meta-data
+            android:name="google_analytics_adid_collection_enabled"
+            android:value="false" />
+
         <receiver
             android:name=".widget.WeatherWidgetReceiver"
             android:exported="true">
