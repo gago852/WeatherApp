@@ -1,6 +1,6 @@
 [versions]
 #core
-agp = "9.3.0"
+agp = "9.3.1"
 kotlin = "2.4.10"
 appcompat = "1.7.1"
 coreKtx = "1.19.0"
@@ -15,7 +15,7 @@ navigation = "2.9.8"
 kotlinCollectionsImmutable = "0.5.1"
 kotlinSerialization = "1.11.0"
 splashscreen = "1.2.0"
-stabilityAnalizer = "0.11.0"
+stabilityAnalizer = "0.12.0"
 
 #retrofit
 retrofit = "3.0.0"
