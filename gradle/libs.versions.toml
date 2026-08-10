@@ -20,7 +20,7 @@ stabilityAnalizer = "0.12.0"
 #retrofit
 retrofit = "3.0.0"
 moshi = "1.15.2"
-ksp = "2.3.10"
+ksp = "2.3.11"
 #gsm
 gmsLocation = "21.4.0"
 googleServices = "4.5.0"
@@ -34,7 +34,7 @@ hiltExt = "1.4.0"
 workManager = "2.11.2"
 glance = "1.1.1"
 #firebase
-firebaseBom = "34.16.0"
+firebaseBom = "34.17.0"
 firebaseCrashlytics = "3.0.7"
 #testing
 mockitoKotlin = "6.3.0"
