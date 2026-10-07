@@ -110,9 +110,9 @@
         <activity
             android:name="com.google.android.libraries.places.widget.PlaceAutocompleteActivity"
             tools:node="remove" />
-        <activity
-            android:name="com.google.android.libraries.places.widget.AutocompleteActivity"
-            tools:node="remove" />
+<!--        <activity-->
+<!--            android:name="com.google.android.libraries.places.widget.AutocompleteActivity"-->
+<!--            tools:node="remove" />-->
     </application>
 
 </manifest>
