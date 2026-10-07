@@ -1,5 +1,60 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<issues format="6" by="lint 9.2.0" type="baseline" client="gradle" dependencies="false" name="AGP (9.2.0)" variant="all" version="9.2.0">
+<issues format="6" by="lint 9.4.1" type="baseline" client="gradle" dependencies="false" name="AGP (9.4.1)" variant="all" version="9.4.1">
+
+    <issue
+        id="InlinedApi"
+        message="Field requires API level 33 (current min is 27): `android.Manifest.permission#POST_NOTIFICATIONS`"
+        errorLine1="            applicationContext, Manifest.permission.POST_NOTIFICATIONS"
+        errorLine2="                                ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/gago/weatherapp/worker/WeatherSyncWorker.kt"
+            line="57"
+            column="33"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `targetCellWidth` is only used in API level 31 and higher (current min is 27)"
+        errorLine1="    android:targetCellWidth=&quot;4&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/weather_widget_info.xml"
+            line="5"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `targetCellHeight` is only used in API level 31 and higher (current min is 27)"
+        errorLine1="    android:targetCellHeight=&quot;1&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/weather_widget_info.xml"
+            line="6"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="UnusedAttribute"
+        message="Attribute `maxResizeHeight` is only used in API level 31 and higher (current min is 27)"
+        errorLine1="    android:maxResizeHeight=&quot;120dp&quot;"
+        errorLine2="    ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/xml/weather_widget_info.xml"
+            line="7"
+            column="5"/>
+    </issue>
+
+    <issue
+        id="ComposableNaming"
+        message="Composable functions with a return type should start with a lowercase letter"
+        errorLine1="    private fun LocalContextText(resId: Int): String ="
+        errorLine2="                ~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/java/com/gago/weatherapp/widget/WeatherWidget.kt"
+            line="130"
+            column="17"/>
+    </issue>
 
     <issue
         id="ObsoleteSdkInt"
@@ -105,6 +160,72 @@
 
     <issue
         id="UnusedResources"
+        message="The resource `R.string.error_weather_api_key_invalid` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_weather_api_key_invalid&quot;>Invalid API key&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="24"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.error_weather_api_key_expired` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_weather_api_key_expired&quot;>API key expired&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="25"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.error_weather_quota_exceeded` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_weather_quota_exceeded&quot;>Weather API quota exceeded&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="26"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.error_weather_city_not_found` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_weather_city_not_found&quot;>City not found&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="27"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.error_weather_invalid_coordinates` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_weather_invalid_coordinates&quot;>Invalid coordinates&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="28"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
+        message="The resource `R.string.error_weather_unknown` appears to be unused"
+        errorLine1="    &lt;string name=&quot;error_weather_unknown&quot;>Unknown weather error&lt;/string>"
+        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~~~~">
+        <location
+            file="src/main/res/values/strings.xml"
+            line="29"
+            column="13"/>
+    </issue>
+
+    <issue
+        id="UnusedResources"
         message="The resource `R.string.swipe_to_load_text` appears to be unused"
         errorLine1="    &lt;string name=&quot;swipe_to_load_text&quot;>Swipe to load&lt;/string>"
         errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~~~~">
@@ -133,17 +254,6 @@
         <location
             file="src/main/res/values/strings.xml"
             line="88"
-            column="13"/>
-    </issue>
-
-    <issue
-        id="NotShrinkingResources"
-        message="If enabling minification, also set isShrinkResources = true"
-        errorLine1="            isMinifyEnabled = true"
-        errorLine2="            ~~~~~~~~~~~~~~~~~~~~~~">
-        <location
-            file="build.gradle.kts"
-            line="65"
             column="13"/>
     </issue>
 
