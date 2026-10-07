@@ -44,8 +44,11 @@ jobs:
       - name: Compute next version
         id: version
         run: |
-          CURRENT_NAME=$(grep 'versionName = ' app/build.gradle.kts | sed 's/.*versionName = "\(.*\)"/\1/')
-          CURRENT_CODE=$(grep 'versionCode = ' app/build.gradle.kts | sed 's/.*versionCode = \([0-9]*\).*/\1/')
+          # Base the bump on main, not on this branch, so re-runs are idempotent
+          # (extra commits on the release branch don't compound the bump).
+          MAIN_GRADLE=$(git show origin/main:app/build.gradle.kts)
+          CURRENT_NAME=$(echo "$MAIN_GRADLE" | grep 'versionName = ' | sed 's/.*versionName = "\(.*\)"/\1/')
+          CURRENT_CODE=$(echo "$MAIN_GRADLE" | grep 'versionCode = ' | sed 's/.*versionCode = \([0-9]*\).*/\1/')
 
           IFS='.' read -r MAJOR MINOR PATCH <<< "$CURRENT_NAME"
 
@@ -77,6 +80,10 @@ jobs:
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+          if git diff --quiet app/build.gradle.kts; then
+            echo "Version already up to date, nothing to commit."
+            exit 0
+          fi
           git add app/build.gradle.kts
           git commit -m "chore(release): bump version to ${{ steps.version.outputs.new_name }}"
           git push origin HEAD:${{ github.ref_name }}
