@@ -32,9 +32,9 @@ dataStore = "1.2.1"
 hilt = "2.60.1"
 hiltExt = "1.4.0"
 workManager = "2.12.0"
-glance = "1.1.1"
+glance = "1.2.0"
 #firebase
-firebaseBom = "34.19.0"
+firebaseBom = "35.0.0"
 firebaseCrashlytics = "3.0.8"
 #testing
 mockitoKotlin = "6.4.0"
